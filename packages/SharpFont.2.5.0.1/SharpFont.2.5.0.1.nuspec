@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>SharpFont</id>
+    <version>2.5.0.1</version>
+    <title>SharpFont</title>
+    <authors>Robmaister</authors>
+    <owners>Robmaister</owners>
+    <licenseUrl>https://github.com/Robmaister/SharpFont/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Robmaister/SharpFont</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Cross-platform FreeType bindings for .NET</description>
+    <releaseNotes>Updated to FreeType 2.5.0.1.</releaseNotes>
+    <copyright>Copyright (c) 2012-2013 Robert Rouhani</copyright>
+    <tags>freetype font bindings wrapper text</tags>
+  </metadata>
+</package>
