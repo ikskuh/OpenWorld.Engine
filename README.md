@@ -13,17 +13,17 @@ Features:
 - AssetManager (Model import with Assimp.Net)
 - Gui system with some controls (oriented on System.Windows.Forms)
 - Theoretic multi-platform support (Not tested, but should work)
-- Docuemnted source code what fullfilles all microsoft code analysis rules
+- Documented source code which fulfilles all microsoft code analysis rules
 - Demo Apps
 
 Future Planning:
 - Sound (3D and music)
 - Scene management with component-based entities (like Unity3D)
 - Improved asset manager
-- Even more demos apps
+- Even more demo apps
 - Improved documentation (also outside of code)
 
-To compile this, you'll need Microsoft Visual Studio 2010 or newer and following libraries:
+To compile this, you'll need Microsoft Visual Studio 2013 and following libraries:
 - OpenTK (www.opentk.com)
 - Assimp.Net (https://code.google.com/p/assimp-net/)
 - SharpFont (included, get it with nuget or at https://github.com/Robmaister/SharpFont)

@@ -45,7 +45,6 @@ namespace OpenWorld.Engine
 				pixelFormat,
 				pixelType,
 				IntPtr.Zero);
-			this.SetFiltering(Filter.Nearest);
 			this.Width = width;
 			this.Height = height;
 		}
@@ -100,7 +99,7 @@ namespace OpenWorld.Engine
 				using (var bmp = new Bitmap(stream))
 					this.Load(bmp);
 			}
-			this.SetFiltering(Filter.LinearMipMapped);
+			this.Filter = Filter.LinearMipMapped;
 		}
 
 		/// <summary>
@@ -130,37 +129,6 @@ namespace OpenWorld.Engine
 
 			this.Width = bmp.Width;
 			this.Height = bmp.Height;
-		}
-
-		/// <summary>
-		/// Sets the texture filtering
-		/// </summary>
-		/// <param name="filter">Filer type</param>
-		public void SetFiltering(Filter filter)
-		{
-			int min = (int)TextureMinFilter.Nearest;
-			int mag = (int)TextureMagFilter.Nearest;
-			switch (filter)
-			{
-				case Filter.Nearest:
-					min = (int)TextureMinFilter.Nearest;
-					mag = (int)TextureMagFilter.Nearest;
-					break;
-				case Filter.Linear:
-					min = (int)TextureMinFilter.Linear;
-					mag = (int)TextureMagFilter.Linear;
-					break;
-				case Filter.LinearMipMapped:
-					min = (int)TextureMinFilter.LinearMipmapLinear;
-					mag = (int)TextureMagFilter.Linear;
-					break;
-				default:
-					throw new ArgumentException("Filter is not valid.", "filter");
-			}
-
-			this.Bind();
-			GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, mag);
-			GL.TexParameter(this.Target, TextureParameterName.TextureMinFilter, min);
 		}
 
 		/// <summary>

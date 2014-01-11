@@ -11,6 +11,7 @@ namespace OpenWorld.Engine
 	public partial class Texture : IGLResource
 	{
 		private TextureTarget target;
+		private Filter filter;
 		private TextureWrapMode wrapS, wrapT, wrapR;
 		private int id;
 
@@ -26,6 +27,8 @@ namespace OpenWorld.Engine
 			this.WrapS = TextureWrapMode.Repeat;
 			this.WrapT = TextureWrapMode.Repeat;
 			this.WrapR = TextureWrapMode.Repeat;
+
+			this.Filter = Filter.Nearest;
 		}
 
 		/// <summary>
@@ -122,6 +125,43 @@ namespace OpenWorld.Engine
 				this.Bind();
 				this.wrapR = value;
 				GL.TexParameter(this.Target, TextureParameterName.TextureWrapR, (int)this.wrapS);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the texture filtering.
+		/// </summary>
+		public Filter Filter
+		{
+			get { return this.filter; }
+			set
+			{
+				if (this.filter == value)
+					return;
+				this.filter = value;
+				int min = (int)TextureMinFilter.Nearest;
+				int mag = (int)TextureMagFilter.Nearest;
+				switch (this.filter)
+				{
+					case Filter.Nearest:
+						min = (int)TextureMinFilter.Nearest;
+						mag = (int)TextureMagFilter.Nearest;
+						break;
+					case Filter.Linear:
+						min = (int)TextureMinFilter.Linear;
+						mag = (int)TextureMagFilter.Linear;
+						break;
+					case Filter.LinearMipMapped:
+						min = (int)TextureMinFilter.LinearMipmapLinear;
+						mag = (int)TextureMagFilter.Linear;
+						break;
+					default:
+						throw new ArgumentException("Filter is not valid.", "filter");
+				}
+
+				this.Bind();
+				GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, mag);
+				GL.TexParameter(this.Target, TextureParameterName.TextureMinFilter, min);
 			}
 		}
 	}

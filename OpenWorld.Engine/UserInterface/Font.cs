@@ -122,7 +122,7 @@ void main()
 					}
 
 					g.Texture = new Texture2D(bmp);
-					g.Texture.SetFiltering(Filter.Linear);
+					g.Texture.Filter = Filter.Linear;
 					g.Texture.WrapS = TextureWrapMode.ClampToEdge;
 					g.Texture.WrapT = TextureWrapMode.ClampToEdge;
 				}
