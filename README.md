@@ -7,7 +7,7 @@ The engine is based on an XNA-like design but has some improvements done.
 There is no sound or physics engine supported yet but it is planned to change
 this later.
 
-To compile this, you'll need Microsoft Visual Studio 2013 and following libraries:
+To compile this, you'll need Microsoft Visual Studio 2010 or newer and following libraries:
 o OpenTK (www.opentk.com)
 o Assimp.Net (https://code.google.com/p/assimp-net/)
 o SharpFont (included, get it with nuget or at https://github.com/Robmaister/SharpFont)
