@@ -105,6 +105,7 @@
     <Compile Include="UserInterface\Button.cs" />
     <Compile Include="UserInterface\Control.cs" />
     <Compile Include="UserInterface\ControlCollection.cs" />
+    <Compile Include="UserInterface\DefaultRenderers\FormRenderer.cs" />
     <Compile Include="UserInterface\IControlContainer.cs" />
     <Compile Include="UserInterface\ControlStatics.cs" />
     <Compile Include="UserInterface\DefaultRenderers\BlankRenderer.cs" />
@@ -127,6 +128,8 @@
     <Compile Include="UserInterface\TextAlign.cs" />
     <Compile Include="UniformNotFoundException.cs" />
     <Compile Include="UserInterface\UIVertex.cs" />
+    <Compile Include="UserInterface\Form.cs" />
+    <Compile Include="UserInterface\UpdateEventArgs.cs" />
     <Compile Include="Vertex.cs" />
     <Compile Include="VertexArray.cs" />
     <Compile Include="WebColors.cs" />

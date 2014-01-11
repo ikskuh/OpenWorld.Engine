@@ -21,6 +21,8 @@ namespace OpenWorld.Engine.UserInterface
 		private Color foreColor;
 		private Font font;
 		private TextAlign textAlign;
+		private bool enabled;
+		private bool visible;
 
 		#region Events
 
@@ -33,6 +35,11 @@ namespace OpenWorld.Engine.UserInterface
 		/// Occurs when the control gets focus.
 		/// </summary>
 		public event EventHandler<EventArgs> Enter;
+
+		/// <summary>
+		/// Occurs when the control gets updated.
+		/// </summary>
+		public event EventHandler<UpdateEventArgs> Update;
 
 		/// <summary>
 		/// Occurs when the control lost focus.
@@ -103,46 +110,38 @@ namespace OpenWorld.Engine.UserInterface
 			this.backColor = Control.DefaultBackColor;
 			this.foreColor = Control.DefaultForeColor;
 			this.textAlign = TextAlign.MiddleCenter;
+			this.visible = true;
+			this.enabled = true;
 		}
 
-		internal void Update(GameTime time)
+		internal void UpdateControl(GameTime time)
 		{
-			this.OnUpdate(time);
+			if (!this.Enabled) return;
+			this.OnUpdate(new UpdateEventArgs(time));
 			foreach (var child in this.controls)
-				child.Update(time);
+				child.UpdateControl(time);
 		}
 
 		internal void Draw(GuiRenderEngine engine, GameTime time)
 		{
+			if (!this.Enabled) return;
+			if (!this.Visible) return;
 			var renderer = engine.GetRenderer(this.GetType());
 			renderer.Render(this);
 
-			foreach (var child in this.controls)
+			foreach (var child in this.controls.Reverse())
 				child.Draw(engine, time);
 		}
 
 		/// <summary>
-		/// Gets the bounds in screen space.
+		/// Moves the control to the begin of the update list.
 		/// </summary>
-		/// <returns>Client bounds in screen space.</returns>
-		public Box2 ScreenBounds
+		public void BringtToFront()
 		{
-			get
-			{
-				return this.OnGetBounds();
-			}
-		}
+			var parent = this.parent;
 
-		/// <summary>
-		/// Gets the client bounds in screen space.
-		/// </summary>
-		/// <returns>Client bounds in screen space.</returns>
-		public Box2 ScreenClientBounds
-		{
-			get
-			{
-				return this.ClientBounds.Transform(this.ScreenBounds);
-			}
+			parent.Controls.Remove(this);
+			parent.Controls.Insert(0, this);
 		}
 
 		/// <summary>
@@ -227,6 +226,30 @@ namespace OpenWorld.Engine.UserInterface
 					this.parent.Controls.Remove(this);
 				if (value != null)
 					value.Controls.Add(this);
+			}
+		}
+
+		/// <summary>
+		/// Gets the bounds in screen space.
+		/// </summary>
+		/// <returns>Client bounds in screen space.</returns>
+		public Box2 ScreenBounds
+		{
+			get
+			{
+				return this.OnGetBounds();
+			}
+		}
+
+		/// <summary>
+		/// Gets the client bounds in screen space.
+		/// </summary>
+		/// <returns>Client bounds in screen space.</returns>
+		public Box2 ScreenClientBounds
+		{
+			get
+			{
+				return this.ClientBounds.Transform(this.ScreenBounds);
 			}
 		}
 
@@ -363,80 +386,111 @@ namespace OpenWorld.Engine.UserInterface
 			set { this.textAlign = value; }
 		}
 
-		#region Event Raise Methods
+		/// <summary>
+		/// Gets or sets a value that determines if the control receives events.
+		/// </summary>
+		public virtual bool Enabled
+		{
+			get { return enabled; }
+			set { enabled = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets a value that determines if the control is drawn and receives events.
+		/// </summary>
+		public virtual bool Visible
+		{
+			get { return visible; }
+			set { visible = value; }
+		}
+
+
+		#region Event Handle Methods
 
 		bool leftClickBegin = false;
 		bool rightClickBegin = false;
 
-		internal void RaiseClick()
+		/// <summary>
+		/// Raises the Click event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnClick(EventArgs e)
 		{
 			this.Focus();
-			this.OnClick(EventArgs.Empty);
 			if (this.Click != null)
-				this.Click(this, EventArgs.Empty);
+				this.Click(this, e);
 		}
-
-		internal void RaiseEnter()
+		
+		/// <summary>
+		/// Raises the Enter event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnEnter(EventArgs e)
 		{
-			this.OnEnter(EventArgs.Empty);
 			if (this.Enter != null)
 				this.Enter(this, EventArgs.Empty);
 		}
 
-		internal void RaiseLeave()
+		/// <summary>
+		/// Raises the Leave event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnLeave(EventArgs e)
 		{
-			this.OnLeave(EventArgs.Empty);
 			if (this.Leave != null)
 				this.Leave(this, EventArgs.Empty);
 		}
 
-		internal void RaiseMouseLeave(MouseEventArgs e)
+		/// <summary>
+		/// Raises the MouseEnter event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnMouseEnter(MouseEventArgs e)
 		{
-			this.OnMouseLeave(e);
-			this.leftClickBegin = false;
-			this.rightClickBegin = false;
-			if (this.MouseLeave != null)
-				this.MouseLeave(this, e);
-		}
-
-		internal void RaiseMouseEnter(MouseEventArgs e)
-		{
-			this.OnMouseEnter(e);
 			this.leftClickBegin = false;
 			this.rightClickBegin = false;
 			if (this.MouseEnter != null)
 				this.MouseEnter(this, e);
 		}
 
-		internal void RaiseMouseMove(MouseEventArgs e)
+		/// <summary>
+		/// Raises the MouseLeave event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnMouseLeave(MouseEventArgs e)
 		{
-			this.OnMouseMove(e);
+			this.leftClickBegin = false;
+			this.rightClickBegin = false;
+			if (this.MouseLeave != null)
+				this.MouseLeave(this, e);
+		}
+
+		/// <summary>
+		/// Raises the MouseMove event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnMouseMove(MouseEventArgs e)
+		{
 			if (this.MouseMove != null)
 				this.MouseMove(this, e);
 		}
 
-		internal void RaiseMouseUp(MouseEventArgs e)
+		/// <summary>
+		/// Raises the MouseHover event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnMouseHover(MouseEventArgs e)
 		{
-			this.OnMouseUp(e);
-			if (this.leftClickBegin && e.Button == MouseButton.Left)
-			{
-				this.RaiseMouseClick(e);
-				this.RaiseClick();
-			}
-			if (this.rightClickBegin && e.Button == MouseButton.Right)
-			{
-				this.RaiseMouseClick(e);
-			}
-			this.leftClickBegin = false;
-			this.rightClickBegin = false;
-
-			if (this.MouseUp != null)
-				this.MouseUp(this, e);
+			if (this.MouseHover != null)
+				this.MouseHover(this, e);
 		}
 
-		internal void RaiseMouseDown(MouseEventArgs e)
+		/// <summary>
+		/// Raises the MouseDown event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
-			this.OnMouseDown(e);
 			if (e.Button == MouseButton.Left)
 				this.leftClickBegin = true;
 			if (e.Button == MouseButton.Right)
@@ -445,128 +499,77 @@ namespace OpenWorld.Engine.UserInterface
 				this.MouseDown(this, e);
 		}
 
-		internal void RaiseMouseClick(MouseEventArgs e)
+		/// <summary>
+		/// Raises the MouseUp event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnMouseUp(MouseEventArgs e)
 		{
-			this.OnMouseClick(e);
+			if (this.leftClickBegin && e.Button == MouseButton.Left)
+			{
+				this.OnMouseClick(e);
+				this.OnClick(e);
+			}
+			if (this.rightClickBegin && e.Button == MouseButton.Right)
+			{
+				this.OnMouseClick(e);
+			}
+			this.leftClickBegin = false;
+			this.rightClickBegin = false;
+
+			if (this.MouseUp != null)
+				this.MouseUp(this, e);
+		}
+
+		/// <summary>
+		/// Raises the MouseClick event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnMouseClick(MouseEventArgs e)
+		{
 			if (this.MouseClick != null)
 				this.MouseClick(this, e);
 		}
 
-		internal void RaiseMouseHover(MouseEventArgs e)
+		/// <summary>
+		/// Raises the KeyDown event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnKeyDown(KeyEventArgs e)
 		{
-			this.OnMouseHover(e);
-			if (this.MouseHover != null)
-				this.MouseHover(this, e);
-		}
-
-		internal void RaiseKeyDown(KeyEventArgs e)
-		{
-			this.OnKeyDown(e);
 			if (this.KeyDown != null)
 				this.KeyDown(this, e);
 		}
 
-		internal void RaiseKeyUp(KeyEventArgs e)
+		/// <summary>
+		/// Raises the KeyUp event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnKeyUp(KeyEventArgs e)
 		{
-			this.OnKeyUp(e);
 			if (this.KeyUp != null)
 				this.KeyUp(this, e);
 		}
 
-		internal void RaiseKeyPress(KeyPressEventArgs e)
+		/// <summary>
+		/// Raises the KeyPress event.
+		/// </summary>
+		/// <param name="e"></param>
+		protected internal virtual void OnKeyPress(KeyPressEventArgs e)
 		{
-			this.OnKeyPress(e);
 			if (this.KeyPress != null)
 				this.KeyPress(this, e);
 		}
 
-		#endregion
-
-		#region Event Handle Methods
-
-		/// <summary>
-		/// Gets called when the Click event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnClick(EventArgs e) { }
-		
-		/// <summary>
-		/// Gets called when the Enter event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnEnter(EventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the Leave event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnLeave(EventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the MouseEnter event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnMouseEnter(MouseEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the MouseLeave event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnMouseLeave(MouseEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the MouseMove event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnMouseMove(MouseEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the MouseHover event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnMouseHover(MouseEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the MouseDown event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnMouseDown(MouseEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the MouseUp event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnMouseUp(MouseEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the MouseClick event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnMouseClick(MouseEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the KeyDown event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnKeyDown(KeyEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the KeyUp event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnKeyUp(KeyEventArgs e) { }
-
-		/// <summary>
-		/// Gets called when the KeyPress event occurs.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnKeyPress(KeyPressEventArgs e) { }
-
 		/// <summary>
 		/// Gets called every frame.
 		/// </summary>
-		/// <param name="time"></param>
-		protected virtual void OnUpdate(GameTime time) { }
+		/// <param name="e"></param>
+		protected internal virtual void OnUpdate(UpdateEventArgs e)
+		{
+			if (this.Update != null)
+				this.Update(this, e);
+		}
 
 		#endregion
 	}

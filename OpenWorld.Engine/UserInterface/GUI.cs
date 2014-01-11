@@ -61,19 +61,19 @@ namespace OpenWorld.Engine.UserInterface
 			{
 				if (this.lastMouseFocus != null)
 				{
-					this.lastMouseFocus.RaiseMouseLeave(this.mouseState);
+					this.lastMouseFocus.OnMouseLeave(this.mouseState);
 				}
 				this.lastMouseFocus = ctrl;
 				if (this.lastMouseFocus != null)
 				{
-					this.lastMouseFocus.RaiseMouseEnter(this.mouseState);
+					this.lastMouseFocus.OnMouseEnter(this.mouseState);
 				}
 			}
 			
 			if ((this.mouseState.DeltaX != 0 || this.mouseState.DeltaY != 0))
 			{
 				if(this.lastMouseFocus != null)
-					this.lastMouseFocus.RaiseMouseMove(this.mouseState);
+					this.lastMouseFocus.OnMouseMove(this.mouseState);
 				mouseHoverTiming = 0.0f;
 			}
 			else
@@ -83,7 +83,7 @@ namespace OpenWorld.Engine.UserInterface
 				if (mouseHoverTiming >= this.HoverTime && previous < this.HoverTime)
 				{
 					if (this.lastMouseFocus != null)
-						this.lastMouseFocus.RaiseMouseHover(this.mouseState);
+						this.lastMouseFocus.OnMouseHover(this.mouseState);
 				}
 			}
 			if (this.lastMouseFocus != null)
@@ -92,17 +92,17 @@ namespace OpenWorld.Engine.UserInterface
 				{
 					this.mouseState.Button = MouseButton.Left;
 					if (this.leftButton)
-						this.lastMouseFocus.RaiseMouseDown(this.mouseState);
+						this.lastMouseFocus.OnMouseDown(this.mouseState);
 					else
-						this.lastMouseFocus.RaiseMouseUp(this.mouseState);
+						this.lastMouseFocus.OnMouseUp(this.mouseState);
 				}
 				if (this.mouseState.RightButton != this.rightButton)
 				{
 					this.mouseState.Button = MouseButton.Right;
 					if (this.rightButton)
-						this.lastMouseFocus.RaiseMouseDown(this.mouseState);
+						this.lastMouseFocus.OnMouseDown(this.mouseState);
 					else
-						this.lastMouseFocus.RaiseMouseUp(this.mouseState);
+						this.lastMouseFocus.OnMouseUp(this.mouseState);
 				}
 				this.mouseState.Button = MouseButton.None;
 			}
@@ -110,7 +110,7 @@ namespace OpenWorld.Engine.UserInterface
 			this.mouseState.LeftButton = this.leftButton;
 			this.mouseState.RightButton = this.rightButton;
 
-			base.Update(time);
+			base.UpdateControl(time);
 		}
 
 		/// <summary>
@@ -120,7 +120,7 @@ namespace OpenWorld.Engine.UserInterface
 		public void TriggerKeyDown(OpenTK.Input.Key key)
 		{
 			if (this.focus == null) return;
-			this.focus.RaiseKeyDown(new KeyEventArgs(key));
+			this.focus.OnKeyDown(new KeyEventArgs(key));
 		}
 
 		/// <summary>
@@ -130,7 +130,7 @@ namespace OpenWorld.Engine.UserInterface
 		public void TriggerKeyUp(OpenTK.Input.Key key)
 		{
 			if (this.focus == null) return;
-			this.focus.RaiseKeyUp(new KeyEventArgs(key));
+			this.focus.OnKeyUp(new KeyEventArgs(key));
 		}
 
 		/// <summary>
@@ -140,7 +140,7 @@ namespace OpenWorld.Engine.UserInterface
 		public void TriggerKeyPress(char keyChar)
 		{
 			if (this.focus == null) return;
-			this.focus.RaiseKeyPress(new KeyPressEventArgs(keyChar));
+			this.focus.OnKeyPress(new KeyPressEventArgs(keyChar));
 		}
 
 		/// <summary>
@@ -186,13 +186,13 @@ namespace OpenWorld.Engine.UserInterface
 			if (this.focus != null)
 			{
 				this.focus.IsFocused = false;
-				this.focus.RaiseLeave();
+				this.focus.OnLeave(EventArgs.Empty);
 			}
 			this.focus = control;
 			if (this.focus != null)
 			{
 				this.focus.IsFocused = true;
-				this.focus.RaiseEnter();
+				this.focus.OnEnter(EventArgs.Empty);
 			}
 		}
 
@@ -243,5 +243,10 @@ namespace OpenWorld.Engine.UserInterface
 		/// Gets or sets the hover time in seconds.
 		/// </summary>
 		public float HoverTime { get; set; }
+
+		/// <summary>
+		/// Gets the current mouse position.
+		/// </summary>
+		public Vector2 MousePosition { get { return new Vector2(this.mouseState.X, this.mouseState.Y); } }
 	}
 }

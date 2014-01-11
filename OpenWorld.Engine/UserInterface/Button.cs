@@ -26,7 +26,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// Gets called when the mouse enters the button.
 		/// </summary>
 		/// <param name="e">Event Args</param>
-		protected override void OnMouseEnter(MouseEventArgs e)
+		protected internal override void OnMouseEnter(MouseEventArgs e)
 		{
 			if (e == null)
 				throw new ArgumentNullException("e");
@@ -37,35 +37,38 @@ namespace OpenWorld.Engine.UserInterface
 		/// 
 		/// </summary>
 		/// <param name="e"></param>
-		protected override void OnMouseLeave(MouseEventArgs e)
+		protected internal override void OnMouseLeave(MouseEventArgs e)
 		{
 			if (e == null)
 				throw new ArgumentNullException("e");
 			this.State = ButtonState.None;
+			base.OnMouseLeave(e);
 		}
 
 		/// <summary>
-		/// 
+		/// Raises the MouseDown event.
 		/// </summary>
 		/// <param name="e"></param>
-		protected override void OnMouseDown(MouseEventArgs e)
+		protected internal override void OnMouseDown(MouseEventArgs e)
 		{
 			if (e == null)
 				throw new ArgumentNullException("e");
 			if (e.Button == MouseButton.Left)
 				this.State = ButtonState.Pressed;
+			base.OnMouseDown(e);
 		}
 
 		/// <summary>
-		/// 
+		/// Raises the MouseUp event.
 		/// </summary>
 		/// <param name="e"></param>
-		protected override void OnMouseUp(MouseEventArgs e)
+		protected internal override void OnMouseUp(MouseEventArgs e)
 		{
 			if (e == null)
 				throw new ArgumentNullException("e");
 			if (e.Button == MouseButton.Left)
 				this.State = ButtonState.Hovered;
+			base.OnMouseUp(e);
 		}
 
 		/// <summary>

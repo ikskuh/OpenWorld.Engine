@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
-VisualStudioVersion = 10.0.21005.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWorld.Engine", "OpenWorld.Engine\OpenWorld.Engine.csproj", "{8764CCC2-1CF4-4C24-AB73-01EECC2569BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWorld.Engine.Demo", "OpenWorld.Engine.Demo\OpenWorld.Engine.Demo.csproj", "{8963236E-61E7-4EBE-9C3F-435D79B8E2EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWorld.Engine.CodeTest", "OpenWorld.Engine.CodeTest\OpenWorld.Engine.CodeTest.csproj", "{091D594D-E43C-48D2-8B49-47E74EECEA78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,12 @@ Global
 		{8963236E-61E7-4EBE-9C3F-435D79B8E2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8963236E-61E7-4EBE-9C3F-435D79B8E2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8963236E-61E7-4EBE-9C3F-435D79B8E2EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{091D594D-E43C-48D2-8B49-47E74EECEA78}.Debug (Engine)|Any CPU.ActiveCfg = Debug|Any CPU
+		{091D594D-E43C-48D2-8B49-47E74EECEA78}.Debug (Engine)|Any CPU.Build.0 = Debug|Any CPU
+		{091D594D-E43C-48D2-8B49-47E74EECEA78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{091D594D-E43C-48D2-8B49-47E74EECEA78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{091D594D-E43C-48D2-8B49-47E74EECEA78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{091D594D-E43C-48D2-8B49-47E74EECEA78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

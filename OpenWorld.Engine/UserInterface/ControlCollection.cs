@@ -8,7 +8,7 @@ namespace OpenWorld.Engine.UserInterface
 	/// <summary>
 	/// Represents a container for controls.
 	/// </summary>
-	public sealed class Container : ICollection<Control>
+	public sealed class Container : IList<Control>
 	{
 		private readonly Control owner;
 		private readonly List<Control> list = new List<Control>();
@@ -62,7 +62,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="arrayIndex"></param>
 		public void CopyTo(Control[] array, int arrayIndex)
 		{
-			throw new NotImplementedException();
+			for (int i = 0; i < array.Length; i++)
+				array[arrayIndex + i] = this.list[i];
 		}
 
 		/// <summary>
@@ -79,6 +80,43 @@ namespace OpenWorld.Engine.UserInterface
 			this.list.Remove(item);
 			item.parent = null;
 			return true;
+		}
+
+		/// <summary>
+		/// Gets the index of a control in the collection.
+		/// </summary>
+		/// <param name="item">Control which index should be found.</param>
+		/// <returns>Index of the control or -1 if not found.</returns>
+		public int IndexOf(Control item)
+		{
+			return this.list.IndexOf(item);
+		}
+
+		/// <summary>
+		/// Inserts a control at an index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="item"></param>
+		public void Insert(int index, Control item)
+		{
+			if (item == null)
+				throw new ArgumentNullException("item");
+			if (item.Parent == this.owner)
+				throw new ArgumentException("item is already in the collection.", "item");
+
+			if (item.parent != null)
+				item.parent.Controls.Remove(item);
+			item.parent = this.owner;
+			this.list.Insert(index, item);
+		}
+
+		/// <summary>
+		/// Removes an item at the index.
+		/// </summary>
+		/// <param name="index">Index of the item.</param>
+		public void RemoveAt(int index)
+		{
+			this.Remove(this.list[index]);
 		}
 
 		/// <summary>
@@ -117,6 +155,29 @@ namespace OpenWorld.Engine.UserInterface
 		public Control Owner
 		{
 			get { return owner; }
+		}
+
+		/// <summary>
+		/// Gets or sets the element at index.
+		/// </summary>
+		/// <param name="index">Index in the collection.</param>
+		/// <returns>Element at index.</returns>
+		public Control this[int index]
+		{
+			get { return this.list[index]; }
+			set {
+
+				if (value.Parent == this.owner)
+					return; // Nothing to do here
+
+				if(this.list[index] != null)
+					this.list[index].parent = null;
+
+				if (value.parent != null)
+					value.parent.Controls.Remove(value);
+				value.parent = this.owner;
+				this.list[index] = value;
+			}
 		}
 	}
 }

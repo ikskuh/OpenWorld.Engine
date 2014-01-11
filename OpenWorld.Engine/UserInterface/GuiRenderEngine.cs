@@ -68,22 +68,33 @@ namespace OpenWorld.Engine.UserInterface
 
 		internal GuiRenderer GetRenderer(Type type)
 		{
+			GuiRenderer renderer;
 			if(!this.renderers.ContainsKey(type))
 			{
-				RendererAttribute[] attribs = (RendererAttribute[])type.GetCustomAttributes(typeof(RendererAttribute), false);
-				if(attribs.Length > 0)
+				Type iterationType = type;
+				do
 				{
-					var constructor = attribs[0].RendererType.GetConstructor(new Type[0]);
-					if(constructor == null)
-						throw new InvalidOperationException(attribs[0].RendererType.Name + " has no parameterless constructor.");
-					this.renderers.Add(type, (GuiRenderer)constructor.Invoke(new object[0]));
-				}
-				else
-				{
-					throw new InvalidOperationException(type.Name + " has no default renderer.");
-				}
+					RendererAttribute[] attribs = (RendererAttribute[])iterationType.GetCustomAttributes(typeof(RendererAttribute), false);
+					if (attribs.Length > 0)
+					{
+						var constructor = attribs[0].RendererType.GetConstructor(new Type[0]);
+						if (constructor == null)
+							throw new InvalidOperationException(attribs[0].RendererType.Name + " has no parameterless constructor.");
+						renderer = (GuiRenderer)constructor.Invoke(new object[0]);
+						renderer.Engine = this;
+						this.renderers.Add(type, renderer);
+						return renderer;
+					}
+					else
+					{
+						iterationType = iterationType.BaseType;
+						if (iterationType == typeof(Control))
+							iterationType = null;
+					}
+				} while (iterationType != null);
+				throw new InvalidOperationException(type.Name + " has no renderer.");
 			}
-			var renderer = this.renderers[type];
+			renderer = this.renderers[type];
 			renderer.Engine = this;
 			return renderer;
 		}
