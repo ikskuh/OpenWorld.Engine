@@ -13,6 +13,7 @@ namespace OpenWorld.Engine.Demo
 			Console.WriteLine("Select Demo:");
 			Console.WriteLine("1: Simple Window");
 			Console.WriteLine("2: Gui Demo");
+			Console.WriteLine("3: 3D and Asset Demo");
 			Console.WriteLine("0: Exit");
 
 			do{
@@ -24,6 +25,9 @@ namespace OpenWorld.Engine.Demo
 						return;
 					case ConsoleKey.D2:
 						StartDemo<GuiDemo>();
+						return;
+					case ConsoleKey.D3:
+						StartDemo<AssetDemo>();
 						return;
 					case ConsoleKey.D0:
 						return;

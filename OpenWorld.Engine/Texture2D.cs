@@ -91,7 +91,7 @@ namespace OpenWorld.Engine
 		{
 			if (extensionHint == ".dds")
 			{
-				if(LoadDDS(stream, this.Id, false) != this.Target)
+				if (LoadDDS(stream, this.Id, Texture2D.UseSRGB) != this.Target)
 					throw new InvalidDataException("Could not load texture: Invalid texture format.");
 			}
 			else
@@ -100,7 +100,7 @@ namespace OpenWorld.Engine
 				using (var bmp = new Bitmap(stream))
 					this.Load(bmp);
 			}
-			this.SetFiltering(Filter.Linear);
+			this.SetFiltering(Filter.LinearMipMapped);
 		}
 
 		/// <summary>
@@ -118,7 +118,7 @@ namespace OpenWorld.Engine
 			GL.TexImage2D(
 				this.Target,
 				0,
-				PixelInternalFormat.Srgb8Alpha8,
+				Texture2D.UseSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
 				bmp.Width, bmp.Height,
 				0,
 				OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
@@ -181,5 +181,10 @@ namespace OpenWorld.Engine
 		/// Gets the height of the texture
 		/// </summary>
 		public int Height { get; private set; }
+
+		/// <summary>
+		/// Gets or sets a value that determines wheather sRGB is used or not.
+		/// </summary>
+		public static bool UseSRGB { get; set; }
 	}
 }
