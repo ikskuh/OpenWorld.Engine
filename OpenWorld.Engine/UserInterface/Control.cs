@@ -117,6 +117,7 @@ namespace OpenWorld.Engine.UserInterface
 		internal void UpdateControl(GameTime time)
 		{
 			if (!this.Enabled) return;
+			if (!this.Visible) return;
 			this.OnUpdate(new UpdateEventArgs(time));
 			foreach (var child in this.controls)
 				child.UpdateControl(time);
@@ -124,7 +125,6 @@ namespace OpenWorld.Engine.UserInterface
 
 		internal void Draw(GuiRenderEngine engine, GameTime time)
 		{
-			if (!this.Enabled) return;
 			if (!this.Visible) return;
 			var renderer = engine.GetRenderer(this.GetType());
 			renderer.Render(this);

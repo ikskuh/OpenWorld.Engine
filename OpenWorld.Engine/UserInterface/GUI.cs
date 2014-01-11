@@ -213,6 +213,8 @@ namespace OpenWorld.Engine.UserInterface
 					var bounds = child.ScreenBounds;
 					if (!bounds.Contains(x, y))
 						continue;
+					if (!child.Visible)
+						continue;
 					container = child;
 					found = true;
 					break;

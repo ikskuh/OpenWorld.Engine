@@ -24,7 +24,7 @@ namespace OpenWorld.Engine.CodeTest
 
 			this.okButton = new Button();
 			this.okButton.Text = "OK";
-			this.okButton.Left = new Scalar(1.0f, -this.okButton.Width.Absolute - 10);
+			this.okButton.Left = new Scalar(1.0f, -this.okButton.Width.Absolute - 30);
 			this.okButton.Top = new Scalar(1.0f, -this.okButton.Height.Absolute - 10);
 			this.okButton.Click += okButton_Click;
 			this.okButton.Parent = this;
@@ -43,6 +43,19 @@ namespace OpenWorld.Engine.CodeTest
 			this.spawnWindowButton.Width = new Scalar(0.0f, 120.0f);
 			this.spawnWindowButton.Click += spawnWindowButton_Click;
 			this.spawnWindowButton.Parent = this;
+
+			Label infoLabel = new Label();
+			infoLabel.ForeColor = Color.Red;
+			infoLabel.Font = new Font("andyb.ttf", 25);
+			infoLabel.Text = "Hello Custom-Font";
+			infoLabel.Left = new Scalar(0.0f, 10.0f);
+			infoLabel.Top = new Scalar(0.0f, 40.0f);
+			infoLabel.Parent = this;
+
+
+			VScrollBar scrollBar = new VScrollBar();
+			scrollBar.Left = new Scalar(1.0f, -20.0f);
+			scrollBar.Parent = this;
 		}
 
 		void okButton_Click(object sender, EventArgs e)

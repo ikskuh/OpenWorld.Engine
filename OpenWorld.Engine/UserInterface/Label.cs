@@ -18,6 +18,7 @@ namespace OpenWorld.Engine.UserInterface
 		public Label()
 		{
 			this.BackColor = Color.Transparent;
+			this.TextAlign = UserInterface.TextAlign.TopLeft;
 		}
 	}
 }
