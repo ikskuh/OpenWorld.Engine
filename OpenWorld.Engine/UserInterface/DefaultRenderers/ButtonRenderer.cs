@@ -8,12 +8,10 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 {
 	class ButtonRenderer : GuiRenderer<Button>
 	{
-		protected internal override void Render(Button button)
+		protected internal override void Render(Button button, OpenTK.Box2 bounds)
 		{
 			if (button == null)
 				throw new ArgumentNullException("control");
-
-			var bounds = button.ScreenBounds;
 
 			Color backColor = button.BackColor;
 			switch(button.State)
@@ -25,6 +23,10 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 					backColor *= 0.9f;
 					break;
 			}
+
+			bounds.Top += 1;
+			bounds.Right -= 1;
+			bounds.Bottom -= 1;
 
 			this.Engine.FillRectangle(bounds, backColor);
 			this.Engine.DrawRectangle(bounds, Color.Black);

@@ -26,9 +26,10 @@ namespace OpenWorld.Engine.UserInterface
 		/// </summary>
 		public Gui()
 		{
-			this.Engine = new GuiRenderEngine(1024, 768);
+			this.Engine = new GuiRenderEngine(this);
 			this.Bounds = ScalarRectangle.FullScreen;
 			this.HoverTime = 0.5f;
+			this.ScreenSize = new Vector2(1024, 768);
 		}
 
 		/// <summary>
@@ -150,7 +151,7 @@ namespace OpenWorld.Engine.UserInterface
 		public void Draw(GameTime time)
 		{
 			this.Engine.SetGLStates();
-			base.Draw(this.Engine, time);
+			base.Draw(this.Engine, time, new Box2(0, 0, this.ScreenSize.X, this.ScreenSize.Y));
 		}
 
 		/// <summary>
@@ -233,7 +234,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// <returns></returns>
 		protected override Box2 OnGetBounds()
 		{
-			return new Box2(0, 0, 1024, 768);
+			return new Box2(0, 0, this.ScreenSize.X, this.ScreenSize.Y);
 		}
 
 		/// <summary>
@@ -250,5 +251,10 @@ namespace OpenWorld.Engine.UserInterface
 		/// Gets the current mouse position.
 		/// </summary>
 		public Vector2 MousePosition { get { return new Vector2(this.mouseState.X, this.mouseState.Y); } }
+
+		/// <summary>
+		/// Gets the screen size.
+		/// </summary>
+		public Vector2 ScreenSize { get; private set; }
 	}
 }

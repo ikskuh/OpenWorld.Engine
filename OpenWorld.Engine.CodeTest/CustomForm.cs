@@ -50,6 +50,8 @@ namespace OpenWorld.Engine.CodeTest
 			infoLabel.Text = "Hello Custom-Font";
 			infoLabel.Left = new Scalar(0.0f, 10.0f);
 			infoLabel.Top = new Scalar(0.0f, 40.0f);
+			infoLabel.Width = new Scalar(0.0f, 200.0f);
+			infoLabel.Height = new Scalar(0.0f, 25.0f);
 			infoLabel.Parent = this;
 
 

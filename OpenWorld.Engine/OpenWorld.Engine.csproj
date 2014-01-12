@@ -106,6 +106,7 @@
     <Compile Include="UserInterface\Control.cs" />
     <Compile Include="UserInterface\ControlCollection.cs" />
     <Compile Include="UserInterface\DefaultRenderers\FormRenderer.cs" />
+    <Compile Include="UserInterface\DefaultRenderers\ListBoxRenderer.cs" />
     <Compile Include="UserInterface\DefaultRenderers\VScrollBarRenderer.cs" />
     <Compile Include="UserInterface\IControlContainer.cs" />
     <Compile Include="UserInterface\ControlStatics.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="UserInterface\GuiShader.cs" />
     <Compile Include="UserInterface\KeyEventArgs.cs" />
     <Compile Include="UserInterface\Label.cs" />
+    <Compile Include="UserInterface\ListBox.cs" />
     <Compile Include="UserInterface\MouseButton.cs" />
     <Compile Include="UserInterface\MouseEventArgs.cs" />
     <Compile Include="UserInterface\RendererAttribute.cs" />

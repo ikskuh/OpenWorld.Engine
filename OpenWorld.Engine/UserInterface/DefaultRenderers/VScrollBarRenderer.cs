@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,15 +8,13 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 {
 	class VScrollBarRenderer : GuiRenderer<VScrollBar>
 	{
-		protected internal override void Render(VScrollBar control)
+		protected internal override void Render(VScrollBar control, Box2 bounds)
 		{
-			var bounds = control.ScreenBounds;
-
 			this.Engine.FillRectangle(bounds, control.BackColor);
 			this.Engine.DrawRectangle(bounds, Color.Black);
 
-			var upperButton = control.GetUpperButton();
-			this.Engine.FillRectangle(upperButton, control.Focus == ScrollBarFocus.DecreaseButton ? Color.LightGray : Color.Gray);
+			var upperButton = control.GetUpperButton().Translate(control.PointToClient(0, 0));
+			this.Engine.FillRectangle(upperButton, control.FocusedElement == ScrollBarFocus.DecreaseButton ? Color.LightGray : Color.Gray);
 			this.Engine.DrawRectangle(upperButton, Color.Black);
 
 			this.Engine.DrawLine(
@@ -37,8 +36,8 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 				upperButton.Bottom - 2,
 				Color.Black);
 
-			var lowerButton = control.GetLowerButton();
-			this.Engine.FillRectangle(lowerButton, control.Focus == ScrollBarFocus.IncreaseButton ? Color.LightGray : Color.Gray);
+			var lowerButton = control.GetLowerButton().Translate(control.PointToClient(0, 0));
+			this.Engine.FillRectangle(lowerButton, control.FocusedElement == ScrollBarFocus.IncreaseButton ? Color.LightGray : Color.Gray);
 			this.Engine.DrawRectangle(lowerButton, Color.Black);
 
 			this.Engine.DrawLine(
@@ -60,8 +59,8 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 				lowerButton.Top + 2,
 				Color.Black);
 
-			var sliderButton = control.GetSliderKnob();
-			this.Engine.FillRectangle(sliderButton, control.Focus == ScrollBarFocus.SliderKnob ? Color.LightGray : Color.Gray);
+			var sliderButton = control.GetSliderKnob().Translate(control.PointToClient(0, 0));
+			this.Engine.FillRectangle(sliderButton, control.FocusedElement == ScrollBarFocus.SliderKnob ? Color.LightGray : Color.Gray);
 			this.Engine.DrawRectangle(sliderButton, Color.Black);
 		}
 	}

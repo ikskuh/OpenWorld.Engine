@@ -24,10 +24,11 @@ namespace OpenWorld.Engine.UserInterface
 		public VScrollBar()
 		{
 			this.Width = new Scalar(0.0f, 20.0f);
-			this.Height = new Scalar(1.0f, 1.0f);
+			this.Height = new Scalar(1.0f, 0.0f);
 			this.Minimum = 0.0f;
 			this.Maximum = 1.0f;
 			this.Value = 0.0f;
+			this.Controls.Lock();
 		}
 
 		/// <summary>
@@ -62,7 +63,7 @@ namespace OpenWorld.Engine.UserInterface
 			bounds.Top += bounds.Width;
 			bounds.Bottom -= 2 * bounds.Width;
 
-			bounds.Top = bounds.Top + ((this.Value - this.Minimum) / (this.Maximum - this.Minimum)) * bounds.Height;
+			bounds.Top += ((this.Value - this.Minimum) / (this.Maximum - this.Minimum)) * bounds.Height;
 			bounds.Bottom = bounds.Top + bounds.Width;
 
 			return bounds;
@@ -96,13 +97,13 @@ namespace OpenWorld.Engine.UserInterface
 			var sliderKnob = this.GetSliderKnob();
 
 			if (upperButton.Contains(e.X, e.Y))
-				this.Focus = ScrollBarFocus.DecreaseButton;
+				this.FocusedElement = ScrollBarFocus.DecreaseButton;
 			else if (lowerButton.Contains(e.X, e.Y))
-				this.Focus = ScrollBarFocus.IncreaseButton;
+				this.FocusedElement = ScrollBarFocus.IncreaseButton;
 			else if (sliderKnob.Contains(e.X, e.Y))
-				this.Focus = ScrollBarFocus.SliderKnob;
+				this.FocusedElement = ScrollBarFocus.SliderKnob;
 			else
-				this.Focus = ScrollBarFocus.None;
+				this.FocusedElement = ScrollBarFocus.None;
 
 			base.OnMouseMove(e);
 		}
@@ -139,7 +140,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal override void OnMouseLeave(MouseEventArgs e)
 		{
-			this.Focus = ScrollBarFocus.None;
+			this.FocusedElement = ScrollBarFocus.None;
 			this.dragging = false;
 			base.OnMouseLeave(e);
 		}
@@ -194,6 +195,6 @@ namespace OpenWorld.Engine.UserInterface
 		/// <summary>
 		/// Gets which element of the scroll bar is focused.
 		/// </summary>
-		public ScrollBarFocus Focus { get; private set; }
+		public ScrollBarFocus FocusedElement { get; private set; }
 	}
 }

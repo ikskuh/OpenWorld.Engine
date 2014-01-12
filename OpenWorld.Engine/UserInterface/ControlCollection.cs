@@ -10,12 +10,21 @@ namespace OpenWorld.Engine.UserInterface
 	/// </summary>
 	public sealed class Container : IList<Control>
 	{
+		private bool isLocked = false;
 		private readonly Control owner;
 		private readonly List<Control> list = new List<Control>();
 
 		internal Container(Control owner)
 		{
 			this.owner = owner;
+		}
+
+		/// <summary>
+		/// Locks the collection. Controls can't be removed or added.
+		/// </summary>
+		public void Lock()
+		{
+			this.isLocked = true;
 		}
 
 		/// <summary>
@@ -26,6 +35,8 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			if (item == null)
 				throw new ArgumentNullException("item");
+			if (this.IsReadOnly)
+				throw new InvalidOperationException("Cannot add a control to a locked collection");
 			if (item.Parent == this.owner)
 				return; // Nothing to do here
 
@@ -40,6 +51,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// </summary>
 		public void Clear()
 		{
+			if (this.IsReadOnly)
+				throw new InvalidOperationException("Cannot clear a locked collection");
 			foreach (var child in this.list)
 				child.parent = null; // Manual removal of parent
 			this.list.Clear();
@@ -75,6 +88,8 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			if (item == null)
 				throw new ArgumentNullException("item");
+			if (this.IsReadOnly)
+				throw new InvalidOperationException("Cannot remove a control from a locked collection");
 			if (item.parent != this.owner)
 				return false; // Nothing to do here
 			this.list.Remove(item);
@@ -101,6 +116,8 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			if (item == null)
 				throw new ArgumentNullException("item");
+			if (this.IsReadOnly)
+				throw new InvalidOperationException("Cannot add a control to a locked collection");
 			if (item.Parent == this.owner)
 				throw new ArgumentException("item is already in the collection.", "item");
 
@@ -116,6 +133,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="index">Index of the item.</param>
 		public void RemoveAt(int index)
 		{
+			if (this.IsReadOnly)
+				throw new InvalidOperationException("Cannot remove a control from a locked collection");
 			this.Remove(this.list[index]);
 		}
 
@@ -146,7 +165,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// </summary>
 		public bool IsReadOnly
 		{
-			get { return false; }
+			get { return this.isLocked; }
 		}
 
 		/// <summary>

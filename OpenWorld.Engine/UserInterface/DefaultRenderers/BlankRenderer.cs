@@ -15,7 +15,8 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 		/// Renders the control.
 		/// </summary>
 		/// <param name="control">The control to be rendered.</param>
-		protected internal override void Render(Control control)
+		/// <param name="localBounds"></param>
+		protected internal override void Render(Control control, OpenTK.Box2 localBounds)
 		{
 			
 		}

@@ -20,6 +20,7 @@ namespace OpenWorld.Engine.UserInterface
 			this.State = ButtonState.None;
 			this.Width = new Scalar(0.0f, 80.0f);
 			this.Height = new Scalar(0.0f, 25.0f);
+			this.Controls.Lock();
 		}
 
 		/// <summary>

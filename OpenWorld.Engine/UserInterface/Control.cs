@@ -123,14 +123,31 @@ namespace OpenWorld.Engine.UserInterface
 				child.UpdateControl(time);
 		}
 
-		internal void Draw(GuiRenderEngine engine, GameTime time)
+		internal void Draw(GuiRenderEngine engine, GameTime time, Box2 parentBounds)
 		{
 			if (!this.Visible) return;
 			var renderer = engine.GetRenderer(this.GetType());
-			renderer.Render(this);
+			var screenBounds = this.ScreenBounds;
+
+			if (screenBounds.Left >= this.Gui.ScreenSize.X || screenBounds.Right < 0)
+				return;
+			if (screenBounds.Top >= this.Gui.ScreenSize.Y || screenBounds.Bottom < 0)
+				return;
+
+			Box2 bounds;
+			bounds.Left = Math.Max(screenBounds.Left, parentBounds.Left);
+			bounds.Top = Math.Max(screenBounds.Top, parentBounds.Top);
+			bounds.Right = Math.Min(screenBounds.Right, parentBounds.Right);
+			bounds.Bottom = Math.Min(screenBounds.Bottom, parentBounds.Bottom);
+
+			engine.SetArea(bounds, bounds.Left - screenBounds.Left, bounds.Top - screenBounds.Top);
+
+			Box2 localBounds = new Box2(0, 0, screenBounds.Width, screenBounds.Height);
+
+			renderer.Render(this, localBounds);
 
 			foreach (var child in this.controls.Reverse())
-				child.Draw(engine, time);
+				child.Draw(engine, time, bounds);
 		}
 
 		/// <summary>
@@ -324,6 +341,8 @@ namespace OpenWorld.Engine.UserInterface
 			get
 			{
 				Control topContainer = this.parent;
+				if (this is Gui)
+					return this as Gui;
 				if (topContainer == null)
 					return null;
 				while (topContainer.parent != null) topContainer = topContainer.parent;

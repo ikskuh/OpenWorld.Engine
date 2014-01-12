@@ -35,5 +35,32 @@ namespace OpenWorld.Engine
 		{
 			return x >= box.Left && x <= box.Right && y >= box.Top && y <= box.Bottom;
 		}
+
+		/// <summary>
+		/// Translates a Box2.
+		/// </summary>
+		/// <param name="box">The box to be translated.</param>
+		/// <param name="pos">Offset</param>
+		/// <returns></returns>
+		public static Box2 Translate(this Box2 box, Vector2 pos)
+		{
+			return Translate(box, pos.X, pos.Y);
+		}
+
+		/// <summary>
+		/// Translates a Box2.
+		/// </summary>
+		/// <param name="box">The box to be translated.</param>
+		/// <param name="x">X offset</param>
+		/// <param name="y">Y offset</param>
+		/// <returns></returns>
+		public static Box2 Translate(this Box2 box, float x, float y)
+		{
+			box.Left += x;
+			box.Right += x;
+			box.Top += y;
+			box.Bottom += y;
+			return box;
+		}
 	}
 }

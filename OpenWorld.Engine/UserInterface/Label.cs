@@ -19,6 +19,9 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			this.BackColor = Color.Transparent;
 			this.TextAlign = UserInterface.TextAlign.TopLeft;
+			this.Width = new Scalar(0.0f, 100.0f); 
+			this.Height = new Scalar(0.0f, 20.0f);
+			this.Controls.Lock();
 		}
 	}
 }

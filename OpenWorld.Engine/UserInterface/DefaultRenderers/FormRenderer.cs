@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +8,11 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 {
 	class FormRenderer : GuiRenderer<Form>
 	{
-		protected internal override void Render(Form control)
+		protected internal override void Render(Form control, Box2 bounds)
 		{
-			var bounds = control.ScreenBounds;
-			var clientBounds = control.ScreenClientBounds;
+			bounds.Top += 1;
+
+			var clientBounds = control.ScreenClientBounds.Translate(-control.PointToScreen(0, 0));
 
 			this.Engine.FillRectangle(bounds, Color.Silver);
 

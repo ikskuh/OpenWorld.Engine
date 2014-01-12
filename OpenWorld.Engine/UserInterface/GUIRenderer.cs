@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// Renders the given control
 		/// </summary>
 		/// <param name="control"></param>
-		protected internal abstract void Render(Control control);
+		/// <param name="localBounds"></param>
+		protected internal abstract void Render(Control control, Box2 localBounds);
 
 		/// <summary>
 		/// Gets the GuiRenderEngine 
@@ -33,7 +35,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// Renders the given control
 		/// </summary>
 		/// <param name="control"></param>
-		protected internal override void Render(Control control)
+		/// <param name="localBounds"></param>
+		protected internal override void Render(Control control, Box2 localBounds)
 		{
 			if(control == null)
 				throw new ArgumentNullException("control");
@@ -41,13 +44,14 @@ namespace OpenWorld.Engine.UserInterface
 			if(tControl == null)
 				throw new ArgumentException("control is not of type TControl", "control");
 
-			this.Render(tControl);
+			this.Render(tControl, localBounds);
 		}
 
 		/// <summary>
 		/// Renders the given control
 		/// </summary>
 		/// <param name="control"></param>
-		protected internal abstract void Render(TControl control);
+		/// <param name="localBounds"></param>
+		protected internal abstract void Render(TControl control, Box2 localBounds);
 	}
 }

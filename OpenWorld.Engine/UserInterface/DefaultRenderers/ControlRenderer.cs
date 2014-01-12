@@ -16,11 +16,11 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 		/// Draws the control
 		/// </summary>
 		/// <param name="control"></param>
-		protected internal override void Render(Control control)
+		/// <param name="bounds"></param>
+		protected internal override void Render(Control control, OpenTK.Box2 bounds)
 		{
 			if (control == null)
 				throw new ArgumentNullException("control");
-			Box2 bounds = control.ScreenBounds;
 
 			this.Engine.FillRectangle(bounds, control.BackColor);
 			this.Engine.DrawRectangle(bounds, Color.Black);

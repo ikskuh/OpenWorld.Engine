@@ -25,19 +25,22 @@ namespace OpenWorld.Engine.UserInterface
 
 		private readonly Dictionary<Type, GuiRenderer> renderers = new Dictionary<Type, GuiRenderer>();
 
+		private readonly Gui gui;
 		private GUIShader shader;
 		private VertexArray vertexArray;
 		private Buffer vertexBuffer;
 		private Texture2D blankWhite;
 
-		internal GuiRenderEngine(int virtualWidth, int virtualHeight)
+		internal GuiRenderEngine(Gui gui)
 		{
+			this.gui = gui;
+
 			this.shader = new GUIShader();
 			this.shader.Transform =
 				Matrix4.Scale(1.0f, -1.0f, 1.0f) *
 				Matrix4.CreateOrthographicOffCenter(
-					0.0f, virtualWidth,
-					-virtualHeight, 0.0f,
+				0.0f, this.gui.ScreenSize.X,
+					-this.gui.ScreenSize.Y, 0.0f,
 					0.0f, 1.0f);
 
 			this.vertexArray = new VertexArray();
@@ -122,6 +125,21 @@ namespace OpenWorld.Engine.UserInterface
 
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+		}
+
+		internal void SetArea(Box2 bounds, float offsetX, float offsetY)
+		{
+			this.shader.Transform =
+				Matrix4.Scale(1.0f, -1.0f, 1.0f) * 
+				Matrix4.CreateOrthographicOffCenter(
+					0 + offsetX, bounds.Width + offsetX,
+					-bounds.Height - offsetY, -offsetY,
+					0.0f, 1.0f);
+			GL.Viewport(
+				(int)bounds.Left,
+				(int)this.gui.ScreenSize.Y - (int)bounds.Bottom,
+				(int)bounds.Width, 
+				(int)bounds.Height);
 		}
 
 		#region DrawLine
@@ -269,12 +287,13 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			// TODO: Fix line width
 			GL.LineWidth(thickness);
-			this.Draw(BeginMode.LineLoop, new[]
+			this.Draw(BeginMode.LineStrip, new[]
 				{
 					new UIVertex() { Position = pos, Color = color },
 					new UIVertex() { Position = pos + new Vector2(size.X, 0), Color = color },
-					new UIVertex() { Position = pos + size, Color = color },
-					new UIVertex() { Position = pos + new Vector2(0, size.Y), Color = color }
+					new UIVertex() { Position = pos + new Vector2(size.X, size.Y), Color = color },
+					new UIVertex() { Position = pos + new Vector2(0, size.Y), Color = color },
+					new UIVertex() { Position = pos, Color = color }
 				});
 		}
 
