@@ -225,7 +225,7 @@ void main()
 					this.fontShader.SetUniform("worldMatrix", Matrix4.CreateTranslation(penX, penY, 0.0f));
 					this.fontShader.SetTexture("glyph", g.Texture, 0);
 
-					GL.DrawArrays(BeginMode.TriangleStrip, 0, 4);
+                    GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 				}
 
 

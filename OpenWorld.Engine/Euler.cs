@@ -237,7 +237,7 @@ namespace OpenWorld.Engine
 		/// <returns></returns>
 		public static Matrix4 ToMatrix(float pan, float tilt, float roll)
 		{
-			return Matrix4.Rotate(Euler.ToQuaternion(pan, tilt, roll));
+            return Matrix4.CreateFromQuaternion(Euler.ToQuaternion(pan, tilt, roll));
 		}
 
 		#endregion

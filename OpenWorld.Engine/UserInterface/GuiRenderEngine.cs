@@ -37,7 +37,7 @@ namespace OpenWorld.Engine.UserInterface
 
 			this.shader = new GUIShader();
 			this.shader.Transform =
-				Matrix4.Scale(1.0f, -1.0f, 1.0f) *
+				Matrix4.CreateScale(1.0f,-1.0f,1.0f) *
 				Matrix4.CreateOrthographicOffCenter(
 				0.0f, this.gui.ScreenSize.X,
 					-this.gui.ScreenSize.Y, 0.0f,
@@ -130,7 +130,7 @@ namespace OpenWorld.Engine.UserInterface
 		internal void SetArea(Box2 bounds, float offsetX, float offsetY)
 		{
 			this.shader.Transform =
-				Matrix4.Scale(1.0f, -1.0f, 1.0f) * 
+				Matrix4.CreateScale(1.0f,-1.0f,1.0f) * 
 				Matrix4.CreateOrthographicOffCenter(
 					0 + offsetX, bounds.Width + offsetX,
 					-bounds.Height - offsetY + 1, -offsetY + 1,
@@ -206,7 +206,7 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			// TODO: Fix line width
 			GL.LineWidth(thickness);
-			this.Draw(BeginMode.Lines, new[]
+			this.Draw(PrimitiveType.Lines, new[]
 				{
 					new UIVertex() { Position = start, Color = startColor },
 					new UIVertex() { Position = end, Color = endColor },
@@ -287,7 +287,7 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			// TODO: Fix line width
 			GL.LineWidth(thickness);
-			this.Draw(BeginMode.LineStrip, new[]
+			this.Draw(PrimitiveType.LineStrip, new[]
 				{
 					new UIVertex() { Position = pos, Color = color },
 					new UIVertex() { Position = pos + new Vector2(size.X - 1, 0), Color = color },
@@ -369,7 +369,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="thickness"></param>
 		public void FillRectangle(Box2 rect, Color color, float thickness)
 		{
-			this.Draw(BeginMode.TriangleStrip, new[]
+			this.Draw(PrimitiveType.TriangleStrip, new[]
 				{
 					new UIVertex() { Position = new Vector2(rect.Left, rect.Top), Color = color },
 					new UIVertex() { Position = new Vector2(rect.Right - 1, rect.Top), Color = color },
@@ -450,12 +450,12 @@ namespace OpenWorld.Engine.UserInterface
 			font.Draw(this.shader.Transform, text, (int)x, (int)y, color);
 		}
 
-		private void Draw(BeginMode mode, UIVertex[] vertices)
+		private void Draw(PrimitiveType type, UIVertex[] vertices)
 		{
-			this.Draw(mode, vertices, this.blankWhite);
+			this.Draw(type, vertices, this.blankWhite);
 		}
 
-		private void Draw(BeginMode mode, UIVertex[] vertices, Texture2D texture)
+		private void Draw(PrimitiveType type, UIVertex[] vertices, Texture2D texture)
 		{
 			this.vertexBuffer.SetData(BufferUsageHint.StaticDraw, vertices);
 
@@ -463,7 +463,8 @@ namespace OpenWorld.Engine.UserInterface
 			this.shader.Use();
 			this.vertexArray.Bind();
 
-			GL.DrawArrays(mode, 0, vertices.Length);
+			GL.DrawArrays(type, 0, vertices.Length);
+            
 
 			VertexArray.Unbind();
 		}

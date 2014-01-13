@@ -75,7 +75,8 @@ namespace OpenWorld.Engine
 				ppEffect.Effect.BackBuffer = currentBuffer;
 				ppEffect.Effect.Use();
 
-				GL.DrawArrays(BeginMode.TriangleStrip, 0, 4);
+				
+                GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
 				SwapBuffers(ref currentTarget, ref currentBuffer);
 			}
@@ -88,7 +89,8 @@ namespace OpenWorld.Engine
 				this.swapShader.BackBuffer = currentBuffer;
 				this.swapShader.Use();
 
-				GL.DrawArrays(BeginMode.TriangleStrip, 0, 4);
+				
+                GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
 				SwapBuffers(ref currentTarget, ref currentBuffer);
 			}

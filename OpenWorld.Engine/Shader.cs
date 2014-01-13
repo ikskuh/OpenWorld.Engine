@@ -87,7 +87,9 @@ namespace OpenWorld.Engine
 				Log.WriteLine(LocalizedStrings.ShaderLinkerResult);
 				Log.WriteLine(infoLog);
 			}
-			GL.GetProgram(this.programID, ProgramParameter.LinkStatus, out status);
+			
+            GL.GetProgram(this.programID, GetProgramParameterName.LinkStatus, out status);
+
 			if (status == 0)
 				throw new ShaderLinkingException(infoLog);
 
