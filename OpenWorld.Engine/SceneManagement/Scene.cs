@@ -18,6 +18,7 @@ namespace OpenWorld.Engine.SceneManagement
 		public Scene()
 		{
 			this.root = new SceneNode();
+			this.Renderer = new SimpleRenderer();
 		}
 
 		/// <summary>
@@ -27,7 +28,7 @@ namespace OpenWorld.Engine.SceneManagement
 		public void Update(GameTime time)
 		{
 			// Just update the root node.
-			this.root.Update(time);
+			this.root.DoUpdate(time);
 		}
 
 		/// <summary>
@@ -40,13 +41,26 @@ namespace OpenWorld.Engine.SceneManagement
 				return; // Draw nothing without a renderer.
 
 			this.Renderer.Begin();
-			this.root.Draw(time, this.Renderer);
-			this.Renderer.End();
+			this.root.DoDraw(time, this.Renderer);
+			this.Renderer.End(this);
 		}
 
 		/// <summary>
 		/// Gets or sets the renderer of the scene.
 		/// </summary>
 		public SceneRenderer Renderer { get; set; }
+
+		/// <summary>
+		/// Gets the root of the scene.
+		/// </summary>
+		public SceneNode Root
+		{
+			get { return root; }
+		}
+
+		/// <summary>
+		/// Gets or sets the camera that is used to render the scene.
+		/// </summary>
+		public Camera Camera { get; set; }
 	}
 }

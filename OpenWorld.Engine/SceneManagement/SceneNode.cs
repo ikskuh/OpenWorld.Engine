@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,21 +9,43 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a part of a scene.
 	/// </summary>
-	public sealed class SceneNode : DiGraph<SceneNode>
+	public sealed partial class SceneNode : DiGraph<SceneNode>
 	{
-		// TODO: Implement component system.
+		private readonly Transform transform;
+		private readonly Dictionary<Type, Component> components;
+		private readonly ComponentCollection componentCollection;
+
+		/// <summary>
+		/// Occurs when the node is updated.
+		/// </summary>
+		public event EventHandler<SceneNodeUpdateEventArgs> Update;
+
+		/// <summary>
+		/// Occurs when the node is drawn.
+		/// </summary>
+		public event EventHandler<SceneNodeDrawEventArgs> Draw;
+
+		/// <summary>
+		/// Creates a new scene node.
+		/// </summary>
+		public SceneNode()
+		{
+			this.transform = new Transform();
+			this.components = new Dictionary<Type, Component>();
+			this.componentCollection = new ComponentCollection(this);
+		}
 
 		/// <summary>
 		/// Updates the node.
 		/// </summary>
 		/// <param name="time">Time snapshot</param>
-		public void Update(GameTime time)
+		internal void DoUpdate(GameTime time)
 		{
-			// TODO: Implement component updating.
-
+			if (this.Update != null)
+				this.Update(this, new SceneNodeUpdateEventArgs(time));
 			// Pass the call method to all children.
 			foreach (var child in this.Children)
-				child.Update(time);
+				child.DoUpdate(time);
 		}
 
 		/// <summary>
@@ -30,13 +53,26 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		/// <param name="time">Time snapshot</param>
 		/// <param name="renderer">The renderer that draws the node.</param>
-		public void Draw(GameTime time, SceneRenderer renderer)
+		internal void DoDraw(GameTime time, SceneRenderer renderer)
 		{
-			// TODO: Implement component drawing.
-
+			if (this.Draw != null)
+				this.Draw(this, new SceneNodeDrawEventArgs(time, renderer));
 			// Pass the draw call to all children.
 			foreach (var child in this.Children)
-				child.Draw(time, renderer);
+				child.DoDraw(time, renderer);
 		}
+
+		/// <summary>
+		/// Gets the transform of this node.
+		/// </summary>
+		public Transform Transform { get { return this.transform; } }
+
+		/// <summary>
+		/// Gets a collection of all components.
+		/// </summary>
+		public ComponentCollection Components
+		{
+			get { return componentCollection; }
+		} 
 	}
 }

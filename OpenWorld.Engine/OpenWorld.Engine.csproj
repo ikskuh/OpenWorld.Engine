@@ -47,8 +47,9 @@
     <Reference Include="AssimpNet">
       <HintPath>..\..\..\Libraries\AssimpNet-3.2\Bin\AssimpNet.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK">
-      <HintPath>..\..\..\Libraries\OpenTK\Binaries\OpenTK\Release\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Libraries\OpenTK\1.1\Binaries\OpenTK\Release\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="SharpFont">
       <HintPath>..\packages\SharpFont.2.5.0.1\lib\net20\SharpFont.dll</HintPath>
@@ -63,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="DiGraph.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IAsset.cs" />
@@ -89,19 +91,31 @@
       <DependentUpon>LocalizedStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
+    <Compile Include="LookAtCamera.cs" />
+    <Compile Include="Material.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelMesh.cs" />
     <Compile Include="ObjectShader.cs" />
+    <Compile Include="PerspectiveLookAtCamera.cs" />
     <Compile Include="PostProcessingPipeline.cs" />
     <Compile Include="PostProcessingShader.cs" />
     <Compile Include="PostProcessingStage.cs" />
     <Compile Include="RenderBuffer.cs" />
+    <Compile Include="SceneManagement\Renderer.cs" />
+    <Compile Include="SceneManagement\SceneNode.Component.cs" />
+    <Compile Include="SceneManagement\SceneNode.ComponentCollection.cs" />
     <Compile Include="SceneManagement\Scene.cs" />
     <Compile Include="SceneManagement\SceneNode.cs" />
+    <Compile Include="SceneManagement\SceneNodeDrawEventArgs.cs" />
+    <Compile Include="SceneManagement\SceneNodeUpdateEventArgs.cs" />
     <Compile Include="SceneManagement\SceneRenderer.cs" />
+    <Compile Include="SceneManagement\SceneRenderer.RenderJob.cs" />
+    <Compile Include="SceneManagement\SimpleRenderer.cs" />
+    <Compile Include="SceneManagement\Transform.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="ShaderCompilationException.cs" />
     <Compile Include="ShaderLinkingException.cs" />
+    <Compile Include="Singleton.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Texture2D.cs" />
     <Compile Include="TextureCube.cs" />
