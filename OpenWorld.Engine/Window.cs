@@ -17,8 +17,10 @@ namespace OpenWorld.Engine
 	{
 		private Game game;
 		private VertexArray defaultVertexArray;
-		private GameTime gameTime;
 		private InputManager inputManager;
+
+		float totalUpdateTime = 0.0f;
+		float totalRenderTime = 0.0f;
 
 		/// <summary>
 		/// Instantiates a new window.
@@ -58,8 +60,6 @@ namespace OpenWorld.Engine
 
 			if (this.Game != null)
 				this.Game.Load();
-
-			this.gameTime = new GameTime();
 		}
 
 		/// <summary>
@@ -70,12 +70,12 @@ namespace OpenWorld.Engine
 		{
 			if (e == null)
 				throw new ArgumentNullException("e");
-			this.gameTime.DeltaTime = (float)e.Time;
-			this.gameTime.TotalTime += this.gameTime.DeltaTime;
+
+			this.totalUpdateTime += (float)e.Time;
 			if (this.Game != null)
 			{
 				this.Game.IsActive = this.Focused;
-				this.Game.Update(this.gameTime);
+				this.Game.Update(new GameTime(this.totalUpdateTime, (float)e.Time));
 			}
 		}
 
@@ -85,8 +85,9 @@ namespace OpenWorld.Engine
 		/// <param name="e"></param>
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
+			this.totalRenderTime += (float)e.Time;
 			if (this.Game != null)
-				this.Game.Draw(this.gameTime);
+				this.Game.Draw(new GameTime(this.totalRenderTime, (float)e.Time));
 			this.SwapBuffers();
 		}
 

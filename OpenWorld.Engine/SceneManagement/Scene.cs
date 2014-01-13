@@ -8,7 +8,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a 3D scene.
 	/// </summary>
-	public sealed class Scene : IEnumerable<SceneNode>
+	public sealed class Scene
 	{
 		readonly SceneNode root = null;
 
@@ -21,17 +21,21 @@ namespace OpenWorld.Engine.SceneManagement
 		}
 
 		/// <summary>
-		/// Gets an enumerator over all scene nodes.
+		/// Updates the whole scene.
 		/// </summary>
-		/// <returns></returns>
-		public IEnumerator<SceneNode> GetEnumerator()
+		/// <param name="time">Time snapshot</param>
+		public void Update(GameTime time)
 		{
 			throw new NotImplementedException();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		/// <summary>
+		/// Draws the whole scene.
+		/// </summary>
+		/// <param name="time">Time snapshot</param>
+		public void Draw(GameTime time)
 		{
-			return this.GetEnumerator();
+			throw new NotImplementedException();
 		}
 	}
 }
