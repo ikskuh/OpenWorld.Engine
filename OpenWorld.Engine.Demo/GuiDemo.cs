@@ -23,7 +23,7 @@ namespace OpenWorld.Engine.Demo
 			buttonA.Left = new Scalar(0.0f, 10.0f); // 10 Pixel left distance
 			buttonA.Top = new Scalar(0.0f, 10.0f); // 10 Pixel top distance
 			buttonA.Click += buttonA_Click;
-			this.gui.Controls.Add(buttonA);
+			this.gui.Children.Add(buttonA);
 
 			Button buttonB = new Button();
 			buttonB.Text = "Gray Screen";
@@ -56,9 +56,9 @@ namespace OpenWorld.Engine.Demo
 			{
 				listBox.Items.Add("Item " + i);
 			}
-			form.Controls.Add(listBox);
+			form.Children.Add(listBox);
 
-			this.gui.Controls.Add(form);
+			this.gui.Children.Add(form);
 		}
 
 		void buttonA_Click(object sender, EventArgs e)

@@ -25,7 +25,7 @@ namespace OpenWorld.Engine.UserInterface
 			this.scrollBar.Minimum = 0;
 			this.scrollBar.Maximum = 1.0f;
 			this.scrollBar.Parent = this;
-			this.Controls.Lock();
+			this.Children.Lock();
 
 			this.ItemHeight = 20;
 

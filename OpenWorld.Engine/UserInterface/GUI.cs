@@ -12,7 +12,7 @@ namespace OpenWorld.Engine.UserInterface
 	/// A Gui system that is a container for Gui elements.
 	/// </summary>
 	[Renderer(typeof(OpenWorld.Engine.UserInterface.DefaultRenderers.BlankRenderer))]
-	public sealed class Gui : Control, IControlContainer
+	public sealed class Gui : Control
 	{
 		MouseEventArgs mouseState = null;
 		int mouseX = 0, mouseY = 0;
@@ -206,10 +206,10 @@ namespace OpenWorld.Engine.UserInterface
 		public Control GetControlFromPoint(int x, int y)
 		{
 			Control container = this;
-			while (container.Controls.Count > 0)
+			while (container.Children.Count > 0)
 			{
 				bool found = false;
-				foreach (var child in container.Controls)
+				foreach (var child in container.Children)
 				{
 					var bounds = child.ScreenBounds;
 					if (!bounds.Contains(x, y))

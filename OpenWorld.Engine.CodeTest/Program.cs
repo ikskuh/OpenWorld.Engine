@@ -32,15 +32,7 @@ namespace OpenWorld.Engine.CodeTest
 			window.Top = new Scalar(0.5f, -150);
 			window.Parent = this.gui;
 
-			ListBox listBox = new ListBox();
-			listBox.Left = new Scalar(0.0f, 10.0f);
-			listBox.Top = new Scalar(0.0f, 10.0f);
-			listBox.Parent = this.gui;
-
-			for(int i = 0; i < 50; i++)
-			{
-				listBox.Items.Add("Item " + i);
-			}
+			
 		}
 		protected override void OnUpdate(GameTime time)
 		{

@@ -10,12 +10,10 @@ namespace OpenWorld.Engine.UserInterface
 	/// Defines a control. A control is the base class of every Gui element.
 	/// </summary>
 	[Renderer(typeof(OpenWorld.Engine.UserInterface.DefaultRenderers.ControlRenderer))]
-	public partial class Control : IControlContainer
+	public partial class Control : DiGraph<Control>
 	{
-		private readonly Container controls;
 		private ScalarRectangle bounds;
 		private ScalarRectangle clientArea;
-		internal Control parent;
 		private string text;
 		private Color backColor;
 		private Color foreColor;
@@ -103,7 +101,6 @@ namespace OpenWorld.Engine.UserInterface
 		/// </summary>
 		public Control()
 		{
-			this.controls = new Container(this);
 			this.clientArea = ScalarRectangle.FullScreen;
 			this.text = "";
 			this.font = Control.DefaultFont;
@@ -119,7 +116,7 @@ namespace OpenWorld.Engine.UserInterface
 			if (!this.Enabled) return;
 			if (!this.Visible) return;
 			this.OnUpdate(new UpdateEventArgs(time));
-			foreach (var child in this.controls)
+			foreach (var child in this.Children)
 				child.UpdateControl(time);
 		}
 
@@ -146,7 +143,7 @@ namespace OpenWorld.Engine.UserInterface
 
 			renderer.Render(this, localBounds);
 
-			foreach (var child in this.controls.Reverse())
+			foreach (var child in this.Children.Reverse())
 				child.Draw(engine, time, bounds);
 		}
 
@@ -155,10 +152,10 @@ namespace OpenWorld.Engine.UserInterface
 		/// </summary>
 		public void BringtToFront()
 		{
-			var parent = this.parent;
+			var parent = this.Parent;
 
-			parent.Controls.Remove(this);
-			parent.Controls.Insert(0, this);
+			parent.Children.Remove(this);
+			parent.Children.Insert(0, this);
 		}
 
 		/// <summary>
@@ -167,9 +164,9 @@ namespace OpenWorld.Engine.UserInterface
 		/// <returns>Bounds in screen space.</returns>
 		protected virtual Box2 OnGetBounds()
 		{
-			if (this.parent == null)
+			if (this.Parent == null)
 				throw new InvalidOperationException("Failed to get control bounds: No parent found.");
-			return this.Bounds.Transform(this.parent.ScreenClientBounds);
+			return this.Bounds.Transform(this.Parent.ScreenClientBounds);
 		}
 
 		/// <summary>
@@ -225,28 +222,6 @@ namespace OpenWorld.Engine.UserInterface
 		}
 
 		/// <summary>
-		/// Gets or sets the parent of this control.
-		/// </summary>
-		public Control Parent
-		{
-			get
-			{
-				return this.parent;
-			}
-			set
-			{
-				if (this.parent == value)
-					return; // Nothing to do here
-
-				// this.parent gets set in Controls.Remove and Controls.Add
-				if (this.parent != null)
-					this.parent.Controls.Remove(this);
-				if (value != null)
-					value.Controls.Add(this);
-			}
-		}
-
-		/// <summary>
 		/// Gets the bounds in screen space.
 		/// </summary>
 		/// <returns>Client bounds in screen space.</returns>
@@ -268,14 +243,6 @@ namespace OpenWorld.Engine.UserInterface
 			{
 				return this.ClientBounds.Transform(this.ScreenBounds);
 			}
-		}
-
-		/// <summary>
-		/// Gets a container that contains the children of the control.
-		/// </summary>
-		public Container Controls
-		{
-			get { return this.controls; }
 		}
 
 		/// <summary>
@@ -340,12 +307,12 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			get
 			{
-				Control topContainer = this.parent;
+				Control topContainer = this.Parent;
 				if (this is Gui)
 					return this as Gui;
 				if (topContainer == null)
 					return null;
-				while (topContainer.parent != null) topContainer = topContainer.parent;
+				while (topContainer.Parent != null) topContainer = topContainer.Parent;
 				return topContainer as Gui;
 			}
 		}

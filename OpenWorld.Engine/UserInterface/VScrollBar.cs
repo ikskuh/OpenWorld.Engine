@@ -28,7 +28,7 @@ namespace OpenWorld.Engine.UserInterface
 			this.Minimum = 0.0f;
 			this.Maximum = 1.0f;
 			this.Value = 0.0f;
-			this.Controls.Lock();
+			this.Children.Lock();
 		}
 
 		/// <summary>

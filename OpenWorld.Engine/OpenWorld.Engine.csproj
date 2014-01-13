@@ -38,7 +38,7 @@
     <OutputPath>bin\Debug %28Engine%29\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug %28Engine%29\OpenWorld.Engine.XML</DocumentationFile>
@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiGraph.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="AssetExtensionAttribute.cs" />
@@ -95,6 +96,8 @@
     <Compile Include="PostProcessingShader.cs" />
     <Compile Include="PostProcessingStage.cs" />
     <Compile Include="RenderBuffer.cs" />
+    <Compile Include="SceneManagement\Scene.cs" />
+    <Compile Include="SceneManagement\SceneNode.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="ShaderCompilationException.cs" />
     <Compile Include="ShaderLinkingException.cs" />
@@ -104,11 +107,9 @@
     <Compile Include="TextureType.cs" />
     <Compile Include="UserInterface\Button.cs" />
     <Compile Include="UserInterface\Control.cs" />
-    <Compile Include="UserInterface\ControlCollection.cs" />
     <Compile Include="UserInterface\DefaultRenderers\FormRenderer.cs" />
     <Compile Include="UserInterface\DefaultRenderers\ListBoxRenderer.cs" />
     <Compile Include="UserInterface\DefaultRenderers\VScrollBarRenderer.cs" />
-    <Compile Include="UserInterface\IControlContainer.cs" />
     <Compile Include="UserInterface\ControlStatics.cs" />
     <Compile Include="UserInterface\DefaultRenderers\BlankRenderer.cs" />
     <Compile Include="UserInterface\DefaultRenderers\ButtonRenderer.cs" />
