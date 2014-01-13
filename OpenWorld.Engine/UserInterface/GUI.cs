@@ -29,7 +29,7 @@ namespace OpenWorld.Engine.UserInterface
 			this.Engine = new GuiRenderEngine(this);
 			this.Bounds = ScalarRectangle.FullScreen;
 			this.HoverTime = 0.5f;
-			this.ScreenSize = new Vector2(1024, 768);
+			this.ScreenSize = new Vector2(Window.Current.ViewportWidth, Window.Current.ViewportHeight);
 		}
 
 		/// <summary>

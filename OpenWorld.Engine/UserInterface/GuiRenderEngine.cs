@@ -311,32 +311,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="color"></param>
 		public void FillRectangle(float left, float top, float width, float height, Color color)
 		{
-			this.FillRectangle(left, top, width, height, color, 1.0f);
-		}
-
-		/// <summary>
-		/// Draws a filled rectangle
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="color"></param>
-		/// <param name="thickness"></param>
-		public void FillRectangle(float left, float top, float width, float height, Color color, float thickness)
-		{
-			this.FillRectangle(new Vector2(left, top), new Vector2(width, height), color, thickness);
-		}
-
-		/// <summary>
-		/// Draws a filled rectangle
-		/// </summary>
-		/// <param name="position"></param>
-		/// <param name="size"></param>
-		/// <param name="color"></param>
-		public void FillRectangle(Vector2 position, Vector2 size, Color color)
-		{
-			this.FillRectangle(position, size, color, 1.0f);
+			this.FillRectangle(left, top, width, height, color);
 		}
 
 		/// <summary>
@@ -346,9 +321,9 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="size"></param>
 		/// <param name="color"></param>
 		/// <param name="thickness"></param>
-		public void FillRectangle(Vector2 pos, Vector2 size, Color color, float thickness)
+		public void FillRectangle(Vector2 pos, Vector2 size, Color color)
 		{
-			this.FillRectangle(new Box2(pos, pos + size), color, thickness);
+			this.FillRectangle(new Box2(pos, pos + size), color);
 		}
 
 		/// <summary>
@@ -358,7 +333,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="color"></param>
 		public void FillRectangle(Box2 rect, Color color)
 		{
-			this.FillRectangle(rect, color, 1.0f);
+			this.FillRectangle(rect, color, null);
 		}
 
 		/// <summary>
@@ -366,8 +341,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// </summary>
 		/// <param name="rect"></param>
 		/// <param name="color"></param>
-		/// <param name="thickness"></param>
-		public void FillRectangle(Box2 rect, Color color, float thickness)
+		/// <param name="texture"></param>
+		public void FillRectangle(Box2 rect, Color color, Texture2D texture)
 		{
 			this.Draw(PrimitiveType.TriangleStrip, new[]
 				{
@@ -375,7 +350,7 @@ namespace OpenWorld.Engine.UserInterface
 					new UIVertex() { Position = new Vector2(rect.Right - 1, rect.Top), Color = color },
 					new UIVertex() { Position = new Vector2(rect.Left, rect.Bottom - 1), Color = color },
 					new UIVertex() { Position =new Vector2(rect.Right - 1, rect.Bottom - 1), Color = color },
-				});
+				}, texture);
 		}
 
 		#endregion

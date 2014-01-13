@@ -11,6 +11,8 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public sealed class GameTime
 	{
+		public static readonly GameTime Zero = new GameTime(0.0f, 0.0f);
+
 		internal GameTime(float totalTime, float deltaTime)
 		{
 			this.TotalTime = totalTime;

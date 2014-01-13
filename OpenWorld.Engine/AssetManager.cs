@@ -14,7 +14,6 @@ namespace OpenWorld.Engine
 	{
 		private readonly AssetCache cache = new AssetCache();
 
-
 		/// <summary>
 		/// Instantiates a new asset manager.
 		/// </summary>
