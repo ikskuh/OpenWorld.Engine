@@ -26,7 +26,8 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="time">Time snapshot</param>
 		public void Update(GameTime time)
 		{
-			throw new NotImplementedException();
+			// Just update the root node.
+			this.root.Update(time);
 		}
 
 		/// <summary>
@@ -35,7 +36,17 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="time">Time snapshot</param>
 		public void Draw(GameTime time)
 		{
-			throw new NotImplementedException();
+			if (Renderer == null)
+				return; // Draw nothing without a renderer.
+
+			this.Renderer.Begin();
+			this.root.Draw(time, this.Renderer);
+			this.Renderer.End();
 		}
+
+		/// <summary>
+		/// Gets or sets the renderer of the scene.
+		/// </summary>
+		public SceneRenderer Renderer { get; set; }
 	}
 }

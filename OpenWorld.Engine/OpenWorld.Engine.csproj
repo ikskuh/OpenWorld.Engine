@@ -98,6 +98,7 @@
     <Compile Include="RenderBuffer.cs" />
     <Compile Include="SceneManagement\Scene.cs" />
     <Compile Include="SceneManagement\SceneNode.cs" />
+    <Compile Include="SceneManagement\SceneRenderer.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="ShaderCompilationException.cs" />
     <Compile Include="ShaderLinkingException.cs" />
