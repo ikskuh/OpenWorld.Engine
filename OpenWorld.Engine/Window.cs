@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenWorld.Engine
@@ -50,6 +51,7 @@ namespace OpenWorld.Engine
 		/// <param name="e"></param>
 		protected override void OnLoad(EventArgs e)
 		{
+			Window.current.Value = this;
 			this.defaultVertexArray = new VertexArray();
 			this.defaultVertexArray.Bind();
 
@@ -70,7 +72,7 @@ namespace OpenWorld.Engine
 		{
 			if (e == null)
 				throw new ArgumentNullException("e");
-
+			Window.current.Value = this;
 			this.totalUpdateTime += (float)e.Time;
 			if (this.Game != null)
 			{
@@ -85,6 +87,7 @@ namespace OpenWorld.Engine
 		/// <param name="e"></param>
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
+			Window.current.Value = this;
 			this.totalRenderTime += (float)e.Time;
 			if (this.Game != null)
 				this.Game.Draw(new GameTime(this.totalRenderTime, (float)e.Time));
@@ -97,6 +100,7 @@ namespace OpenWorld.Engine
 		/// <param name="e"></param>
 		protected override void OnUnload(EventArgs e)
 		{
+			Window.current.Value = this;
 			if (this.Game != null)
 				this.Game.Unload();
 			this.defaultVertexArray.Dispose();
@@ -142,5 +146,13 @@ namespace OpenWorld.Engine
 		{
 			get { return inputManager; }
 		}
+
+		static ThreadLocal<Window> current = new ThreadLocal<Window>(() => null);
+
+		/// <summary>
+		/// Gets the current window.
+		/// <remarks>This property is thread local.</remarks>
+		/// </summary>
+		public static Window Current { get { return Window.current.Value; } }
 	}
 }

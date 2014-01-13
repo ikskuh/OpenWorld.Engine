@@ -10,8 +10,11 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Provides methods to load assets.
 	/// </summary>
-	public class AssetManager
+	public partial class AssetManager
 	{
+		private readonly AssetCache cache = new AssetCache();
+
+
 		/// <summary>
 		/// Instantiates a new asset manager.
 		/// </summary>
@@ -38,11 +41,53 @@ namespace OpenWorld.Engine
 		public T Load<T>(string name)
 			where T : IAsset
 		{
+			return this.Load<T>(name, false);
+		}
+
+		/// <summary>
+		/// Loads an asset.
+		/// </summary>
+		/// <typeparam name="T">Type of the asset.</typeparam>
+		/// <param name="name">Name of the asset. Can contain path information.</param>
+		/// <param name="loadNew">If true, the asset will be loaded non-cached.</param>
+		/// <returns>Loaded asset.</returns>
+		public T Load<T>(string name, bool loadNew)
+			where T : IAsset
+		{
+			string selectedExtension;
+
+			if (!this.IsCaseSensitive)
+				name = name.ToLower();
+
+			if (!loadNew && this.cache.Contains<T>(name))
+				return this.cache.Get<T>(name);
+
+			T asset = Activator.CreateInstance<T>();
+			using (var stream = this.OpenAssetStream<T>(name, out selectedExtension))
+			{
+				// Explicit cast to get also hidden interface implementations
+				IAsset a = (IAsset)asset;
+				a.Load(new AssetLoadContext(this, Path.GetDirectoryName(name) + "/"), stream, selectedExtension);
+			}
+			this.cache.Add<T>(name, asset);
+			return asset;
+		}
+
+		/// <summary>
+		/// Opens a stream for an asset.
+		/// </summary>
+		/// <typeparam name="T">Type of the asset to be loaded.</typeparam>
+		/// <param name="name">Name of the asset. Can contain path information.</param>
+		/// <param name="selectedExtension">The extension that the asset stream has.</param>
+		/// <returns>Opened stream to load asset from.</returns>
+		protected virtual Stream OpenAssetStream<T>(string name, out string selectedExtension)
+			where T : IAsset
+		{
 			var extensions = GetValidExtensions<T>();
 
 			string fileName = null;
-			string selectedExtension = null;
-			foreach(var extension in extensions)
+			selectedExtension = null;
+			foreach (var extension in extensions)
 			{
 				fileName = this.RootDirectory + "/" + name + extension;
 				if (!File.Exists(fileName))
@@ -53,17 +98,11 @@ namespace OpenWorld.Engine
 			if (selectedExtension == null)
 				throw new AssetNotFoundException(name);
 
-			T asset = Activator.CreateInstance<T>();
-			using (var stream = File.Open(fileName, FileMode.Open))
-			{
-				// Explicit cast to get also hidden interface implementations
-				IAsset a = (IAsset)asset;
-				a.Load(new AssetLoadContext(this, Path.GetDirectoryName(name) + "/"), stream, selectedExtension);
-			}
-			return asset;
+			return File.Open(fileName, FileMode.Open);
 		}
 
-		private static string[] GetValidExtensions<T>() where T : IAsset
+		private static string[] GetValidExtensions<T>()
+			where T : IAsset
 		{
 			HashSet<string> validExtensions = new HashSet<string>();
 			var attribs = typeof(T).GetCustomAttributes(typeof(AssetExtensionAttribute), false);
@@ -79,5 +118,19 @@ namespace OpenWorld.Engine
 		/// Gets or sets the root directory.
 		/// </summary>
 		public string RootDirectory { get; set; }
+
+		/// <summary>
+		/// Gets the asset cache.
+		/// </summary>
+		protected AssetCache Cache
+		{
+			get { return cache; }
+		}
+
+		/// <summary>
+		/// Gets or sets a value that indicates wheather the asset
+		/// manager uses case sensitive asset names or not.
+		/// </summary>
+		public bool IsCaseSensitive { get; set; }
 	}
 }

@@ -33,5 +33,14 @@ namespace OpenWorld.Engine
 		{
 			get { return this.viewMatrix; }
 		}
+
+		/// <summary>
+		/// Gets or sets the position of the camera.
+		/// </summary>
+		public Vector3 Position
+		{
+			get { return -this.viewMatrix.Row3.Xyz; }
+			set { this.viewMatrix.Row3.Xyz = -value; }
+		}
 	}
 }

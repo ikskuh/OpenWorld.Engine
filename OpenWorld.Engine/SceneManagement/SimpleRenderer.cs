@@ -24,7 +24,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Renders the scene.
 		/// </summary>
-		protected override void Render(Scene scene)
+		protected override void Render(Scene scene, Camera camera)
 		{
 			GL.ClearDepth(1.0f);
 
@@ -37,7 +37,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.Clear(ClearBufferMask.DepthBufferBit);
 
-			this.Draw(scene, this.SolidRenderJobs);
+			this.Draw(scene, camera, this.SolidRenderJobs);
 
 			GL.Disable(EnableCap.DepthTest);
 			GL.Disable(EnableCap.AlphaTest);
@@ -45,18 +45,18 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-			this.Draw(scene, this.TranslucentRenderJobs);
+			this.Draw(scene, camera, this.TranslucentRenderJobs);
 		}
 
-		private void Draw(Scene scene, IEnumerable<ModelRenderJob> jobs)
+		private void Draw(Scene scene, Camera camera, IEnumerable<ModelRenderJob> jobs)
 		{
 			foreach(var job in jobs)
 			{
 				var shader = job.Material.Shader ?? this.defaultShader;
 
 				shader.World = job.Transform;
-				shader.View = scene.Camera.ViewMatrix;
-				shader.Projection = scene.Camera.ProjectionMatrix;
+				shader.View = camera.ViewMatrix;
+				shader.Projection = camera.ProjectionMatrix;
 				shader.Use();
 
 				job.Model.Draw((type, texture) =>

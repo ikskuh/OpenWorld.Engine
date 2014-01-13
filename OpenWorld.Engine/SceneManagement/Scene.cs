@@ -34,15 +34,16 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Draws the whole scene.
 		/// </summary>
+		/// <param name="camera">The camera setting for the scene.</param>
 		/// <param name="time">Time snapshot</param>
-		public void Draw(GameTime time)
+		public void Draw(Camera camera, GameTime time)
 		{
 			if (Renderer == null)
 				return; // Draw nothing without a renderer.
 
 			this.Renderer.Begin();
 			this.root.DoDraw(time, this.Renderer);
-			this.Renderer.End(this);
+			this.Renderer.End(this, camera);
 		}
 
 		/// <summary>
@@ -57,10 +58,5 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			get { return root; }
 		}
-
-		/// <summary>
-		/// Gets or sets the camera that is used to render the scene.
-		/// </summary>
-		public Camera Camera { get; set; }
 	}
 }

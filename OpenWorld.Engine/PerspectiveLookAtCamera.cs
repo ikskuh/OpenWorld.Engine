@@ -22,16 +22,21 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public PerspectiveLookAtCamera()
 		{
-			this.Reconstruct();
+
 		}
 
-		private void Reconstruct()
+		/// <summary>
+		/// Sets up the camera.
+		/// </summary>
+		protected override void OnSetup()
 		{
+			var viewport = this.GetViewport();
 			this.projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(
 				GameMath.ToRadians(this.FieldOfView),
-				this.aspect,
+				this.aspect * viewport.Width / viewport.Height,
 				this.zNear,
 				this.zFar);
+			base.OnSetup();
 		}
 
 		/// <summary>
@@ -53,7 +58,6 @@ namespace OpenWorld.Engine
 				if (zNear <= 0.0f)
 					throw new InvalidOperationException("ZNear must be larger than 0.0");
 				zNear = value;
-				this.Reconstruct();
 			}
 		}
 
@@ -68,7 +72,6 @@ namespace OpenWorld.Engine
 				if (zFar <= 0.0f)
 					throw new InvalidOperationException("ZFar must be larger than 0.0");
 				zFar = value;
-				this.Reconstruct();
 			}
 		}
 
@@ -85,12 +88,11 @@ namespace OpenWorld.Engine
 				if (fov >= 180.0f)
 					throw new InvalidOperationException("FieldOfView must be lesser than 180.0");
 				fov = value;
-				this.Reconstruct();
 			}
 		}
 
 		/// <summary>
-		/// Gets or sets the camera aspect.
+		/// Gets or sets the aspect that will be applied to the camera.
 		/// </summary>
 		public float Aspect
 		{
@@ -100,7 +102,6 @@ namespace OpenWorld.Engine
 				if (fov == 0.0f)
 					throw new InvalidOperationException("FieldOfView must not be 0.0");
 				aspect = value;
-				this.Reconstruct();
 			}
 		}
 	}

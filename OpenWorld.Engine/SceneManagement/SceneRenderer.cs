@@ -54,12 +54,14 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Ends the drawing process and renders everything.
 		/// </summary>
-		public void End(Scene scene)
+		public void End(Scene scene, Camera camera)
 		{
 			if (!this.IsDrawing)
 				throw new InvalidOperationException("You need to call Begin() first.");
 
-			this.Render(scene);
+			camera.Setup();
+
+			this.Render(scene, camera);
 
 			this.IsDrawing = false;
 		}
@@ -67,8 +69,9 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Actually renders the scene.
 		/// <param name="scene">The scene that should be rendered.</param>
+		/// <param name="camera">The camera setting for the scene.</param>
 		/// </summary>
-		protected abstract void Render(Scene scene);
+		protected abstract void Render(Scene scene, Camera camera);
 
 		/// <summary>
 		/// Gets a value that indicates if the renderer is currently drawing.
