@@ -19,21 +19,21 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 
 			this.Engine.DrawLine(
 				upperButton.Left + 2,
-				upperButton.Bottom - 2,
+				upperButton.Bottom - 3,
 				upperButton.Left + upperButton.Width / 2,
-				upperButton.Top + 2,
+				upperButton.Top + 1,
 				Color.Black);
 			this.Engine.DrawLine(
 				upperButton.Right - 2,
-				upperButton.Bottom - 2,
+				upperButton.Bottom - 3,
 				upperButton.Left + upperButton.Width / 2,
-				upperButton.Top + 2,
+				upperButton.Top + 1,
 				Color.Black);
 			this.Engine.DrawLine(
 				upperButton.Left + 2,
-				upperButton.Bottom - 2,
+				upperButton.Bottom - 3,
 				upperButton.Right - 2,
-				upperButton.Bottom - 2,
+				upperButton.Bottom - 3,
 				Color.Black);
 
 			var lowerButton = control.GetLowerButton().Translate(control.PointToClient(0, 0));

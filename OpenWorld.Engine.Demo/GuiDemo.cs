@@ -39,6 +39,26 @@ namespace OpenWorld.Engine.Demo
 			centerScreenLabel.Top = new Scalar(0.5f, 0.0f);
 			centerScreenLabel.TextAlign = TextAlign.MiddleCenter;
 			centerScreenLabel.Parent = this.gui;
+
+			Form form = new Form();
+			form.Left = new Scalar(0.5f, -300.0f); // Center
+			form.Top = new Scalar(0.5f, -200.0f); // Center
+			form.Width = new Scalar(0.0f, 600.0f);
+			form.Height = new Scalar(0.0f, 400.0f);
+			form.Text = "Drag me!";
+
+			ListBox listBox = new ListBox();
+			listBox.Left = new Scalar(0.0f, 10.0f);
+			listBox.Top = new Scalar(0.0f, 10.0f);
+			listBox.Width = new Scalar(0.0f, 200.0f);
+			listBox.Height = new Scalar(1.0f, -20.0f);
+			for (int i = 0; i < 50; i++)
+			{
+				listBox.Items.Add("Item " + i);
+			}
+			form.Controls.Add(listBox);
+
+			this.gui.Controls.Add(form);
 		}
 
 		void buttonA_Click(object sender, EventArgs e)

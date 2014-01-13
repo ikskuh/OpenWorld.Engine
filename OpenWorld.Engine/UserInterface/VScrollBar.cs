@@ -23,7 +23,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// </summary>
 		public VScrollBar()
 		{
-			this.Width = new Scalar(0.0f, 20.0f);
+			this.Width = new Scalar(0.0f, 21.0f);
 			this.Height = new Scalar(1.0f, 0.0f);
 			this.Minimum = 0.0f;
 			this.Maximum = 1.0f;

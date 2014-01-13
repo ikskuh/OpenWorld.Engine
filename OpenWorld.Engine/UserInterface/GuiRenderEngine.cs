@@ -133,11 +133,11 @@ namespace OpenWorld.Engine.UserInterface
 				Matrix4.Scale(1.0f, -1.0f, 1.0f) * 
 				Matrix4.CreateOrthographicOffCenter(
 					0 + offsetX, bounds.Width + offsetX,
-					-bounds.Height - offsetY, -offsetY,
+					-bounds.Height - offsetY + 1, -offsetY + 1,
 					0.0f, 1.0f);
 			GL.Viewport(
 				(int)bounds.Left,
-				(int)this.gui.ScreenSize.Y - (int)bounds.Bottom,
+				(int)this.gui.ScreenSize.Y - (int)bounds.Bottom + 1,
 				(int)bounds.Width, 
 				(int)bounds.Height);
 		}
@@ -290,9 +290,9 @@ namespace OpenWorld.Engine.UserInterface
 			this.Draw(BeginMode.LineStrip, new[]
 				{
 					new UIVertex() { Position = pos, Color = color },
-					new UIVertex() { Position = pos + new Vector2(size.X, 0), Color = color },
-					new UIVertex() { Position = pos + new Vector2(size.X, size.Y), Color = color },
-					new UIVertex() { Position = pos + new Vector2(0, size.Y), Color = color },
+					new UIVertex() { Position = pos + new Vector2(size.X - 1, 0), Color = color },
+					new UIVertex() { Position = pos + new Vector2(size.X - 1, size.Y - 1), Color = color },
+					new UIVertex() { Position = pos + new Vector2(0, size.Y - 1), Color = color },
 					new UIVertex() { Position = pos, Color = color }
 				});
 		}
@@ -372,9 +372,9 @@ namespace OpenWorld.Engine.UserInterface
 			this.Draw(BeginMode.TriangleStrip, new[]
 				{
 					new UIVertex() { Position = new Vector2(rect.Left, rect.Top), Color = color },
-					new UIVertex() { Position = new Vector2(rect.Right, rect.Top), Color = color },
-					new UIVertex() { Position = new Vector2(rect.Left, rect.Bottom), Color = color },
-					new UIVertex() { Position =new Vector2(rect.Right, rect.Bottom), Color = color },
+					new UIVertex() { Position = new Vector2(rect.Right - 1, rect.Top), Color = color },
+					new UIVertex() { Position = new Vector2(rect.Left, rect.Bottom - 1), Color = color },
+					new UIVertex() { Position =new Vector2(rect.Right - 1, rect.Bottom - 1), Color = color },
 				});
 		}
 

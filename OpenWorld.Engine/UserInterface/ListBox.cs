@@ -20,8 +20,8 @@ namespace OpenWorld.Engine.UserInterface
 		public ListBox()
 		{
 			this.scrollBar = new VScrollBar();
-			this.scrollBar.Left = new Scalar(1.0f, -20.0f);
-			this.scrollBar.Width = new Scalar(0.0f, 20.0f);
+			this.scrollBar.Left = new Scalar(1.0f, -21.0f);
+			this.scrollBar.Width = new Scalar(0.0f, 21.0f);
 			this.scrollBar.Minimum = 0;
 			this.scrollBar.Maximum = 1.0f;
 			this.scrollBar.Parent = this;

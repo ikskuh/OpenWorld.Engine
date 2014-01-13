@@ -24,10 +24,6 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 					break;
 			}
 
-			bounds.Top += 1;
-			bounds.Right -= 1;
-			bounds.Bottom -= 1;
-
 			this.Engine.FillRectangle(bounds, backColor);
 			this.Engine.DrawRectangle(bounds, Color.Black);
 
