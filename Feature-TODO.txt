@@ -1,0 +1,58 @@
+==============================================================================
+== Feature List                                                             ==
+==============================================================================
+
+Key:
+o To be done
+- Work in progress
+x Done
+
+Features:
+o Rendering
+	o Deferred SceneRenderer
+	o Forward SceneRenderer
+	o TerrainRenderer
+o Audio
+	o Sound
+	o AudioSource
+	o AudioListener (Singleton)
+	o AudioEffect
+o AssetManager
+	o Custom Asset format
+		o Compression
+		o Encryption
+	o Rework the loading system
+		o AssetSource
+			o FileSystemAssetSource
+			o ZipFileAssetSource
+			o FtpAssetSource
+			o ...
+		o Seal AssetManager
+	o Localization Asset
+		o Automatic property assignment of subclasses
+o Physics
+	o Integrate Jitter (https://code.google.com/p/jitterphysics/)
+	o RigidBody component
+	o Subclass Scene to PhysicsScene
+o Network
+	o Integrate Lidgren3 (https://code.google.com/p/lidgren-network-gen3/)
+	o Network synchronisation system
+		o Packet manager
+		o Object synchronization
+o Input
+	o Improve mouse support
+		o Movement outside game window.
+	o Test XBox360 support
+o Documentation
+	o Tutorials
+		o Getting started
+		o Physics tutorial
+		o Network tutorial
+		o Simple graphics tutorial
+		o Extended graphics tutorial
+		o Custom graphics tutorial
+	o Wiki
+	o Website (openworld.masterq32.de)
+o Demos
+	o Graphics demo
+	o Game demo
