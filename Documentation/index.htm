@@ -1,0 +1,155 @@
+<html>
+	<head>
+		<title>OpenWorld.Engine</title>
+	</head>
+	<body>
+		<h1>OpenWorld.Engine</h1>
+		<h2>Contents</h2>
+		<ul>
+			<li><a href="#intro">Introduction</a></li>
+			<li><a href="#start">Getting started</a></li>
+			<li><a href="#scenemgmt">Scene Management</a><ul>
+			<li><a href="#components">Components</a></li>
+			</ul></li>
+			<li><a href="#gui">GUI</a></li>
+		</ul>
+		<h2 id="intro">Intrudoction</h2>
+		<p>OpenWorld.Engine is a game engine designed for both game programmers as well as engine programmers written in C#. The engine features high-level features like <a href="scenemgmt">scene management</a> or <a href="#gui">GUI systems</a> but it also allows low level programming close to OpenGL. It provides a rich, well-documented API that allows access to nearly every little part of the engine.</p>
+		<h2 id="start">Getting started</h2>
+		<p>So how to start with the engine?</p>
+		<p>First, set up your project with Visual Studio 2013. For the best development conditions  use a console application to get logging information.</p>
+		<p>Second, reference OpenWorld.Engine.dll and OpenTK.dll. This is needed to get the actual engine and the math classes.</p>
+		<p>Third, set up your start file. It should look like this:</p>
+<pre style="border-style: solid; border-width: 1px; padding: 2px;">using OpenTK;
+using System;
+using OpenWorld.Engine;
+using OpenTK.Graphics.OpenGL;
+
+namespace MyGame
+{
+	// Subclass your game main class from OpenWorld.Engine.Game
+	class SuperduperGame : Game
+	{
+		static void Main(string[] args)
+		{
+			// Create a new engine window.
+			using(Window window = new Window(1024, 768))
+			{
+				// Set our own game. This is the step that loads your game and uses it.
+				window.Game = new SuperduperGame();
+				
+				// Run the game with 60 frames per second.
+				window.Run(60, 60);
+			}
+		}
+		
+		// Override OnLoad to set up your game.
+		protected override void OnLoad()
+		{
+			// Setting the clear color with OpenGL commands.
+			// You can use OpenGL commands in the engine.
+			GL.ClearColor(0.2f, 0.2f, 0.9f, 1.0f);
+		}
+
+		// Override OnUpdate to update your game every frame.
+		protected override void OnUpdate(GameTime time)
+		{
+			// This method updates the game
+		}
+
+		// Override OnDraw to draw your game.
+		protected override void OnDraw(GameTime time)
+		{
+			// Just clear the screen, back buffer swapping is done by the engine.
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+		}
+	}
+}</pre>
+		<h2 id="scenemgmt">Scene Management</h2>
+		<p>Okay, so now we have some blue screen, but i want 3D! OpenWorld.Engine gives you lots of ways to render 3D. The simplest one is to use the integrated scene management. It allows you to use a hierarchical structure of your scene based on SceneNodes. A SceneNode is a thing that has a transformation and a parent, also it contains components.</p>
+		<p>Components are the things that make your games alive. They render, they apply physics, they even allow simple scripting of SceneNodes, so you don't have to write everything in C#.</p>
+		<p>So here is a code example on how to use the scene management:</p>
+<pre style="border-style: solid; border-width: 1px; padding: 2px;">using OpenTK;
+using OpenTK.Graphics.OpenGL4;
+using OpenWorld.Engine.SceneManagement;
+
+namespace MyGame
+{
+	class SceneManagementDemo : Game
+	{
+		// The scene we use
+		Scene scene;
+
+		// Our camera
+		PerspectiveLookAtCamera camera;
+
+		protected override void OnLoad()
+		{
+			// Set up the background color
+			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
+
+			// Add a new asset source to the asset manager. Assets will now be searched in the file system.
+			this.Assets.Sources.Add(new FileSystemAssetSource("./Assets/"));
+
+			// Create our camera. A perspective camera with 60° field of view.
+			this.camera = new PerspectiveLookAtCamera();
+			
+			// Set the camera position and target
+			this.camera.LookAt(
+				new Vector3(-0.1f, 1.9f, -4.0f),
+				new Vector3(0.0f, 0.0f, 0.0f));
+
+			this.scene = new Scene();
+
+			SceneNode child = new SceneNode();
+
+			// Add a component of type Renderer to the scene node.
+			// A Renderer draws the scene node, so it can be shown.
+			var renderer = child.Components.Add&lt;Renderer&gt;();
+			// Load a new model and assign it to the renderer.
+			// The asset manager will search in all asset sources to find the "crate" model.
+			renderer.Model = this.Assets.Load&lt;Model&gt;("crate");
+
+			// Add the SceneNode to the scene so the node gets updated and drawn.
+			this.scene.Root.Children.Add(child);
+		}
+
+		protected override void OnUpdate(GameTime time)
+		{
+			// Update the scene and all of its nodes.
+			this.scene.Update(time);
+		}
+
+		protected override void OnDraw(GameTime time)
+		{
+			// Clear the screen, as usual
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+
+			// Draw our scene with the camera.
+			this.camera.Draw(this.scene, time);
+		}
+
+	}
+}</pre>
+		<p>As you can see, it's fairly easy to set up a flexible scene management system. The only thing you have to do is creation and updating/drawing of the scene, everything with just one line of code.</p>
+		<h3 id="components">Components</h3>
+		<p>Every node can contain a various number of components but only one of each kind. A component adds behaviour to a SceneNode, without components every scene node would do nothing at all just eating some CPU cycles. OpenWorld.Engine has built-in components for the most basic tasks like rendering or scripting. Here is a list of all available components.</p>
+		<h4>Renderer</h4>
+		<p>The Renderer draws a model transformed so it moves with the component. It can apply a custom material or use the default one provided with the engine.</p>
+		<h4>Scriptable</h4>
+		<p>Scriptable provides a Lua interface for scripting custom components. It provides three functions that can be called from Lua: start, update and stop. Those functions are called when the component gets started/enabled, when the component gets updated every frame or when the component gets disabled.</p>
+		<a>A lua script could look like this:</a>
+<pre style="border-style: solid; border-width: 1px; padding: 2px;">function start(self)
+	-- Do nothing on start
+end
+function update(self)
+	-- Rotate the node every frame around the y axis.
+	self.Node.Transform:Rotate(0, 0.2, 0)
+end
+function stop(self)
+	-- Do nothing on stop
+end</pre>
+		<h2 id="gui">GUI</h2>
+		<p>TBD</p>
+	</body>
+</html>

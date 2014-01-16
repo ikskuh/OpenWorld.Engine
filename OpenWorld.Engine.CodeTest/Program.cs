@@ -57,10 +57,10 @@ function stop(self)
 end";
 
 			// Load asset from Zip
-			var textureZip = this.Assets.Load<Texture2D>("crateTexture");
+			//var textureZip = this.Assets.Load<Texture2D>("crateTexture");
 
 			// Load asset from Web
-			var textureWeb = this.Assets.Load<Texture2D>("abe2ee"); 
+			//var textureWeb = this.Assets.Load<Texture2D>("abe2ee"); 
 			
 			this.scene.Root.Children.Add(child);
 		}

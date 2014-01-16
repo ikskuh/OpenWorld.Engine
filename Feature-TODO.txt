@@ -34,9 +34,6 @@ o Network
 	o Network synchronisation system
 		o Packet manager
 		o Object synchronization
-o Scripting
-	o Integrating NLua
-	o Adding Scriptable component
 o Input
 	o Improve mouse support
 		o Movement outside game window.
