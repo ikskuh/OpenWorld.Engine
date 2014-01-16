@@ -52,7 +52,8 @@ namespace OpenWorld.Engine
 				IAsset a = (IAsset)asset;
 				a.Load(new AssetLoadContext(this, Path.GetDirectoryName(name) + "/"), stream, selectedExtension);
 			}
-			this.cache.Add<T>(name, asset);
+			if(!loadNew)
+				this.cache.Add<T>(name, asset);
 			return asset;
 		}
 
@@ -63,7 +64,7 @@ namespace OpenWorld.Engine
 		/// <param name="name">Name of the asset. Can contain path information.</param>
 		/// <param name="selectedExtension">The extension that the asset stream has.</param>
 		/// <returns>Opened stream to load asset from.</returns>
-		protected Stream OpenAssetStream<T>(string name, out string selectedExtension)
+		private Stream OpenAssetStream<T>(string name, out string selectedExtension)
 			where T : IAsset
 		{
 			var extensions = GetValidExtensions<T>();

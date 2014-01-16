@@ -10,7 +10,7 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Defines an asset cache.
 		/// </summary>
-		protected class AssetCache
+		private class AssetCache
 		{
 			private readonly Dictionary<Type, Dictionary<string, IAsset>> cache;
 

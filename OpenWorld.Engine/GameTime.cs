@@ -11,6 +11,9 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public sealed class GameTime
 	{
+		/// <summary>
+		/// Defines a GameTime with no time elapsed.
+		/// </summary>
 		public static readonly GameTime Zero = new GameTime(0.0f, 0.0f);
 
 		internal GameTime(float totalTime, float deltaTime)

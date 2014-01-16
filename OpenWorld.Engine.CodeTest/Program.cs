@@ -29,6 +29,8 @@ namespace OpenWorld.Engine.CodeTest
 		protected override void OnLoad()
 		{
 			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
+			this.Assets.Sources.Add(new ZipFileAssetSource("../../../Assets/assets.zip"));
+			this.Assets.Sources.Add(new WebAssetSource("http://picshare.masterq32.de/"));
 			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
 
 			this.camera = new PerspectiveLookAtCamera();
@@ -41,6 +43,12 @@ namespace OpenWorld.Engine.CodeTest
 			SceneNode child = new SceneNode();
 			var renderer = child.Components.Add<Renderer>();
 			renderer.Model = this.Assets.Load<Model>("crate");
+
+			// Load asset from Zip
+			var textureZip = this.Assets.Load<Texture2D>("crateTexture");
+
+			// Load asset from Web
+			var textureWeb = this.Assets.Load<Texture2D>("abe2ee"); 
 			
 			this.scene.Root.Children.Add(child);
 		}

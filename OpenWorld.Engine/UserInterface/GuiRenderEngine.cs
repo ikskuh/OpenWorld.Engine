@@ -320,7 +320,6 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="pos"></param>
 		/// <param name="size"></param>
 		/// <param name="color"></param>
-		/// <param name="thickness"></param>
 		public void FillRectangle(Vector2 pos, Vector2 size, Color color)
 		{
 			this.FillRectangle(new Box2(pos, pos + size), color);
