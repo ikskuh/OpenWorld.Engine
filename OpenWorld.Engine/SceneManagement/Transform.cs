@@ -42,6 +42,21 @@ namespace OpenWorld.Engine.SceneManagement
 		}
 
 		/// <summary>
+		/// Rotates the transform.
+		/// </summary>
+		/// <param name="x">Rotation around the x axis in degrees</param>
+		/// <param name="y">Rotation around the y axis in degrees</param>
+		/// <param name="z">Rotation around the z axis in degrees</param>
+		public void Rotate(float x, float y, float z)
+		{
+			var rot =
+				Matrix4.CreateFromAxisAngle(Vector3.UnitX, GameMath.ToRadians(x)) *
+				Matrix4.CreateFromAxisAngle(Vector3.UnitY, GameMath.ToRadians(y)) *
+				Matrix4.CreateFromAxisAngle(Vector3.UnitZ, GameMath.ToRadians(z));
+			this.matrix = rot * this.matrix;
+		}
+
+		/// <summary>
 		/// Returns the global transformation matrix.
 		/// </summary>
 		/// <returns></returns>

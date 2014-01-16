@@ -35,8 +35,6 @@ namespace OpenWorld.Engine.SceneManagement
 					var component = Activator.CreateInstance<T>();
 					node.components.Add(typeof(T), component);
 					Component.componentNode = null;
-
-					component.OnStart();
 					return component;
 				}
 			}
@@ -57,6 +55,7 @@ namespace OpenWorld.Engine.SceneManagement
 			}
 
 			readonly SceneNode node;
+			private bool started = false;
 
 			/// <summary>
 			/// Creates a new component.
@@ -64,12 +63,45 @@ namespace OpenWorld.Engine.SceneManagement
 			protected Component()
 			{
 				this.node = Component.componentNode;
+				this.Enabled = true;
+			}
+
+
+			internal void Update()
+			{
+				if (this.Enabled)
+				{
+					if (!this.started)
+					{
+						this.OnStart();
+						this.started = true;
+					}
+					if (this.started)
+					{
+						this.OnUpdate();
+					}
+				}
+				else
+				{
+					if (this.started)
+					{
+						this.OnStop();
+					}
+				}
 			}
 
 			/// <summary>
 			/// Starts the component.
 			/// </summary>
 			protected virtual void OnStart()
+			{
+
+			}
+
+			/// <summary>
+			/// Updates the component every frame.
+			/// </summary>
+			protected virtual void OnUpdate()
 			{
 
 			}
@@ -86,6 +118,11 @@ namespace OpenWorld.Engine.SceneManagement
 			/// Gets the hosting scene node.
 			/// </summary>
 			public SceneNode Node { get { return this.node; } }
+
+			/// <summary>
+			/// Gets or sets a value that indicates wheather the component is active or not.
+			/// </summary>
+			public bool Enabled { get; set; }
 		}
 	}
 }

@@ -31,6 +31,9 @@ namespace OpenWorld.Engine.SceneManagement
 				throw new InvalidOperationException("You need to call End() before drawing again..");
 
 			this.IsDrawing = true;
+
+			this.solidRenderJobs.Clear();
+			this.translucentRenderJobs.Clear();
 		}
 
 		/// <summary>

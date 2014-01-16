@@ -28,6 +28,8 @@ namespace OpenWorld.Engine.SceneManagement
 
 		void Node_Draw(object sender, SceneNodeDrawEventArgs e)
 		{
+			if (!this.Enabled)
+				return;
 			if (this.Model == null)
 				return;
 			e.Renderer.Draw(this.Model, this.Node.Transform.GetGlobalMatrix(), this.Material);

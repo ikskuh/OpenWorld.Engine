@@ -43,6 +43,10 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			if (this.Update != null)
 				this.Update(this, new SceneNodeUpdateEventArgs(time));
+			foreach(var comp in this.Components)
+			{
+				comp.Update();
+			}
 			// Pass the call method to all children.
 			foreach (var child in this.Children)
 				child.DoUpdate(time);

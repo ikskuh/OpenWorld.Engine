@@ -44,6 +44,18 @@ namespace OpenWorld.Engine.CodeTest
 			var renderer = child.Components.Add<Renderer>();
 			renderer.Model = this.Assets.Load<Model>("crate");
 
+			var scriptable = child.Components.Add<Scriptable>();
+			scriptable.Script =
+@"function start(self)
+	
+end
+function update(self)
+	self.Node.Transform:Rotate(0, 0.2, 0)
+end
+function stop(self)
+
+end";
+
 			// Load asset from Zip
 			var textureZip = this.Assets.Load<Texture2D>("crateTexture");
 
@@ -55,7 +67,6 @@ namespace OpenWorld.Engine.CodeTest
 
 		protected override void OnUpdate(GameTime time)
 		{
-			this.camera.Position += 0.1f * time.DeltaTime * Vector3.UnitY;
 			this.scene.Update(time);
 		}
 

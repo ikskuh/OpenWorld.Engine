@@ -12,6 +12,8 @@ o Rendering
 	o Deferred SceneRenderer
 	o Forward SceneRenderer
 	o TerrainRenderer
+	o Animated models
+		o GPU Bones Animation
 o Audio (WIP)
 	o Sound (WIP)
 	o AudioSource (WIP)
