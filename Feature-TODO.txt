@@ -21,13 +21,11 @@ o AssetManager
 	o Custom Asset format
 		o Compression
 		o Encryption
-	o Rework the loading system
-		o AssetSource
-			o FileSystemAssetSource
+	o Rework the loading system (WIP)
+		- AssetSource (WIP)
 			o ZipFileAssetSource
-			o FtpAssetSource
+			o WebAssetSource
 			o ...
-		o Seal AssetManager
 	o Localization Asset
 		o Automatic property assignment of subclasses
 o Physics

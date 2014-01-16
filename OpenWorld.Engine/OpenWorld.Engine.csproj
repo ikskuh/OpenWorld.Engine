@@ -65,8 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssetManager.AssetCache.cs" />
+    <Compile Include="AssetSource.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="DiGraph.cs" />
+    <Compile Include="FileSystemAssetSource.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IAsset.cs" />
     <Compile Include="AssetExtensionAttribute.cs" />

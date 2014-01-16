@@ -28,7 +28,7 @@ namespace OpenWorld.Engine.CodeTest
 
 		protected override void OnLoad()
 		{
-			this.Assets.RootDirectory = "../../../Assets/";
+			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
 			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
 
 			this.camera = new PerspectiveLookAtCamera();

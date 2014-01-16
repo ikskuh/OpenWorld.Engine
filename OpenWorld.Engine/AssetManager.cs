@@ -10,26 +10,10 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Provides methods to load assets.
 	/// </summary>
-	public partial class AssetManager
+	public sealed partial class AssetManager
 	{
 		private readonly AssetCache cache = new AssetCache();
-
-		/// <summary>
-		/// Instantiates a new asset manager.
-		/// </summary>
-		public AssetManager()
-		{
-			this.RootDirectory = "./";
-		}
-
-		/// <summary>
-		/// Instantiates a new asset manager with root directory.
-		/// </summary>
-		/// <param name="rootDirectory">The root directory of the asset manager.</param>
-		public AssetManager(string rootDirectory)
-		{
-			this.RootDirectory = rootDirectory;
-		}
+		private readonly ICollection<AssetSource> sources = new List<AssetSource>();
 
 		/// <summary>
 		/// Loads an asset.
@@ -79,25 +63,30 @@ namespace OpenWorld.Engine
 		/// <param name="name">Name of the asset. Can contain path information.</param>
 		/// <param name="selectedExtension">The extension that the asset stream has.</param>
 		/// <returns>Opened stream to load asset from.</returns>
-		protected virtual Stream OpenAssetStream<T>(string name, out string selectedExtension)
+		protected Stream OpenAssetStream<T>(string name, out string selectedExtension)
 			where T : IAsset
 		{
 			var extensions = GetValidExtensions<T>();
-
-			string fileName = null;
+			
 			selectedExtension = null;
-			foreach (var extension in extensions)
+			AssetSource assetSource = null;
+			foreach (var source in this.Sources)
 			{
-				fileName = this.RootDirectory + "/" + name + extension;
-				if (!File.Exists(fileName))
-					continue;
-				selectedExtension = extension;
-				break;
+				foreach (var extension in extensions)
+				{
+					if(!source.Exists(name + extension))
+						continue;
+					assetSource = source;
+					selectedExtension = extension;
+					break;
+				}
+				if (selectedExtension != null)
+					break;
 			}
 			if (selectedExtension == null)
 				throw new AssetNotFoundException(name);
 
-			return File.Open(fileName, FileMode.Open);
+			return assetSource.Open(name + selectedExtension);
 		}
 
 		private static string[] GetValidExtensions<T>()
@@ -114,14 +103,9 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
-		/// Gets or sets the root directory.
-		/// </summary>
-		public string RootDirectory { get; set; }
-
-		/// <summary>
 		/// Gets the asset cache.
 		/// </summary>
-		protected AssetCache Cache
+		private AssetCache Cache
 		{
 			get { return cache; }
 		}
@@ -131,5 +115,13 @@ namespace OpenWorld.Engine
 		/// manager uses case sensitive asset names or not.
 		/// </summary>
 		public bool IsCaseSensitive { get; set; }
+
+		/// <summary>
+		/// Gets a collection of asset sources.
+		/// </summary>
+		public ICollection<AssetSource> Sources
+		{
+			get { return sources; }
+		}
 	}
 }

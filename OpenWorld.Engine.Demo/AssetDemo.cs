@@ -21,7 +21,7 @@ namespace OpenWorld.Engine.Demo
 			GL.DepthFunc(DepthFunction.Lequal);
 
 			// Setup the asset directory
-			this.Assets.RootDirectory = "../../../Assets/";
+			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
 
 			this.model = this.Assets.Load<Model>("crate"); // No file extension needed
 
