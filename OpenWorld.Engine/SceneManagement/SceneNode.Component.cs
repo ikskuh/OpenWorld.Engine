@@ -29,6 +29,14 @@ namespace OpenWorld.Engine.SceneManagement
 					throw new ArgumentNullException("node");
 				if (node.components.ContainsKey(typeof(T)))
 					throw new InvalidOperationException("Component " + typeof(T).Name + " already exists in " + node.GetType().Name);
+				RequiredComponentAttribute[] attribs = (RequiredComponentAttribute[])typeof(T).GetCustomAttributes(typeof(RequiredComponentAttribute), false);
+				foreach(var attrib in attribs)
+				{
+					if (!attrib.RequiredType.IsSubclassOf(typeof(Component)))
+						continue;
+					if(node.Components.Get(attrib.RequiredType) == null)
+						throw new InvalidOperationException("Cannot add component: " + attrib.RequiredType.Name + " is required.");
+				}
 				lock (Component.lockObject)
 				{
 					Component.componentNode = node;

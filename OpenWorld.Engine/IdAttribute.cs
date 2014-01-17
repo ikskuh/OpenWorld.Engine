@@ -22,6 +22,9 @@ namespace OpenWorld.Engine
 			this.id = id;
 		}
 
+		/// <summary>
+		/// Gets the id defined by this attribute
+		/// </summary>
 		public string ID { get { return this.id; } }
 	}
 }

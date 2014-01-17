@@ -51,6 +51,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\External Libraries\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="Jitter">
+      <HintPath>..\External Libraries\Jitter.dll</HintPath>
+    </Reference>
     <Reference Include="KeraLua">
       <HintPath>..\packages\NLua.1.3.0.2\lib\net40\x86\KeraLua.dll</HintPath>
     </Reference>
@@ -116,7 +119,9 @@
     <Compile Include="PostProcessingShader.cs" />
     <Compile Include="PostProcessingStage.cs" />
     <Compile Include="RenderBuffer.cs" />
+    <Compile Include="SceneManagement\BoxShape.cs" />
     <Compile Include="SceneManagement\Renderer.cs" />
+    <Compile Include="SceneManagement\RequiredComponentAttribute.cs" />
     <Compile Include="SceneManagement\SceneNode.Component.cs" />
     <Compile Include="SceneManagement\SceneNode.ComponentCollection.cs" />
     <Compile Include="SceneManagement\Scene.cs" />
@@ -126,6 +131,7 @@
     <Compile Include="SceneManagement\SceneRenderer.cs" />
     <Compile Include="SceneManagement\SceneRenderer.RenderJob.cs" />
     <Compile Include="SceneManagement\Scriptable.cs" />
+    <Compile Include="SceneManagement\Shape.cs" />
     <Compile Include="SceneManagement\SimpleRenderer.cs" />
     <Compile Include="SceneManagement\Transform.cs" />
     <Compile Include="Shader.cs" />
@@ -189,6 +195,7 @@
     <Content Include="freetype6.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="SceneManagement\RigidBody.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

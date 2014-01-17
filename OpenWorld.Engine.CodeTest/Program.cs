@@ -35,8 +35,8 @@ namespace OpenWorld.Engine.CodeTest
 		protected override void OnLoad()
 		{
 			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
-			this.Assets.Sources.Add(new ZipFileAssetSource("../../../Assets/assets.zip"));
-			this.Assets.Sources.Add(new WebAssetSource("http://picshare.masterq32.de/"));
+			//this.Assets.Sources.Add(new ZipFileAssetSource("../../../Assets/assets.zip"));
+			//this.Assets.Sources.Add(new WebAssetSource("http://picshare.masterq32.de/"));
 			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
 
 			this.camera = new PerspectiveLookAtCamera();
@@ -44,23 +44,15 @@ namespace OpenWorld.Engine.CodeTest
 				new Vector3(-0.1f, 1.9f, -4.0f),
 				new Vector3(0.0f, 0.0f, 0.0f));
 
-			this.scene = new Scene();
+			this.scene = new Scene(SceneCreationFlags.EnablePhysics);
 
 			SceneNode child = new SceneNode();
 			var renderer = child.Components.Add<Renderer>();
 			renderer.Model = this.Assets.Load<Model>("crate");
 
-			var scriptable = child.Components.Add<Scriptable>();
-			scriptable.Script =
-@"function start(self)
-	
-end
-function update(self)
-	self.Node.Transform:Rotate(0, 0.2, 0)
-end
-function stop(self)
+			var shape = child.Components.Add<BoxShape>();
 
-end";
+			var rigidBody = child.Components.Add<RigidBody>();
 
 			// Load asset from Zip
 			//var textureZip = this.Assets.Load<Texture2D>("crateTexture");

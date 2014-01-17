@@ -14,6 +14,7 @@ namespace OpenWorld.Engine.SceneManagement
 		private readonly Transform transform;
 		private readonly Dictionary<Type, Component> components;
 		private readonly ComponentCollection componentCollection;
+		private Scene scene;
 
 		/// <summary>
 		/// Occurs when the node is updated.
@@ -30,9 +31,10 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		public SceneNode()
 		{
-			this.transform = new Transform();
+			this.transform = new Transform(this);
 			this.components = new Dictionary<Type, Component>();
 			this.componentCollection = new ComponentCollection(this);
+			this.Material = new Material();
 		}
 
 		/// <summary>
@@ -43,7 +45,7 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			if (this.Update != null)
 				this.Update(this, new SceneNodeUpdateEventArgs(time));
-			foreach(var comp in this.Components)
+			foreach (var comp in this.Components)
 			{
 				comp.Update();
 			}
@@ -77,6 +79,45 @@ namespace OpenWorld.Engine.SceneManagement
 		public ComponentCollection Components
 		{
 			get { return componentCollection; }
-		} 
+		}
+
+		/// <summary>
+		/// Gets or sets the material of this node.
+		/// </summary>
+		public Material Material { get; set; }
+
+		/// <summary>
+		/// Gets a value that indicates wheater this nood is a root node or not.
+		/// </summary>
+		public bool IsRoot { get; private set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Scene Scene
+		{
+			get 
+			{ 
+				if(this.scene != null)
+					return this.scene;
+				if (this.Parent != null)
+					return this.Parent.Scene;
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Creates a root node for a scene.
+		/// </summary>
+		/// <param name="scene"></param>
+		/// <returns></returns>
+		internal static SceneNode CreateRoot(Scene scene)
+		{
+			return new SceneNode()
+			{
+				IsRoot = true,
+				scene = scene
+			};
+		}
 	}
 }

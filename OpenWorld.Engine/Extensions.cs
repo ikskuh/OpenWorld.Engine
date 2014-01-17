@@ -62,5 +62,23 @@ namespace OpenWorld.Engine
 			box.Bottom += y;
 			return box;
 		}
+
+		/// <summary>
+		/// Converts a jitter matrix and vector to an OpenTK transformation matrix.
+		/// </summary>
+		/// <param name="matrix"></param>
+		/// <param name="translation"></param>
+		/// <returns></returns>
+		public static Matrix4 ToOpenTK(this Jitter.LinearMath.JMatrix matrix, Jitter.LinearMath.JVector translation)
+		{
+			Matrix4 mat = Matrix4.Identity;
+
+			mat.Row0 = new Vector4(matrix.M11, matrix.M12, matrix.M13, 0.0f);
+			mat.Row1 = new Vector4(matrix.M21, matrix.M22, matrix.M23, 0.0f);
+			mat.Row2 = new Vector4(matrix.M31, matrix.M32, matrix.M33, 0.0f);
+			mat.Row3 = new Vector4(translation.X, translation.Y, translation.Z, 1.0f);
+
+			return mat;
+		}
 	}
 }
