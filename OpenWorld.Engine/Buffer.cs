@@ -11,7 +11,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Represents an OpenGL buffer.
 	/// </summary>
-	public sealed class Buffer : IGLResource
+	public sealed class Buffer : IGLResource 
 	{
 		BufferTarget target;
 		int id;

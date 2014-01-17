@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug %28Engine%29\OpenWorld.Engine.XML</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AssimpNet">
@@ -102,6 +103,14 @@
     <Compile Include="Shader.cs" />
     <Compile Include="ShaderCompilationException.cs" />
     <Compile Include="ShaderLinkingException.cs" />
+    <Compile Include="Sound\AudioBuffer.cs" />
+    <Compile Include="Sound\AudioListener.cs" />
+    <Compile Include="Sound\AudioReader.cs" />
+    <Compile Include="Sound\AudioSource.cs" />
+    <Compile Include="Sound\IALResource.cs" />
+    <Compile Include="Sound\LowLevel.cs" />
+    <Compile Include="Sound\OGGReader.cs" />
+    <Compile Include="Sound\Sound.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Texture2D.cs" />
     <Compile Include="TextureCube.cs" />
