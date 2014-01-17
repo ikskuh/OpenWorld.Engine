@@ -50,7 +50,7 @@ namespace OpenWorld.Engine
 			{
 				// Explicit cast to get also hidden interface implementations
 				IAsset a = (IAsset)asset;
-				a.Load(new AssetLoadContext(this, Path.GetDirectoryName(name) + "/"), stream, selectedExtension);
+				a.Load(new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"), stream, selectedExtension);
 			}
 			if(!loadNew)
 				this.cache.Add<T>(name, asset);
@@ -94,12 +94,20 @@ namespace OpenWorld.Engine
 			where T : IAsset
 		{
 			HashSet<string> validExtensions = new HashSet<string>();
-			var attribs = typeof(T).GetCustomAttributes(typeof(AssetExtensionAttribute), false);
+			Type type = typeof(T);
+			object[] attribs;
+			do
+			{
+				attribs = type.GetCustomAttributes(typeof(AssetExtensionAttribute), false);
+				type = type.BaseType;
+			} while (attribs.Length == 0 && type != null);
+			
 			foreach (AssetExtensionAttribute attrib in attribs)
 			{
 				foreach (var extension in attrib.GetExtensions())
 					validExtensions.Add(extension);
 			}
+
 			return validExtensions.ToArray();
 		}
 

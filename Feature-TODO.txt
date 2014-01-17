@@ -14,6 +14,8 @@ o Rendering
 	o TerrainRenderer
 	o Animated models
 		o GPU Bones Animation
+o Scene Management
+	o Saving / Loading of a scene
 o Audio (WIP)
 	o Sound (WIP)
 	o AudioSource (WIP)
@@ -23,8 +25,6 @@ o AssetManager
 	o Custom Asset format
 		o Compression
 		o Encryption
-	o Localization Asset
-		o Automatic property assignment of subclasses
 o Physics
 	o Integrate Jitter (https://code.google.com/p/jitterphysics/)
 	o RigidBody component

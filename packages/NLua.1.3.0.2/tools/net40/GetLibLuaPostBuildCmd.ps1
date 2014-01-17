@@ -6,7 +6,7 @@ if ([System.IntPtr]::Size -eq 8) {
 } elseif ([System.IntPtr]::Size -eq 4) {
     $arch = "x86\*.*"
 }
-
+$installPath = "./packages/NLua.1.3.0.2/";
 $nativePath = $(Join-Path $installPath "lib\native")
 $nativePath = $(Join-Path $nativePath $arch)
 

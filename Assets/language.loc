@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+	<localized id="name">
+		<deu>Meine tolle 3D-Engine</deu>
+		<eng>My awesome 3D engine</eng>
+	</localized>
+	<localized>
+		<deu></deu>
+		<eng></eng>
+	</localized>
+</localization>

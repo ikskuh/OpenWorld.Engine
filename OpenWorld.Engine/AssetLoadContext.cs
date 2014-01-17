@@ -10,20 +10,26 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public sealed class AssetLoadContext
 	{
-		internal AssetLoadContext(AssetManager assetManager, string directory)
+		internal AssetLoadContext(AssetManager assetManager, string assetName, string directory)
 		{
 			this.AssetManager = assetManager;
 			this.Directory = directory;
+			this.Name = assetName;
 		}
 
 		/// <summary>
 		/// Gets the virtual asset directory name.
 		/// </summary>
-		public string Directory { get; internal set; }
+		public string Directory { get; private set; }
 
 		/// <summary>
 		/// Gets the asset manager.
 		/// </summary>
-		public AssetManager AssetManager { get; internal set; }
+		public AssetManager AssetManager { get; private set; }
+
+		/// <summary>
+		/// Gets the name of the asset that is loaded.
+		/// </summary>
+		public string Name { get; private set; }
 	}
 }

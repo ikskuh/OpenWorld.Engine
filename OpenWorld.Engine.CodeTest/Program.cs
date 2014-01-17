@@ -23,6 +23,12 @@ namespace OpenWorld.Engine.CodeTest
 			}
 		}
 
+		class MyLocalization : Localization
+		{
+			[ID("name")]
+			public string Name { get; set; }
+		}
+
 		Scene scene;
 		PerspectiveLookAtCamera camera;
 
@@ -61,7 +67,9 @@ end";
 
 			// Load asset from Web
 			//var textureWeb = this.Assets.Load<Texture2D>("abe2ee"); 
-			
+
+			var localization = this.Assets.Load<MyLocalization>("language");
+
 			this.scene.Root.Children.Add(child);
 		}
 

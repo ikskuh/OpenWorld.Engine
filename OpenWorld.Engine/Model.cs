@@ -72,7 +72,7 @@ namespace OpenWorld.Engine
 					PostProcessSteps.Triangulate |
 					PostProcessSteps.FlipUVs);
 
-				this.Load(new AssetLoadContext(assetManager, "."), scene);
+				this.Load(new AssetLoadContext(assetManager, Path.GetFileNameWithoutExtension(fileName), "."), scene);
 			}
 		}
 
