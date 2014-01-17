@@ -15,7 +15,16 @@ namespace OpenWorld.Engine.Sound
     /// </summary>
     public class OGGReader : AudioReader
     {
+        /// <summary>
+        /// Creates an OGG Reader from a stream.
+        /// </summary>
+        /// <param name="input">Stream to be read from</param>
         public OGGReader(Stream input) : base(input) { }
+        /// <summary>
+        /// Creates an OGG Reader from a stream and a encoding.
+        /// </summary>
+        /// <param name="input">Stream to be read from</param>
+        /// <param name="encoding">Encoding to be used</param>
         public OGGReader(Stream input, Encoding encoding) : base(input, encoding) { }
 
         /// <summary>
@@ -23,7 +32,7 @@ namespace OpenWorld.Engine.Sound
         /// TODO: Read from stream instead of temp file.
         /// </summary>
         /// <returns>Raw Audio Buffer</returns>
-        public AudioData ReadAudioData()
+        public override AudioData ReadAudioData()
         {
 
             ALFormat format = 0;

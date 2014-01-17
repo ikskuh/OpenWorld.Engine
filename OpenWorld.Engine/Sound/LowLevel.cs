@@ -1369,7 +1369,7 @@ namespace OpenWorld.Engine.Sound
         /// Return Type: int
         ///path: char*
         ///vf: OggVorbis_File*
-        [DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_fopen")]
+        [DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_open",CharSet=CharSet.Ansi)]
         public static extern int ov_fopen(string path, ref OggVorbis_File vf);
 
 

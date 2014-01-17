@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OpenWorld.Engine.Sound;
 
 namespace OpenWorld.Engine.Demo
 {
@@ -11,6 +12,8 @@ namespace OpenWorld.Engine.Demo
 	{
 		ObjectShader shader;
 		Model model;
+        AudioBuffer sound;
+        AudioSource source;
 
 		protected override void OnLoad()
 		{
@@ -24,6 +27,10 @@ namespace OpenWorld.Engine.Demo
 			this.Assets.RootDirectory = "../../../Assets/";
 
 			this.model = this.Assets.Load<Model>("crate"); // No file extension needed
+            this.sound = this.Assets.Load<AudioBuffer>("Birdy01");
+            source = new AudioSource(sound);
+            source.Play();
+
 
 			// Create and set up object shader
 			bool useDefaultShader = true;

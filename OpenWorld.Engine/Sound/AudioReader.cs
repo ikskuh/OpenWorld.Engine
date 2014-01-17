@@ -12,6 +12,12 @@ namespace OpenWorld.Engine.Sound
     /// </summary>
     public class AudioData
     {
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="data">The raw audio data</param>
+        /// <param name="format">The format of the audio data</param>
+        /// <param name="frequency">The frequency of the audio data</param>
         public AudioData(byte[] data, ALFormat format,int frequency)
         {
             Buffer = data;
@@ -36,7 +42,7 @@ namespace OpenWorld.Engine.Sound
         /// Reads the audio data in the stream.
         /// </summary>
         /// <returns>Raw Audio Buffer</returns>
-        public AudioData ReadAudioData();
+        public abstract AudioData ReadAudioData();
 
         
     }

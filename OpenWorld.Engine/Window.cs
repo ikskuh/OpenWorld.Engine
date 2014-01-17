@@ -1,6 +1,8 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Audio;
+using OpenTK.Audio.OpenAL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,6 +20,7 @@ namespace OpenWorld.Engine
 		private Game game;
 		private VertexArray defaultVertexArray;
 		private InputManager inputManager;
+        private AudioContext audioContext;
 
 		float totalUpdateTime = 0.0f;
 		float totalRenderTime = 0.0f;
@@ -57,6 +60,8 @@ namespace OpenWorld.Engine
 				this.Keyboard,
 				this.Mouse,
 				this.Joysticks.ToArray());
+
+            this.audioContext = new AudioContext();
 
 			if (this.Game != null)
 				this.Game.Load();
@@ -101,6 +106,8 @@ namespace OpenWorld.Engine
 				this.Game.Unload();
 			this.defaultVertexArray.Dispose();
 			this.defaultVertexArray = null;
+            this.audioContext.Dispose();
+            this.audioContext = null;
 		}
 
 		/// <summary>

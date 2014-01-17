@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using OpenTK.Audio.OpenAL;
 using OpenTK.Audio;
 using System.Runtime.InteropServices;
 
 namespace OpenWorld.Engine.Sound
 {
+    [AssetExtension(".ogg",".wav")]
     /// <summary>
     /// Represents a buffer of raw audio data.
     /// </summary>
-    public class AudioBuffer : IALResource
+    public class AudioBuffer : IALResource, IAsset
     {
         int id;
 
@@ -23,7 +25,10 @@ namespace OpenWorld.Engine.Sound
             id = AL.GenBuffer();
         }
         
-        public ~AudioBuffer()
+        /// <summary>
+        /// Destroys and Disposes the Buffer
+        /// </summary>
+        ~AudioBuffer()
         {
             Dispose();
         }
@@ -36,6 +41,25 @@ namespace OpenWorld.Engine.Sound
         private AudioBuffer(int sndID)
         {
             id = sndID;
+        }
+
+        public void Load(AssetLoadContext context, Stream stream, string extension)
+        {
+            AudioReader reader = null;
+            if(extension == ".wav")
+            {
+                reader = new WAVReader(stream);
+            }
+            if(extension == ".ogg")
+            {
+                reader = new OGGReader(stream);
+            }
+            if(reader == null)
+            {
+                throw new ArgumentException("Incorrect file ending!");
+            }
+
+            SetData(reader.ReadAudioData());
         }
 
         /// <summary>

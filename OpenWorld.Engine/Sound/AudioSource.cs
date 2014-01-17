@@ -14,17 +14,24 @@ namespace OpenWorld.Engine.Sound
     {
         int id;
 
+        /// <summary>
+        /// Creates an Audio Source
+        /// </summary>
         public AudioSource()
         {
             id = AL.GenSource();
         }
 
+        /// <summary>
+        /// Creates an Audio Source from an AudioBuffer
+        /// </summary>
+        /// <param name="buffer">Buffer which holds the data</param>
         public AudioSource(AudioBuffer buffer) : this()
         {
             Sound = buffer;
         }
 
-        public ~AudioSource()
+        ~AudioSource()
         {
             Dispose();
         }
@@ -298,21 +305,25 @@ namespace OpenWorld.Engine.Sound
 
         public void Play()
         {
+            CheckSourceExists();
             AL.SourcePlay(id);
         }
 
         public void Pause()
         {
+            CheckSourceExists();
             AL.SourcePause(id);
         }
 
         public void Stop()
         {
+            CheckSourceExists();
             AL.SourceStop(id);
         }
 
         public void Rewind()
         {
+            CheckSourceExists();
             AL.SourceRewind(id);
         }
 
