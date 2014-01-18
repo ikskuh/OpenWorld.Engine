@@ -26,9 +26,18 @@ o AssetManager
 		o Compression
 		o Encryption
 o Physics
-	o Integrate Jitter (https://code.google.com/p/jitterphysics/)
-	o RigidBody component
-	o Subclass Scene to PhysicsScene
+	o Adding more shapes
+		o Capsule
+		o Compound
+		o Cone
+		o Convex
+		o Cylinder
+		o Minkowski Sum
+		o Multishape
+		o Sphere
+		o Terrain
+		o Triangle Shape / Polygon
+	o Adding soft bodies
 o Network
 	o Integrate Lidgren3 (https://code.google.com/p/lidgren-network-gen3/)
 	o Network synchronisation system

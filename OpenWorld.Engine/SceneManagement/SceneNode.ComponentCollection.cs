@@ -27,7 +27,7 @@ namespace OpenWorld.Engine.SceneManagement
 			/// <typeparam name="T">Type of the component.</typeparam>
 			/// <returns></returns>
 			public T Add<T>()
-				where T: Component
+				where T : Component
 			{
 				return Component.Add<T>(this.parent);
 			}
@@ -36,13 +36,32 @@ namespace OpenWorld.Engine.SceneManagement
 			/// Gets a component of the scene node.
 			/// </summary>
 			/// <typeparam name="T">Type of the component.</typeparam>
+			/// <remarks>If there is no component fitting the exact type, the first fitting subclass component will be returned.</remarks>
 			/// <returns>Component or null if none.</returns>
 			public T Get<T>()
 				where T : Component
 			{
-				if (!this.parent.components.ContainsKey(typeof(T)))
-					return null;
-				return (T)this.parent.components[typeof(T)];
+				return (T)this.Get(typeof(T));
+			}
+
+			/// <summary>
+			/// Gets a component of the scene node.
+			/// </summary>
+			/// <param name="type">Type of the component.</param>
+			/// <remarks>If there is no component fitting the exact type, the first fitting subclass component will be returned.</remarks>
+			/// <returns>Component or null if none.</returns>
+			public Component Get(Type type)
+			{
+				if (!type.IsSubclassOf(typeof(Component)))
+					throw new InvalidOperationException("Invalid type.");
+				if (this.parent.components.ContainsKey(type))
+					return this.parent.components[type];
+				foreach(var component in parent.components)
+				{
+					if (component.Key.IsSubclassOf(type))
+						return component.Value;
+				}
+				return null;
 			}
 
 			/// <summary>

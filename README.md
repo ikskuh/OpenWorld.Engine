@@ -12,6 +12,7 @@ Features:
 - PostProcessing Pipelines
 - Flexible AssetManager (Model import with Assimp.Net)
 - Gui system oriented on System.Windows.Forms
+- Jitter physics
 - Easy localization system
 - Scene management with component-based entities (like Unity3D)
 - Theoretic multi-platform support (Not tested, but should work)
