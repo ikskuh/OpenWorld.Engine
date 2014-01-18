@@ -16,10 +16,12 @@ o Rendering
 		o GPU Bones Animation
 o Scene Management
 	o Saving / Loading of a scene
-o Audio (WIP)
-	o Sound (WIP)
-	o AudioSource (WIP)
-	o AudioListener (Singleton)
+-Audio 
+	x Sound
+	x AudioSource
+	x AudioListener
+	x WAVE Support
+	- OGG Support
 	o AudioEffect
 o AssetManager
 	o Custom Asset format
