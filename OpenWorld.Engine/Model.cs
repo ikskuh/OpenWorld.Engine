@@ -14,7 +14,7 @@ namespace OpenWorld.Engine
 	/// Represents a 3D model.
 	/// </summary>
 	[AssetExtension(".dae", ".obj")]
-	public sealed class Model : IAsset
+	public sealed partial class Model : IAsset
 	{
 		ModelMesh[] meshes;
 

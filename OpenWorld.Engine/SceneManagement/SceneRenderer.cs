@@ -13,6 +13,7 @@ namespace OpenWorld.Engine.SceneManagement
 	{
 		private List<ModelRenderJob> solidRenderJobs = new List<ModelRenderJob>();
 		private List<ModelRenderJob> translucentRenderJobs = new List<ModelRenderJob>();
+		private List<LightRenderJob> lightRenderJobs = new List<LightRenderJob>();
 
 		/// <summary>
 		/// Instantiates a new renderer.
@@ -34,6 +35,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 			this.solidRenderJobs.Clear();
 			this.translucentRenderJobs.Clear();
+			this.lightRenderJobs.Clear();
 		}
 
 		/// <summary>
@@ -52,6 +54,17 @@ namespace OpenWorld.Engine.SceneManagement
 				this.translucentRenderJobs.Add(job);
 			else
 				this.solidRenderJobs.Add(job);
+		}
+
+		/// <summary>
+		/// Renders a point light.
+		/// </summary>
+		/// <param name="position">Position of the light.</param>
+		/// <param name="radius">Radius of the light.</param>
+		/// <param name="color">Color of the light.</param>
+		public void PointLight(Vector3 position, float radius, Color color)
+		{
+			this.lightRenderJobs.Add(new LightRenderJob(position, radius, color));
 		}
 
 		/// <summary>
@@ -100,6 +113,14 @@ namespace OpenWorld.Engine.SceneManagement
 		protected IEnumerable<ModelRenderJob> TranslucentRenderJobs
 		{
 			get { return this.translucentRenderJobs; }
+		}
+
+		/// <summary>
+		/// Gets all light render jobs.
+		/// </summary>
+		protected IEnumerable<LightRenderJob> LightRenderJobs
+		{
+			get { return this.lightRenderJobs; }
 		}
 	}
 }

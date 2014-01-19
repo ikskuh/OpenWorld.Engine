@@ -6,10 +6,19 @@ using System.Text;
 namespace OpenWorld.Engine.SceneManagement
 {
 	/// <summary>
-	/// Defines a component that draws a scene node.
+	/// Defines a point light.
 	/// </summary>
-	public sealed class Renderer : SceneNode.Component
+	public sealed class PointLight  : SceneNode.Component
 	{
+		/// <summary>
+		/// Creates a new point light.
+		/// </summary>
+		public PointLight()
+		{
+			this.Color = Color.White;
+			this.Radius = 10.0f;
+		}
+
 		/// <summary>
 		/// Starts the component.
 		/// </summary>
@@ -30,14 +39,17 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			if (!this.Enabled)
 				return;
-			if (this.Model == null)
-				return;
-			e.Renderer.Draw(this.Model, this.Node.Transform.GetGlobalMatrix(), this.Node.Material);
+			e.Renderer.PointLight(this.Node.Transform.GetGlobalMatrix().Row3.Xyz, this.Radius, this.Color);
 		}
 
 		/// <summary>
-		/// Gets or sets the model the renderer should draw.
+		/// Gets or sets the radius of the light.
 		/// </summary>
-		public Model Model { get; set; }
+		public float Radius { get; set; }
+
+		/// <summary>
+		/// Gets or sets the color of the light.
+		/// </summary>
+		public Color Color { get; set; }
 	}
 }

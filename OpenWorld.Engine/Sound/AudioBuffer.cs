@@ -9,10 +9,10 @@ using System.Runtime.InteropServices;
 
 namespace OpenWorld.Engine.Sound
 {
+	/// <summary>
+	/// Represents a buffer of raw audio data.
+	/// </summary>
     [AssetExtension(".ogg",".wav")]
-    /// <summary>
-    /// Represents a buffer of raw audio data.
-    /// </summary>
     public class AudioBuffer : IALResource, IAsset
     {
         int id;

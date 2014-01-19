@@ -58,6 +58,10 @@ namespace OpenWorld.Engine
 		/// <param name="backBuffer"></param>
 		public void Apply(Texture2D backBuffer)
 		{
+			GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.DepthTest);
+			GL.Disable(EnableCap.CullFace);
+
 			this.vao.Bind();
 
 			Texture2D currentTarget = this.swapBuffer;
@@ -95,6 +99,22 @@ namespace OpenWorld.Engine
 				SwapBuffers(ref currentTarget, ref currentBuffer);
 			}
 			FrameBuffer.Unbind();
+			VertexArray.Unbind();
+		}
+
+		/// <summary>
+		/// Draws a fullscreen quad with the render pipeline.
+		/// </summary>
+		/// <param name="texture">The texture to be drawn</param>
+		public void DrawQuad(Texture texture)
+		{
+			this.vao.Bind();
+
+			this.swapShader.BackBuffer = texture;
+			this.swapShader.Use();
+
+			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+
 			VertexArray.Unbind();
 		}
 

@@ -31,11 +31,12 @@ void main()
 @"#version 330
 layout(location = 0) out vec4 result;
 
+in vec2 uv;
 uniform sampler2D backBuffer;
 
 void main()
 {
-	result = texelFetch(backBuffer, ivec2(gl_FragCoord), 0);
+	result = texture(backBuffer, uv);
 }
 ";
 

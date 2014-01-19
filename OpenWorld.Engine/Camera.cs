@@ -15,16 +15,6 @@ namespace OpenWorld.Engine
 		static Vector3 up = Vector3.UnitY;
 
 		/// <summary>
-		/// Draws the scene.
-		/// </summary>
-		/// <param name="scene">The scene to be drawn.</param>
-		/// <param name="time">The time snapshot.</param>
-		public void Draw(SceneManagement.Scene scene, GameTime time)
-		{
-			scene.Draw(this, time);
-		}
-
-		/// <summary>
 		/// Sets the viewport for the camera.
 		/// </summary>
 		public void Setup()

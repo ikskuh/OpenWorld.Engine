@@ -55,12 +55,12 @@ void main()
 		/// </summary>
 		protected override void OnApply()
 		{
+			base.OnApply();
+
 			this.SetUniform("World", this.World, false);
 			this.SetUniform("View", this.View, false);
 			this.SetUniform("Projection", this.Projection, false);
 			this.SetTexture("textureDiffuse", this.DiffuseTexture, 0);
-
-			base.OnApply();
 		}
 
 		void IAsset.Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)

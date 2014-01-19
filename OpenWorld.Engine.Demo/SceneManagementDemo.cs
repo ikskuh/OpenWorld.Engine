@@ -55,8 +55,7 @@ namespace OpenWorld.Engine.Demo
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
 			// Draw our scene with the camera.
-			this.camera.Draw(this.scene, time);
+			this.scene.Draw(this.camera, time);
 		}
-
 	}
 }

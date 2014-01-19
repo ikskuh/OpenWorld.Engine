@@ -40,5 +40,33 @@ namespace OpenWorld.Engine.SceneManagement
 			/// </summary>
 			public Material Material { get; private set; }
 		}
+
+		/// <summary>
+		/// Defines a render job that should draw a light.
+		/// </summary>
+		protected class LightRenderJob
+		{
+			internal LightRenderJob(Vector3 position, float radius, Color color)
+			{
+				this.Position = position;
+				this.Radius = radius;
+				this.Color = color;
+			}
+
+			/// <summary>
+			/// Gets the position of the light.
+			/// </summary>
+			public Vector3 Position { get; private set; }
+
+			/// <summary>
+			/// Gets the radius of the light.
+			/// </summary>
+			public float Radius { get; private set; }
+
+			/// <summary>
+			/// Gets the color of the light.
+			/// </summary>
+			public Color Color { get; private set; }
+		}
 	}
 }

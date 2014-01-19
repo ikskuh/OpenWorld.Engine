@@ -16,6 +16,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 		private CollisionSystem collisionSystem;
 		private World world;
+		private SceneRenderer defaultRenderer; 
 
 
 		/// <summary>
@@ -34,7 +35,7 @@ namespace OpenWorld.Engine.SceneManagement
 		public Scene(SceneCreationFlags flags)
 		{
 			this.root = SceneNode.CreateRoot(this);
-			this.Renderer = new SimpleRenderer();
+			this.defaultRenderer = new SimpleRenderer();
 
 			if (flags.HasFlag(SceneCreationFlags.EnablePhysics))
 			{
@@ -65,18 +66,26 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="time">Time snapshot</param>
 		public void Draw(Camera camera, GameTime time)
 		{
-			if (Renderer == null)
-				return; // Draw nothing without a renderer.
-
-			this.Renderer.Begin();
-			this.root.DoDraw(time, this.Renderer);
-			this.Renderer.End(this, camera);
+			this.Draw(camera, this.defaultRenderer, time);	
 		}
 
 		/// <summary>
-		/// Gets or sets the renderer of the scene.
+		/// Draws the whole scene.
 		/// </summary>
-		public SceneRenderer Renderer { get; set; }
+		/// <param name="camera">The camera setting for the scene.</param>
+		/// <param name="renderer">The renderer that draws the the scene.</param>
+		/// <param name="time">Time snapshot</param>
+		public void Draw(Camera camera, SceneRenderer renderer, GameTime time)
+		{
+			if (camera == null)
+				throw new ArgumentNullException("camera");
+			if (renderer == null)
+				throw new ArgumentNullException("renderer");
+
+			renderer.Begin();
+			this.root.DoDraw(time, renderer);
+			renderer.End(this, camera);
+		}
 
 		/// <summary>
 		/// Gets the root of the scene.

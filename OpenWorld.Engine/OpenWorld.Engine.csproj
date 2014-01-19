@@ -43,8 +43,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug %28Engine%29\OpenWorld.Engine.XML</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-....<UseVSHostingProcess>false</UseVSHostingProcess>  </PropertyGroup>
-
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AssimpNet">
       <HintPath>..\..\..\Libraries\AssimpNet-3.2\Bin\AssimpNet.dll</HintPath>
@@ -113,14 +113,23 @@
     <Compile Include="LookAtCamera.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="Model.Cube.cs" />
     <Compile Include="ModelMesh.cs" />
     <Compile Include="ObjectShader.cs" />
     <Compile Include="PerspectiveLookAtCamera.cs" />
     <Compile Include="PostProcessingPipeline.cs" />
     <Compile Include="PostProcessingShader.cs" />
+    <Compile Include="PostProcessingShaders\DitheringShader.cs" />
+    <Compile Include="PostProcessingShaders\GammaCorrectionShader.cs" />
+    <Compile Include="PostProcessingShaders\LightScatteringShader.cs" />
+    <Compile Include="PostProcessingShaders\TonemappingShader.cs" />
     <Compile Include="PostProcessingStage.cs" />
     <Compile Include="RenderBuffer.cs" />
+    <Compile Include="Resource.cs" />
     <Compile Include="SceneManagement\BoxShape.cs" />
+    <Compile Include="SceneManagement\DeferredRenderer.cs" />
+    <Compile Include="SceneManagement\Shaders\OpaqueObjectShader.cs" />
+    <Compile Include="SceneManagement\PointLight.cs" />
     <Compile Include="SceneManagement\Renderer.cs" />
     <Compile Include="SceneManagement\RequiredComponentAttribute.cs" />
     <Compile Include="SceneManagement\SceneNode.Component.cs" />
@@ -132,20 +141,24 @@
     <Compile Include="SceneManagement\SceneRenderer.cs" />
     <Compile Include="SceneManagement\SceneRenderer.RenderJob.cs" />
     <Compile Include="SceneManagement\Scriptable.cs" />
+    <Compile Include="SceneManagement\Shaders\GeometryShader.cs" />
+    <Compile Include="SceneManagement\Shaders\PointLightShader.cs" />
     <Compile Include="SceneManagement\Shape.cs" />
     <Compile Include="SceneManagement\SimpleRenderer.cs" />
     <Compile Include="SceneManagement\Transform.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="ShaderCompilationException.cs" />
     <Compile Include="ShaderLinkingException.cs" />
-    <Compile Include="Singleton.cs" />    <Compile Include="Sound\AudioBuffer.cs" />
+    <Compile Include="Singleton.cs" />
+    <Compile Include="Sound\AudioBuffer.cs" />
     <Compile Include="Sound\AudioListener.cs" />
     <Compile Include="Sound\AudioReader.cs" />
     <Compile Include="Sound\AudioSource.cs" />
     <Compile Include="Sound\IALResource.cs" />
     <Compile Include="Sound\LowLevel.cs" />
     <Compile Include="Sound\OGGReader.cs" />
-    <Compile Include="Sound\WAVReader.cs" />    <Compile Include="Texture.cs" />
+    <Compile Include="Sound\WAVReader.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="Texture2D.cs" />
     <Compile Include="TextureCube.cs" />
     <Compile Include="TextureType.cs" />
@@ -203,9 +216,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="SceneManagement\RigidBody.cs" />
+    <EmbeddedResource Include="SceneManagement\Shaders\geometry.fs" />
+    <EmbeddedResource Include="SceneManagement\Shaders\light.fs" />
+    <EmbeddedResource Include="SceneManagement\Shaders\opaqueObject.fs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="SceneManagement\Shaders\geometry.vs" />
+    <EmbeddedResource Include="SceneManagement\Shaders\light.vs" />
+    <EmbeddedResource Include="SceneManagement\Shaders\opaqueObject.vs" />
     <None Include="SharpFont.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -216,6 +235,7 @@
       <LastGenOutput>LocalizedStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.0.2\lib\native\x86" "$(TargetDir)"</PostBuildEvent>
