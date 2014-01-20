@@ -1,0 +1,65 @@
+- Window Management
+- Asset Manager
+	- Asset Types
+		- Models via Assimp.NET
+		- Textures via System.Drawing (support for many files, but no TGA) or DDS
+			- Support for sRGB loading to get linear textures
+		- ObjectShaders via XML
+		- Localized dictionaries via XML
+		- AudioBuffers (Sounds), only PCM WAV
+		- BLOBs (custom binary storage) via .dat
+	- Supports different asset sources
+		- File system
+		- Zip file
+		- Web (load assets directly from your server)
+- Flexible log system
+	- Can write to custom streams or just the console
+- Wrapping of OpenGL objects
+	- FrameBuffer
+	- Buffer
+	- Textures
+	- VertexArray
+	- Shaders
+		- Object Shaders (with world matrices)
+		- Post Processing Shaders (fixed VertexShader, custom FragmentShader)
+- Input Manager
+	- Keyboard
+	- Mouse
+	- Joysticks
+- Node-based scene management
+	- Rendering
+		- Simple (plain texture, no shading)
+		- Deferred (Rendering with support for lots of lights)
+	- Cameras
+		- Scene, Camera and Renderer are separated so they can be combined in various ways
+- Component-based scene nodes
+	- Renderer (Draws a model)
+	- RigidBody (Jitter physics rigid body)
+	- BoxShape (Physics collider)
+	- PointLight (Represents a point light)
+	- Scriptable (Lua scripting for nodes)
+- Simple Materials
+	- Physical properties
+		- Kinetic friction
+		- Static friction
+		- Restitution
+	- Visual properties
+		- Shaders
+		- Transparency
+- Post Processing Pipeline
+	- Flexible and dynamic stages
+	- Stages can be turned on or off or added/removed in realtime without any efforts
+- Post Processing Shaders
+	- Dithering
+		Allows to create a low noise function on your screen that will hide some artifacts
+	- Gamma Correction
+		Allows custom gamma correction
+	- Light Scattering
+		Godray effect
+	- Tonemapping
+		Simple tonemapping to adjust HDR rendering
+- Extended Library
+	- Floating Point Colors with predefined named colors (X11-WebColors)
+	- GameMath with methods that use floats and degrees instead of double and radian
+	- Resource for loading embedded resources easier
+	- Singleton for creating singleton classes

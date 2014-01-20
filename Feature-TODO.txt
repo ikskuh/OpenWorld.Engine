@@ -8,10 +8,27 @@ o To be done
 x Done
 
 Features:
+o Engine
+	o Co-Routines
+	o Deferred asset loading
+	o Threaded Singleton
+o OpenGL
+	o Rework FrameBuffer
 o Rendering
 	o Deferred SceneRenderer
+		o Normal Mapping
+		o Spot Lights
+			o Shadow Mapping
+		o Directional Lights
+			o Shadow Mapping
+		o Point Light
+			o Shadow Mapping
+			o Cookies (Cubemaps that fake color variance and shadows)
 	o Forward SceneRenderer
 	o TerrainRenderer
+	o CompositionCamera
+		o Takes an IViewMatrixProvider and an IProjectionMatrixProvider
+		o Allows easy composition of complex camera effects
 	o Animated models
 		o GPU Bones Animation
 o Scene Management

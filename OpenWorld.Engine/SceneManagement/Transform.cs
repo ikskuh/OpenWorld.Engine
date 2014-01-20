@@ -68,7 +68,7 @@ namespace OpenWorld.Engine.SceneManagement
 			var node = this.parent;
 			while(node != null)
 			{
-				matrix = node.Transform.GetMatrix() * matrix;
+				matrix = matrix * node.Transform.GetMatrix();
 				node = node.Parent;
 			}
 			return matrix;
