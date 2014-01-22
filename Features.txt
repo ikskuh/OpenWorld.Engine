@@ -63,3 +63,7 @@
 	- GameMath with methods that use floats and degrees instead of double and radian
 	- Resource for loading embedded resources easier
 	- Singleton for creating singleton classes
+- Sound
+	- Audio Source
+	- Audio Listener
+	- WAVE PCM Loading

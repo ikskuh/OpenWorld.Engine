@@ -6,6 +6,7 @@ Key:
 o To be done
 - Work in progress
 x Done
+[Annotation]
 
 Features:
 o Engine
@@ -14,6 +15,8 @@ o Engine
 	o Threaded Singleton
 o OpenGL
 	o Rework FrameBuffer
+	o Use modern GL commands [GL.ProgramUniform, ...]
+	o Provide a wrapper around GL.Clear*
 o Rendering
 	o Deferred SceneRenderer
 		o Normal Mapping
@@ -23,21 +26,27 @@ o Rendering
 			o Shadow Mapping
 		o Point Light
 			o Shadow Mapping
-			o Cookies (Cubemaps that fake color variance and shadows)
+			o Cookies [Cubemaps that fake color variance and shadows]
 	o Forward SceneRenderer
 	o TerrainRenderer
-	o CompositionCamera
+	o CompositionCamera (WIP)
 		o Takes an IViewMatrixProvider and an IProjectionMatrixProvider
 		o Allows easy composition of complex camera effects
 	o Animated models
 		o GPU Bones Animation
+	o Abstract Instancing in SceneRenderer
 o Scene Management
+	o Improve Scene Tree
+			o Components don't need to use the Draw event
+			o New methods:
+				o PreRender  [Gets called before any child is rendered]
+				o Render [Gets called if the component has to be rendered]
+				o PostRender [Gets called after all childs have been rendered]
+			o Only render component if Component.Enabled
+			o Update modification of Transform only in update step, not in draw step.
+			o Component / Node Serialization
 	o Saving / Loading of a scene
 -Audio 
-	x Sound
-	x AudioSource
-	x AudioListener
-	x WAVE Support
 	- OGG Support
 	o AudioEffect
 o AssetManager
@@ -57,6 +66,10 @@ o Physics
 		o Terrain
 		o Triangle Shape / Polygon
 	o Adding soft bodies
+	o Adding character controllers
+	o Adding kinematic bodies
+	o Add raycasting methods
+	o Connect RigidBody with component [so raycast can return the hit Shape component]
 o Network
 	o Integrate Lidgren3 (https://code.google.com/p/lidgren-network-gen3/)
 	o Network synchronisation system
@@ -76,6 +89,7 @@ o Documentation
 		o Custom graphics tutorial
 	o Wiki
 	o Website (openworld.masterq32.de)
+	o Rework Demos to current state of the engine [AssetDemo is too complicated]
 o Demos
 	o Graphics demo
 	o Game demo
