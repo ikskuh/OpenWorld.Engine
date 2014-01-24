@@ -95,7 +95,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Gets or sets the local position of the transform.
 		/// </summary>
-		public Vector3 Position
+		public Vector3 LocalPosition
 		{
 			get { return this.matrix.Row3.Xyz; }
 			set { this.matrix.Row3.Xyz = value; }

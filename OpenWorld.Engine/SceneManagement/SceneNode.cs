@@ -9,7 +9,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a part of a scene.
 	/// </summary>
-	public sealed partial class SceneNode : DiGraph<SceneNode>
+	public sealed partial class SceneNode : DiGraph<SceneNode>, IViewMatrixSource
 	{
 		private readonly Transform transform;
 		private readonly Dictionary<Type, Component> components;
@@ -66,6 +66,11 @@ namespace OpenWorld.Engine.SceneManagement
 			// Pass the draw call to all children.
 			foreach (var child in this.Children)
 				child.DoDraw(time, renderer);
+		}
+
+		Matrix4 IViewMatrixSource.GetViewMatrix(Camera camera)
+		{
+			return Matrix4.Invert(this.transform.GetGlobalMatrix());
 		}
 
 		/// <summary>

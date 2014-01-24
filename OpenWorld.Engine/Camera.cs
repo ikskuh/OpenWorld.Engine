@@ -60,6 +60,11 @@ namespace OpenWorld.Engine
 		public abstract Matrix4 ProjectionMatrix { get; }
 
 		/// <summary>
+		/// Gets or sets the screen area the camera renders to.
+		/// </summary>
+		public Box2 Area { get; set; }
+
+		/// <summary>
 		/// Gets or sets the up direction all cameras share.
 		/// </summary>
 		public static Vector3 Up
@@ -67,10 +72,5 @@ namespace OpenWorld.Engine
 			get { return Camera.up; }
 			set { Camera.up = value; }
 		}
-
-		/// <summary>
-		/// Gets or sets the screen area the camera renders to.
-		/// </summary>
-		public Box2 Area { get; set; }
 	}
 }
