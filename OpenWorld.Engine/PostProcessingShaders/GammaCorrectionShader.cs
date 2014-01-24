@@ -10,7 +10,7 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class GammaCorrectionShader : PostProcessingShader
 	{
-		static readonly string shaderSource = @"#version 330
+		static readonly string shaderSource = @"#version 410
 uniform sampler2D backBuffer;
 uniform float gamma;
 

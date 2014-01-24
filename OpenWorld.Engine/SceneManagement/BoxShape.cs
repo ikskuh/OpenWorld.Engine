@@ -25,7 +25,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Starts the component.
 		/// </summary>
-		protected override void OnStart()
+		protected override void OnStart(GameTime time)
 		{
 			this.boxShape = new Jitter.Collision.Shapes.BoxShape(
 				this.Length,

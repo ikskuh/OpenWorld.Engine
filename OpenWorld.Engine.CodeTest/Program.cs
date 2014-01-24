@@ -23,12 +23,6 @@ namespace OpenWorld.Engine.CodeTest
 			}
 		}
 
-		class MyLocalization : Localization
-		{
-			[ID("name")]
-			public string Name { get; set; }
-		}
-
 		Scene scene;
 		PerspectiveLookAtCamera cameraLeft;
 		PerspectiveLookAtCamera cameraRight;
@@ -39,8 +33,6 @@ namespace OpenWorld.Engine.CodeTest
 			Texture2D.UseSRGB = true;
 
 			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
-			//this.Assets.Sources.Add(new ZipFileAssetSource("../../../Assets/assets.zip"));
-			//this.Assets.Sources.Add(new WebAssetSource("http://picshare.masterq32.de/"));
 			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
 
 			this.cameraLeft = new PerspectiveLookAtCamera();

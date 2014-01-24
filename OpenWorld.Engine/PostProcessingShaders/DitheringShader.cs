@@ -10,7 +10,7 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class DitheringShader : PostProcessingShader
 	{
-		static readonly string shaderSource = @"#version 330
+		static readonly string shaderSource = @"#version 410
 out vec4 color;
 
 uniform sampler2D backBuffer;

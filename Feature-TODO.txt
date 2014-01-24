@@ -37,14 +37,14 @@ o Rendering
 	o Abstract Instancing in SceneRenderer
 o Scene Management
 	o Improve Scene Tree
-			o Components don't need to use the Draw event
-			o New methods:
-				o PreRender  [Gets called before any child is rendered]
-				o Render [Gets called if the component has to be rendered]
-				o PostRender [Gets called after all childs have been rendered]
-			o Only render component if Component.Enabled
-			o Update modification of Transform only in update step, not in draw step.
-			o Component / Node Serialization
+		o Components don't need to use the Draw event
+		o New methods:
+			o PreRender  [Gets called before any child is rendered]
+			o Render [Gets called if the component has to be rendered]
+			o PostRender [Gets called after all childs have been rendered]
+		o Only render component if Component.Enabled
+		o Update modification of Transform only in update step, not in draw step.
+		o Component / Node Serialization
 	o Saving / Loading of a scene
 -Audio 
 	- OGG Support
