@@ -50,19 +50,6 @@ void main()
 			this.Compile(defaultVertexShader, defaultFragmentShader);
 		}
 
-		/// <summary>
-		/// Applies the shader parameters.
-		/// </summary>
-		protected override void OnApply()
-		{
-			base.OnApply();
-
-			this.SetUniform("World", this.World, false);
-			this.SetUniform("View", this.View, false);
-			this.SetUniform("Projection", this.Projection, false);
-			this.SetTexture("textureDiffuse", this.DiffuseTexture, 0);
-		}
-
 		void IAsset.Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
 		{
 			XmlSerializer serializer = new XmlSerializer(typeof(ShaderSource));
@@ -74,23 +61,27 @@ void main()
 		/// Gets or sets the world transformation matrix.
 		/// <remarks>Shader uniform: mat4 World</remarks>
 		/// </summary>
+		[Uniform("World")]
 		public Matrix4 World { get; set; }
 
 		/// <summary>
 		/// Gets or sets the view matrix.
 		/// <remarks>Shader uniform: mat4 View</remarks>
 		/// </summary>
+		[Uniform("View")]
 		public Matrix4 View { get; set; }
 
 		/// <summary>
 		/// Gets or sets the projection matrix.
 		/// <remarks>Shader uniform: mat4 Projection</remarks>
 		/// </summary>
+		[Uniform("Projection")]
 		public Matrix4 Projection { get; set; }
 
 		/// <summary>
 		/// Gets or sets the diffuse texture.
 		/// </summary>
+		[Uniform("textureDiffuse")]
 		public Texture DiffuseTexture { get; set; }
 
 		/// <summary>

@@ -15,30 +15,21 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 				Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.light.fs"));
 		}
 
-		protected override void OnApply()
-		{
-			base.OnApply();
-
-			if (this.CheckUniformExists("Color"))
-				this.SetUniform("Color", this.Color);
-			if (this.CheckUniformExists("Radius"))
-				this.SetUniform("Radius", this.Radius);
-			if (this.CheckUniformExists("LightCenter"))
-				this.SetUniform("LightCenter", this.Position);
-			//this.SetUniform("LightDirection", this.Direction);
-
-			if (this.CheckUniformExists("texturePosition"))
-				this.SetTexture("texturePosition", this.PositionBuffer, 0);
-			if (this.CheckUniformExists("textureNormal"))
-				this.SetTexture("textureNormal", this.NormalBuffer, 1);
-		}
-
+		[Uniform("LightCenter")]
 		public Vector3 Position { get; set; }
-		public Vector3 Direction { get; set; }
+
+		[Uniform("Color")]
 		public Color Color { get; set; }
+
+		[Uniform("Radius")]
 		public float Radius { get; set; }
 
+
+		[Uniform("texturePosition")]
 		public Texture PositionBuffer { get; set; }
+
+
+		[Uniform("textureNormal")]
 		public Texture NormalBuffer { get; set; }
 	}
 }

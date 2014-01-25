@@ -32,17 +32,9 @@ void main()
 		}
 
 		/// <summary>
-		/// Applies the effect parameters.
-		/// </summary>
-		protected override void OnApply()
-		{
-			base.OnApply();
-			this.SetUniform("gamma", this.Gamma);
-		}
-
-		/// <summary>
 		/// Gets or sets the gamma value that is used for gamma correction.
 		/// </summary>
+		[Uniform("gamma")]
 		public float Gamma { get; set; }
 	}
 }

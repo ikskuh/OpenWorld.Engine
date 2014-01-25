@@ -22,6 +22,7 @@
 	- Shaders
 		- Object Shaders (with world matrices)
 		- Post Processing Shaders (fixed VertexShader, custom FragmentShader)
+		- Automatic shader uniforms via Properties + Attributes
 - Input Manager
 	- Keyboard
 	- Mouse
@@ -30,6 +31,7 @@
 	- Rendering
 		- Simple (plain texture, no shading)
 		- Deferred (Rendering with support for lots of lights)
+			- Normal Mapping
 	- Cameras
 		- Scene, Camera and Renderer are separated so they can be combined in various ways
 - Component-based scene nodes

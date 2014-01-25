@@ -169,6 +169,7 @@
     <Compile Include="Texture2D.cs" />
     <Compile Include="TextureCube.cs" />
     <Compile Include="TextureType.cs" />
+    <Compile Include="UniformAttribute.cs" />
     <Compile Include="UserInterface\Button.cs" />
     <Compile Include="UserInterface\Control.cs" />
     <Compile Include="UserInterface\DefaultRenderers\FormRenderer.cs" />

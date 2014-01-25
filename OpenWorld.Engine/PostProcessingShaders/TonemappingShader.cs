@@ -34,17 +34,9 @@ void main()
 		}
 
 		/// <summary>
-		/// Applies the effect parameters.
-		/// </summary>
-		protected override void OnApply()
-		{
-			base.OnApply();
-			this.SetUniform("hdrExposure", this.HdrExposure);
-		}
-
-		/// <summary>
 		/// Gets or sets the HDR exposure.
 		/// </summary>
+		[Uniform("hdrExposure")]
 		public float HdrExposure { get; set; }
 	}
 }

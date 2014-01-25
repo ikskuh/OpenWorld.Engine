@@ -15,12 +15,7 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 				Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.geometry.fs"));
 		}
 
-		protected override void OnApply()
-		{
-			base.OnApply();
-			this.SetTexture("textureNormalMap", this.NormalMap, 1);
-		}
-
+		[Uniform("textureNormalMap")]
 		public Texture NormalMap { get; set; }
 	}
 }

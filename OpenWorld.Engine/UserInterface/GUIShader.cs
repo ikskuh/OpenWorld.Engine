@@ -52,16 +52,10 @@ void main()
 			this.Compile(this.vertexShader, fragmentShader);
 		}
 
-		protected override void OnApply()
-		{
-			base.OnApply();
-
-			this.SetUniform("Transform", this.Transform);
-			this.SetTexture("uiTexture", this.Texture, 0);
-		}
-
+		[Uniform("Transform")]
 		public Matrix4 Transform { get; set; }
 
+		[Uniform("uiTexture")]
 		public Texture2D Texture { get; set; }
 	}
 }

@@ -17,9 +17,17 @@ o OpenGL
 	o Rework FrameBuffer
 	o Use modern GL commands [GL.ProgramUniform, ...]
 	o Provide a wrapper around GL.Clear*
+	o Improve Shaders
+		o Custom shader preprocessor
+			o #import <module>
+			o #shadertype vertex [fragment, ...]
+		o Automatic uniform assignment
+			- UniformAttribute
+			- Improve Apply-Method
+		o 
+	
 o Rendering
 	o Deferred SceneRenderer
-		o Normal Mapping
 		o Spot Lights
 			o Shadow Mapping
 		o Directional Lights

@@ -95,7 +95,6 @@ void main()
 			base.OnApply();
 
 			this.SetUniform("time", time);
-			this.SetUniform("strength", this.Strength);
 
 			time += 1.0f;
 			if (time > 100.0f)
@@ -105,6 +104,7 @@ void main()
 		/// <summary>
 		/// Gets or sets the strength of the dithering.
 		/// </summary>
+		[Uniform("strength")]
 		public float Strength { get;set; }
 	}
 }

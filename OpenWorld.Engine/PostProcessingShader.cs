@@ -60,17 +60,9 @@ void main()
 		}
 
 		/// <summary>
-		/// Applies the effect parameters.
-		/// </summary>
-		protected override void OnApply()
-		{
-			base.OnApply();
-			this.SetTexture("backBuffer", this.BackBuffer, 0);
-		}
-
-		/// <summary>
 		/// Gets or sets the back buffer.
 		/// </summary>
+		[Uniform("backBuffer")]
 		public Texture BackBuffer { get; set; }
 	}
 }

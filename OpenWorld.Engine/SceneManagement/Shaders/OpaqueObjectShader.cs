@@ -14,14 +14,7 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 				Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.opaqueObject.fs"));
 		}
 
-		protected override void OnApply()
-		{
-			base.OnApply();
-
-			if (this.CheckUniformExists("textureLighting"))
-				this.SetTexture("textureLighting", this.LightBuffer, 1);
-		}
-
+	[Uniform("textureLighting")]
 		public Texture LightBuffer { get; set; }
 	}
 }

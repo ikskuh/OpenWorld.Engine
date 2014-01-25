@@ -87,8 +87,8 @@ namespace OpenWorld.Engine
 				Log.WriteLine(LocalizedStrings.ShaderLinkerResult);
 				Log.WriteLine(infoLog);
 			}
-			
-            GL.GetProgram(this.programID, GetProgramParameterName.LinkStatus, out status);
+
+			GL.GetProgram(this.programID, GetProgramParameterName.LinkStatus, out status);
 
 			if (status == 0)
 				throw new ShaderLinkingException(infoLog);
@@ -127,6 +127,53 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Apply()
 		{
+			// Load all properties with a Uniform-Attribute
+			this.TextureCount = 0; // Reset the texture count.
+			foreach (var property in this.GetType().GetProperties())
+			{
+				if (!property.CanRead)
+					continue;
+				UniformAttribute[] attribs = (UniformAttribute[])property.GetCustomAttributes(typeof(UniformAttribute), false);
+				if (attribs.Length != 1)
+					continue;
+				Type propertyType = property.PropertyType;
+				var name = attribs[0].UniformName;
+				var value = property.GetValue(this, new object[0]);
+				if (propertyType == typeof(float))
+				{
+					this.SetUniform(name, (float)value);
+				}
+				else if (propertyType == typeof(Vector2))
+				{
+					this.SetUniform(name, (Vector2)value);
+				}
+				else if (propertyType == typeof(Vector3))
+				{
+					this.SetUniform(name, (Vector3)value);
+				}
+				else if (propertyType == typeof(Vector4))
+				{
+					this.SetUniform(name, (Vector4)value);
+				}
+				else if (propertyType == typeof(Color))
+				{
+					this.SetUniform(name, (Color)value);
+				}
+				else if (propertyType == typeof(Matrix4))
+				{
+					this.SetUniform(name, (Matrix4)value, attribs[0].Transpose);
+				}
+				else if (typeof(Texture).IsAssignableFrom(propertyType))
+				{
+					this.SetTexture(name, (Texture)value, this.TextureCount);
+					this.TextureCount++;
+				}
+				else
+				{
+					Console.WriteLine("{0} is not supported for automatic uniform assignment.");
+				}
+			}
+
 			this.OnApply();
 		}
 
@@ -220,7 +267,7 @@ namespace OpenWorld.Engine
 			if (Shader.currentShader != this)
 				this.Use();
 			int location = this.GetUniformLocation(name);
-			switch(value.Length)
+			switch (value.Length)
 			{
 				case 1:
 					GL.Uniform1(location, 1, value);
@@ -235,7 +282,7 @@ namespace OpenWorld.Engine
 					GL.Uniform1(location, 4, value);
 					break;
 			}
-			
+
 		}
 
 
@@ -375,5 +422,11 @@ namespace OpenWorld.Engine
 		/// Gets the id of the OpenGL program.
 		/// </summary>
 		public int Id { get { return this.programID; } }
+
+		/// <summary>
+		/// Gets the number of automatically assigned textures.
+		/// <remarks>This can be used as a base texture offset for custom textures.</remarks>
+		/// </summary>
+		protected int TextureCount { get; private set; }
 	}
 }

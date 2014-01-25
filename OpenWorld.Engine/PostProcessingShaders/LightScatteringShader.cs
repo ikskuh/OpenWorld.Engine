@@ -65,49 +65,40 @@ void main()
 		}
 
 		/// <summary>
-		/// Applies the effect parameters.
-		/// </summary>
-		protected override void OnApply()
-		{
-			base.OnApply();
-			this.SetUniform("exposure", this.Exposure);
-			this.SetUniform("decay", this.Decay);
-			this.SetUniform("density", this.Density);
-			this.SetUniform("weight", this.Weight);
-			this.SetUniform("lightPositionOnScreen", this.LightPosition);
-
-			this.SetTexture("occlusionBuffer", this.OcclusionBuffer, 1);
-		}
-
-		/// <summary>
 		/// Gets or sets the occlusion buffer.
 		/// </summary>
+		[Uniform("occlusionBuffer")]
 		public Texture OcclusionBuffer { get; set; }
 
 		/// <summary>
 		/// Gets or sets the decay. The higher this value is, the longer the rays will be.
 		/// </summary>
+		[Uniform("decay")]
 		public float Decay { get; set; }
 
 		/// <summary>
 		/// Gets or sets the exposure. Ray brightness will be scaled by the exposure.
 		/// <remarks>Usually about 0.005</remarks>
 		/// </summary>
+		[Uniform("exposure")]
 		public float Exposure { get; set; }
 
 		/// <summary>
 		/// Gets or sets the density. Ray density defines how long a ray is max.
 		/// </summary>
+		[Uniform("density")]
 		public float Density { get; set; }
 
 		/// <summary>
 		/// Gets or sets the weight. The weight defines how strong every sample on the ray will be taken into account.
 		/// </summary>
+		[Uniform("weight")]
 		public float Weight { get; set; }
 
 		/// <summary>
 		/// Gets or sets the screen space light position.
 		/// </summary>
+		[Uniform("lightPositionOnScreen")]
 		public Vector2 LightPosition { get; set; }
 	}
 }
