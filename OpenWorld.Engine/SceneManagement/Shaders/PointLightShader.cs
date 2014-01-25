@@ -24,6 +24,8 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 		[Uniform("Radius")]
 		public float Radius { get; set; }
 
+		[Uniform("ViewPosition")]
+		public Vector3 ViewPosition { get; set; }
 
 		[Uniform("texturePosition")]
 		public Texture PositionBuffer { get; set; }

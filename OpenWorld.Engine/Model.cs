@@ -108,11 +108,13 @@ namespace OpenWorld.Engine
 
 					Assimp.Material assimpMaterial = null;
 					Texture2D diffuseTexture = null;
+					Texture2D specularTexture = null;
 					Texture2D normalMap = null;
 					if (scene.HasMaterials && mesh.MaterialIndex >= 0)
 					{
 						assimpMaterial = scene.Materials[mesh.MaterialIndex];
 						diffuseTexture = LoadTexture(context, assimpMaterial.GetTexture(Assimp.TextureType.Diffuse, 0));
+						specularTexture = LoadTexture(context, assimpMaterial.GetTexture(Assimp.TextureType.Specular, 0));
 
 						bool usedSRGB = Texture.UseSRGB;
 						Texture.UseSRGB = false; // We need "default" texture loading because normal maps are already linear space
@@ -176,6 +178,7 @@ namespace OpenWorld.Engine
 
 					ModelMesh modelMesh = new ModelMesh(indices, vertices);
 					modelMesh.DiffuseTexture = diffuseTexture;
+					modelMesh.SpecularTexture = specularTexture;
 					modelMesh.NormalMap = normalMap;
 					meshList.Add(modelMesh);
 				}
@@ -213,6 +216,8 @@ namespace OpenWorld.Engine
 			{
 				if (setTexture != null)
 					setTexture(TextureType.Diffuse, mesh.DiffuseTexture);
+				if (setTexture != null)
+					setTexture(TextureType.Specular, mesh.SpecularTexture);
 				if (setTexture != null)
 					setTexture(TextureType.NormalMap, mesh.NormalMap);
 				mesh.Draw();

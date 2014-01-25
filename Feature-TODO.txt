@@ -65,7 +65,6 @@ o Physics
 		o Cylinder
 		o Minkowski Sum
 		o Multishape
-		o Sphere
 		o Terrain
 	o Adding soft bodies
 	o Adding character controllers

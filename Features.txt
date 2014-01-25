@@ -39,6 +39,7 @@
 	- Renderer (Draws a model)
 	- RigidBody (Bullet physics rigid body)
 	- BoxShape (Physics collider)
+	- SphereShape (Physics collider)
 	- PolygonShape (Physics collider)
 	- PointLight (Represents a point light)
 	- Scriptable (Lua scripting for nodes)

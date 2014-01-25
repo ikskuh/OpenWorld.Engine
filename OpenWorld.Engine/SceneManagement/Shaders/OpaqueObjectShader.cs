@@ -14,7 +14,17 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 				Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.opaqueObject.fs"));
 		}
 
-	[Uniform("textureLighting")]
-		public Texture LightBuffer { get; set; }
+		[Uniform("textureDiffuseColor")]
+		public Texture DiffuseColorTexture { get; set; }
+
+		[Uniform("textureSpecularColor")]
+		public Texture SpecularColorTexture { get; set; }
+
+
+		[Uniform("textureDiffuseLighting")]
+		public Texture DiffuseLightBuffer { get; set; }
+
+	[Uniform("textureSpecularLighting")]
+		public Texture SpecularLightBuffer { get; set; }
 	}
 }

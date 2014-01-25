@@ -130,6 +130,11 @@ namespace OpenWorld.Engine
 		public Texture2D DiffuseTexture { get; set; }
 
 		/// <summary>
+		/// Gets or sets the specular texture of the mesh.
+		/// </summary>
+		public Texture2D SpecularTexture { get; set; }
+
+		/// <summary>
 		/// Gets or sets the normal map of the mesh.
 		/// </summary>
 		public Texture2D NormalMap { get; set; }

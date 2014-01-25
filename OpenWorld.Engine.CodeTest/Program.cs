@@ -93,6 +93,8 @@ namespace OpenWorld.Engine.CodeTest
 			// Clear the screen, as usual
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
+
+
 			this.scene.Draw(this.cameraLeft, this.renderer, time);
 			//this.scene.Draw(this.cameraRight, this.renderer, time);
 		}

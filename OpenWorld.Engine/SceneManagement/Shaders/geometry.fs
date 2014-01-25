@@ -13,7 +13,7 @@ layout(location = 0) out vec4 positionOut;
 layout(location = 1) out vec4 normalOut;
 
 uniform sampler2D textureNormalMap;
-uniform vec3 viewPosition;
+uniform float specularPower;
 
 void main()
 {
@@ -22,5 +22,5 @@ void main()
 	//vec3 bump = normalize((255.0f / 127.0f) * texture(textureNormalMap, uv).xyz - (127.0f / 255.0f));
 	vec3 bump = normalize(2.0f * texture(textureNormalMap, uv).xyz - 1.0f);
     normalOut.xyz = mat3(tangent, bitangent, normal) * bump;
-	normalOut.w = 1.0f;
+	normalOut.w = specularPower;
 }

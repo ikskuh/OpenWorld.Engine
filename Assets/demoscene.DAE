@@ -2,9 +2,10 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
   <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2014-01-24T22:48:16Z</created><keywords></keywords><modified>2014-01-24T22:48:16Z</modified><revision></revision><subject></subject><title></title><unit meter="0.025400" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_images>
-    <image id="Map #3-image" name="Map #3"><init_from>file://D:\Datenbank\Bitmaps\Texturen\texture_pack_1\sand5.bmp</init_from></image>
+    <image id="Map #3-image" name="Map #3"><init_from>file://Stone wall diffuse.png</init_from></image>
     <image id="Map #2-image" name="Map #2"><init_from>file://D:\Datenbank\Bitmaps\Texturen\texture_pack_1\rock3.bmp</init_from></image>
-    <image id="Map #3-image-nm" name="Map #4"><init_from>file://sand5_nm.png</init_from></image>
+    <image id="Map #3-image-nm" name="Map #4"><init_from>file://Stone wall normal.png</init_from></image>
+    <image id="Map #3-image-spec" name="Map #4"><init_from>file://Stone wall specular.png</init_from></image>
     <image id="Map #2-image-nm" name="Map #5"><init_from>file://rock3_nm.png</init_from></image>
   </library_images>
   <library_materials>
@@ -37,6 +38,17 @@
                 </extra>
               </texture>
             </diffuse>
+            <specular>
+              <texture texture="Map #3-image-spec" texcoord="CHANNEL0">
+                <extra>
+                  <technique profile="MAYA">
+                    <wrapU sid="wrapU0">TRUE</wrapU>
+                    <wrapV sid="wrapV0">TRUE</wrapV>
+                    <blend_mode>ADD</blend_mode>
+                  </technique>
+                </extra>
+              </texture>
+            </specular>
             <bump>
               <texture texture="Map #3-image-nm" texcoord="CHANNEL0">
                 <extra>

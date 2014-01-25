@@ -17,5 +17,8 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 
 		[Uniform("textureNormalMap")]
 		public Texture NormalMap { get; set; }
+
+		[Uniform("specularPower")]
+		public float SpecularPower { get; set; }
 	}
 }

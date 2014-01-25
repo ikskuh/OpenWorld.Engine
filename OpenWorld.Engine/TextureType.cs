@@ -18,6 +18,11 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// A normal map. 
 		/// </summary>
-		NormalMap
+		NormalMap,
+
+		/// <summary>
+		/// A specular texture.
+		/// </summary>
+		Specular,
 	}
 }
