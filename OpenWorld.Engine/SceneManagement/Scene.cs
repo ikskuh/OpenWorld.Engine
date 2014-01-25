@@ -1,5 +1,4 @@
-﻿using Jitter;
-using Jitter.Collision;
+﻿using BulletSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +9,11 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a 3D scene.
 	/// </summary>
-	public sealed class Scene
+	public sealed class Scene : System.IDisposable
 	{
 		readonly SceneNode root = null;
 
-		private CollisionSystem collisionSystem;
-		private World world;
+		private DynamicsWorld world;
 		private SceneRenderer defaultRenderer; 
 
 
@@ -39,10 +37,17 @@ namespace OpenWorld.Engine.SceneManagement
 
 			if (flags.HasFlag(SceneCreationFlags.EnablePhysics))
 			{
-				this.collisionSystem = new CollisionSystemPersistentSAP();
-				this.world = new World(this.collisionSystem);
-				this.world.Gravity = new Jitter.LinearMath.JVector(0.0f, -9.81f, 0.0f);
+				this.CollisionConfiguration = new DefaultCollisionConfiguration();
+				this.Dispatcher = new CollisionDispatcher(this.CollisionConfiguration);
+				this.Broadphase = new DbvtBroadphase();
+
+				this.world = new DiscreteDynamicsWorld(this.Dispatcher, this.Broadphase, null, this.CollisionConfiguration);
 			}
+		}
+
+		~Scene()
+		{
+			this.Dispose();
 		}
 
 		/// <summary>
@@ -53,7 +58,7 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			if (this.PhysicsEnabled)
 			{
-				this.world.Step(time.DeltaTime, false);
+				this.world.StepSimulation(time.DeltaTime, 15);
 			}
 			// Just update the root node.
 			this.root.DoUpdate(time);
@@ -88,6 +93,28 @@ namespace OpenWorld.Engine.SceneManagement
 		}
 
 		/// <summary>
+		/// Disposes all native components.
+		/// </summary>
+		public void Dispose()
+		{
+			if (this.World != null)
+				this.World.Dispose();
+			if (this.Broadphase != null)
+				this.Broadphase.Dispose();
+			if (this.Dispatcher != null)
+				this.Dispatcher.Dispose();
+			if (this.CollisionConfiguration != null)
+				this.CollisionConfiguration.Dispose();
+
+			this.world = null;
+			this.Broadphase = null;
+			this.Dispatcher = null;
+			this.CollisionConfiguration = null;
+
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
 		/// Gets the root of the scene.
 		/// </summary>
 		public SceneNode Root
@@ -96,17 +123,9 @@ namespace OpenWorld.Engine.SceneManagement
 		}
 
 		/// <summary>
-		/// Gets the collision system if physics are enabled or returns null if not.
-		/// </summary>
-		public CollisionSystem CollisionSystem
-		{
-			get { return collisionSystem; }
-		}
-
-		/// <summary>
 		/// Gets the Jitter world if physics are enabled or returns null if not.
 		/// </summary>
-		public World World
+		public DynamicsWorld World
 		{
 			get { return world; }
 		}
@@ -118,6 +137,23 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			get { return this.world != null; }
 		}
+
+		/// <summary>
+		/// Gets the bullet collision configuration.
+		/// </summary>
+		public CollisionConfiguration CollisionConfiguration { get; private set; }
+
+
+		/// <summary>
+		/// Gets the bullet collision dispatcher.
+		/// </summary>
+		public CollisionDispatcher Dispatcher { get; private set; }
+
+
+		/// <summary>
+		/// Gets the bullet broadphase interface.
+		/// </summary>
+		public BroadphaseInterface Broadphase { get; private set; }
 	}
 
 	/// <summary>

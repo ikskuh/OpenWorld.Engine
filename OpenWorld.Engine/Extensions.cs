@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using BulletSharp;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,22 +64,41 @@ namespace OpenWorld.Engine
 			return box;
 		}
 
-		/// <summary>
-		/// Converts a jitter matrix and vector to an OpenTK transformation matrix.
-		/// </summary>
-		/// <param name="matrix"></param>
-		/// <param name="translation"></param>
-		/// <returns></returns>
-		public static Matrix4 ToOpenTK(this Jitter.LinearMath.JMatrix matrix, Jitter.LinearMath.JVector translation)
+		public static Matrix ToBullet(this Matrix4 matrix)
 		{
-			Matrix4 mat = Matrix4.Identity;
+			return new Matrix()
+			{
+				M11 = matrix.M11,
+				M12 = matrix.M12,
+				M13 = matrix.M13,
+				M14 = matrix.M14,
 
-			mat.Row0 = new Vector4(matrix.M11, matrix.M12, matrix.M13, 0.0f);
-			mat.Row1 = new Vector4(matrix.M21, matrix.M22, matrix.M23, 0.0f);
-			mat.Row2 = new Vector4(matrix.M31, matrix.M32, matrix.M33, 0.0f);
-			mat.Row3 = new Vector4(translation.X, translation.Y, translation.Z, 1.0f);
+				M21 = matrix.M21,
+				M22 = matrix.M22,
+				M23 = matrix.M23,
+				M24 = matrix.M24,
 
-			return mat;
+				M31 = matrix.M31,
+				M32 = matrix.M32,
+				M33 = matrix.M33,
+				M34 = matrix.M34,
+
+				M41 = matrix.M41,
+				M42 = matrix.M42,
+				M43 = matrix.M43,
+				M44 = matrix.M44,
+			};
+		}
+
+		public static Matrix4 ToOpenTK(this Matrix matrix)
+		{
+			return new Matrix4()
+			{
+				Row0 = new OpenTK.Vector4(matrix.M11, matrix.M12, matrix.M13, matrix.M14),
+				Row1 = new OpenTK.Vector4(matrix.M21, matrix.M22, matrix.M23, matrix.M24),
+				Row2 = new OpenTK.Vector4(matrix.M31, matrix.M32, matrix.M33, matrix.M34),
+				Row3 = new OpenTK.Vector4(matrix.M41, matrix.M42, matrix.M43, matrix.M44),
+			};
 		}
 	}
 }

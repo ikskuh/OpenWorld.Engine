@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BulletSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// </summary>
 	public sealed class BoxShape : Shape
 	{
-		Jitter.Collision.Shapes.BoxShape boxShape;
+		BulletSharp.BoxShape boxShape;
 
 		/// <summary>
 		/// Creates a new box shape.
@@ -27,10 +28,10 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		protected override void OnStart(GameTime time)
 		{
-			this.boxShape = new Jitter.Collision.Shapes.BoxShape(
-				this.Length,
-				this.Height,
-				this.Width);
+			this.boxShape = new BulletSharp.BoxShape(
+				0.5f * this.Width,
+				0.5f * this.Height,
+				0.5f * this.Length);
 		}
 
 
@@ -38,7 +39,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// Gets the Jitter shape fitting this shape component.
 		/// </summary>
 		/// <returns>A Jitter shape.</returns>
-		protected internal override Jitter.Collision.Shapes.Shape GetShape()
+		protected internal override CollisionShape GetShape()
 		{
 			return this.boxShape;
 		}

@@ -21,10 +21,6 @@ o OpenGL
 		o Custom shader preprocessor
 			o #import <module>
 			o #shadertype vertex [fragment, ...]
-		o Automatic uniform assignment
-			- UniformAttribute
-			- Improve Apply-Method
-	
 o Rendering
 	o Deferred SceneRenderer
 		o Spot Lights

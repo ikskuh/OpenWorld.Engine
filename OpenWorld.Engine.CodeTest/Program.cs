@@ -37,7 +37,7 @@ namespace OpenWorld.Engine.CodeTest
 
 			this.cameraLeft = new PerspectiveLookAtCamera();
 			this.cameraLeft.LookAt(
-				new Vector3(1.0f, 5.0f, 8.0f),
+				new Vector3(2.0f, 10.0f, 16.0f),
 				new Vector3(0.0f, 0.0f, 0.0f));
 
 			//this.renderer = new DeferredRenderer(400, 480);
@@ -48,10 +48,9 @@ namespace OpenWorld.Engine.CodeTest
 			SceneNode child = new SceneNode();
 			var renderer = child.Components.Add<Renderer>();
 			renderer.Model = this.Assets.Load<Model>("crate");
-			child.Components.Add<Scriptable>().Script =
-@"function update(self)
-	self.Node.Transform:Rotate(0, 0.2, 0)
-end";
+			child.Components.Add<BoxShape>();
+			child.Components.Add<RigidBody>().Mass = 1.0f;
+			child.Transform.LocalPosition = new Vector3(0, 5, 0);
 			this.scene.Root.Children.Add(child);
 
 			SceneNode light = new SceneNode();
@@ -61,8 +60,23 @@ end";
 
 			SceneNode demo = new SceneNode();
 			demo.Components.Add<Renderer>().Model = this.Assets.Load<Model>("demoscene");
-			demo.Transform.SetMatrix(Matrix4.CreateScale(0.5f) * Matrix4.CreateTranslation(0, -2, 0));
+
+			var polygonShape = demo.Components.Add<PolygonShape>();
+			polygonShape.Model = this.Assets.Load<Model>("demoscene");
+
+			var demoRigidBody = demo.Components.Add<RigidBody>();
+			//demoRigidBody.IsStatic = true;
 			demo.Parent = scene.Root;
+
+			SceneNode ground = new SceneNode();
+			var boxShape = ground.Components.Add<BoxShape>();
+			boxShape.Width = 100.0f;
+			boxShape.Height = 0.5f;
+			boxShape.Length = 100.0f;
+
+			var groundRigidBody = ground.Components.Add<RigidBody>();
+			//groundRigidBody.IsStatic = true;
+			ground.Parent = scene.Root;
 		}
 
 		protected override void OnUpdate(GameTime time)

@@ -1,4 +1,4 @@
-﻿using Jitter.Collision.Shapes;
+﻿using BulletSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace OpenWorld.Engine.SceneManagement
 	[RequiredComponent(typeof(Shape))]
 	public sealed class RigidBody : SceneNode.Component
 	{
-		Jitter.Dynamics.RigidBody rigidBody;
+		BulletSharp.RigidBody rigidBody;
 
 
 		/// <summary>
@@ -25,15 +25,21 @@ namespace OpenWorld.Engine.SceneManagement
 				var shape = this.Node.Components.Get<Shape>();
 				if (shape == null)
 					throw new NullReferenceException("Could not find a shape component for the rigid body.");
-				this.rigidBody = new Jitter.Dynamics.RigidBody(
-					shape.GetShape(),
-					this.Node.Material.JitterMaterial,
-					false);
+
+				MotionState motionState = new DefaultMotionState(this.Node.Transform.GetGlobalMatrix().ToBullet());
+
+				var constructionInfo = new RigidBodyConstructionInfo(
+					this.Mass,
+					motionState,
+					shape.GetShape());
+
+				this.rigidBody = new BulletSharp.RigidBody(constructionInfo);
+				this.rigidBody.UserObject = this;
 			}
 
 			if (this.Node.Scene.PhysicsEnabled)
 			{
-				this.Node.Scene.World.AddBody(this.rigidBody);
+				this.Node.Scene.World.AddRigidBody(this.rigidBody);
 			}
 		}
 
@@ -43,7 +49,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		protected override void OnUpdate(GameTime time)
 		{
-			this.Node.Transform.SetMatrix(this.rigidBody.Orientation.ToOpenTK(this.rigidBody.Position));
+			this.Node.Transform.SetMatrix(this.rigidBody.WorldTransform.ToOpenTK());
 		}
 
 
@@ -54,8 +60,13 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			if (this.Node.Scene.PhysicsEnabled)
 			{
-				this.Node.Scene.World.RemoveBody(this.rigidBody);
+				this.Node.Scene.World.RemoveRigidBody(this.rigidBody);
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the mass of the rigid body.
+		/// </summary>
+		public float Mass { get; set; }
 	}
 }
