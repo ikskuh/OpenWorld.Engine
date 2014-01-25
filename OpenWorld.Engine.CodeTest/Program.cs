@@ -45,18 +45,7 @@ namespace OpenWorld.Engine.CodeTest
 
 			this.scene = new Scene(SceneCreationFlags.EnablePhysics);
 
-			SceneNode child = new SceneNode();
-			var renderer = child.Components.Add<Renderer>();
-			renderer.Model = this.Assets.Load<Model>("crate");
-			child.Components.Add<BoxShape>();
-			child.Components.Add<RigidBody>().Mass = 1.0f;
-			child.Transform.LocalPosition = new Vector3(0, 5, 0);
-			this.scene.Root.Children.Add(child);
-
-			SceneNode light = new SceneNode();
-			light.Components.Add<PointLight>();
-			light.Transform.LocalPosition = new Vector3(0, 0, 2);
-			light.Parent = child;
+			CreateBox();
 
 			SceneNode demo = new SceneNode();
 			demo.Components.Add<Renderer>().Model = this.Assets.Load<Model>("demoscene");
@@ -79,8 +68,23 @@ namespace OpenWorld.Engine.CodeTest
 			ground.Parent = scene.Root;
 		}
 
+		private void CreateBox()
+		{
+			SceneNode child = new SceneNode();
+			var renderer = child.Components.Add<Renderer>();
+			renderer.Model = this.Assets.Load<Model>("crate");
+			child.Components.Add<PointLight>();
+			child.Components.Add<SphereShape>();
+			child.Components.Add<RigidBody>().Mass = 1.0f;
+			child.Transform.LocalPosition = new Vector3(0, 5, 0);
+			this.scene.Root.Children.Add(child);
+		}
+
 		protected override void OnUpdate(GameTime time)
 		{
+			if(this.Input.Keyboard[OpenTK.Input.Key.Space])
+				CreateBox();
+
 			this.scene.Update(time);
 		}
 

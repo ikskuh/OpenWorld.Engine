@@ -14,6 +14,10 @@ namespace OpenWorld.Engine
 		/// A diffuse texture.
 		/// </summary>
 		Diffuse,
+
+		/// <summary>
+		/// A normal map. 
+		/// </summary>
 		NormalMap
 	}
 }

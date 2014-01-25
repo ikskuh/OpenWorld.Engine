@@ -67,7 +67,6 @@ o Physics
 		o Multishape
 		o Sphere
 		o Terrain
-		o Triangle Shape / Polygon
 	o Adding soft bodies
 	o Adding character controllers
 	o Adding kinematic bodies

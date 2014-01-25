@@ -37,8 +37,9 @@
 		- Scene, Camera and Renderer are separated so they can be combined in various ways
 - Component-based scene nodes
 	- Renderer (Draws a model)
-	- RigidBody (Jitter physics rigid body)
+	- RigidBody (Bullet physics rigid body)
 	- BoxShape (Physics collider)
+	- PolygonShape (Physics collider)
 	- PointLight (Represents a point light)
 	- Scriptable (Lua scripting for nodes)
 - Simple Materials

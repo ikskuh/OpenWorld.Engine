@@ -33,6 +33,11 @@ namespace OpenWorld.Engine
 			this.fov = fov;
 		}
 
+		/// <summary>
+		/// Gets the projection matrix.
+		/// </summary>
+		/// <param name="camera">The camera that uses the projection matrix.</param>
+		/// <returns>Projection matrix</returns>
 		public OpenTK.Matrix4 GetProjectionMatrix(Camera camera)
 		{
 			var viewport = camera.GetViewport();

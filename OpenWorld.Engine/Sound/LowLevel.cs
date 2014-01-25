@@ -6,7 +6,7 @@ namespace OpenWorld.Engine.Sound
     /// <summary>
     /// Wrapper of oggvorbis lib.
     /// </summary>
-    public partial class NativeConstants
+    internal partial class NativeConstants
     {
 
         /// _OGG_H -> 
@@ -145,7 +145,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct vorbis_info
+	internal struct vorbis_info
     {
 
         /// int
@@ -174,7 +174,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct vorbis_dsp_state
+	internal struct vorbis_dsp_state
     {
 
         /// int
@@ -239,7 +239,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct vorbis_block
+	internal struct vorbis_block
     {
 
         /// float**
@@ -307,7 +307,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct alloc_chain
+	internal struct alloc_chain
     {
 
         /// void*
@@ -318,7 +318,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct vorbis_comment
+	internal struct vorbis_comment
     {
 
         /// char**
@@ -339,24 +339,24 @@ namespace OpenWorld.Engine.Sound
     ///size: size_t->unsigned int
     ///nmemb: size_t->unsigned int
     ///datasource: void*
-    public delegate uint _read_func(IntPtr ptr, IntPtr size, IntPtr nmemb, IntPtr datasource);
+	internal delegate uint _read_func(IntPtr ptr, IntPtr size, IntPtr nmemb, IntPtr datasource);
 
     /// Return Type: int
     ///datasource: void*
     ///offset: ogg_int64_t->__int64
     ///whence: int
-    public delegate int _seek_func(IntPtr datasource, long offset, int whence);
+	internal delegate int _seek_func(IntPtr datasource, long offset, int whence);
 
     /// Return Type: int
     ///datasource: void*
-    public delegate int _close_func(IntPtr datasource);
+	internal delegate int _close_func(IntPtr datasource);
 
     /// Return Type: int
     ///datasource: void*
-    public delegate int _tell_func(IntPtr datasource);
+	internal delegate int _tell_func(IntPtr datasource);
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct OggVorbis_File
+	internal struct OggVorbis_File
     {
 
         /// void*
@@ -427,7 +427,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct ovectl_ratemanage_arg
+	internal struct ovectl_ratemanage_arg
     {
 
         /// int
@@ -456,7 +456,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct ovectl_ratemanage2_arg
+	internal struct ovectl_ratemanage2_arg
     {
 
         /// int
@@ -486,10 +486,10 @@ namespace OpenWorld.Engine.Sound
     ///channels: int
     ///samples: int
     ///filter_param: void*
-    public delegate void Anonymous_84c13e06_455d_4e54_b13e_5306b4d9db9b(ref IntPtr pcm, int channels, int samples, IntPtr filter_param);
+	internal delegate void Anonymous_84c13e06_455d_4e54_b13e_5306b4d9db9b(ref IntPtr pcm, int channels, int samples, IntPtr filter_param);
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct oggpack_buffer
+	internal struct oggpack_buffer
     {
 
         /// int
@@ -509,7 +509,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct ogg_sync_state
+	internal struct ogg_sync_state
     {
 
         /// void*
@@ -535,7 +535,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public unsafe struct ogg_stream_state
+	internal unsafe struct ogg_stream_state
     {
 
         /// void*
@@ -594,7 +594,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct ov_callbacks
+	internal struct ov_callbacks
     {
 
         /// _read_func
@@ -611,7 +611,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct ogg_packet
+	internal struct ogg_packet
     {
 
         /// void*
@@ -634,7 +634,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct ogg_iovec_t
+	internal struct ogg_iovec_t
     {
 
         /// void*
@@ -645,7 +645,7 @@ namespace OpenWorld.Engine.Sound
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    public struct ogg_page
+	internal struct ogg_page
     {
 
         /// void*
@@ -661,7 +661,7 @@ namespace OpenWorld.Engine.Sound
         public int body_len;
     }
 
-    public partial class NativeMethods
+	internal partial class NativeMethods
     {
 
         /// Return Type: void

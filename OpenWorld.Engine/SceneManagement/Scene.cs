@@ -45,6 +45,9 @@ namespace OpenWorld.Engine.SceneManagement
 			}
 		}
 
+		/// <summary>
+		/// Destroys the scene.
+		/// </summary>
 		~Scene()
 		{
 			this.Dispose();
@@ -98,7 +101,9 @@ namespace OpenWorld.Engine.SceneManagement
 		public void Dispose()
 		{
 			if (this.World != null)
-				this.World.Dispose();
+			{
+ 				
+			}
 			if (this.Broadphase != null)
 				this.Broadphase.Dispose();
 			if (this.Dispatcher != null)

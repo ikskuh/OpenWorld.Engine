@@ -64,6 +64,11 @@ namespace OpenWorld.Engine
 			return box;
 		}
 
+		/// <summary>
+		/// Converts an OpenTK matrix to a Bullet matrix.
+		/// </summary>
+		/// <param name="matrix">The matrix to convert.</param>
+		/// <returns>The converted matrix.</returns>
 		public static Matrix ToBullet(this Matrix4 matrix)
 		{
 			return new Matrix()
@@ -90,6 +95,12 @@ namespace OpenWorld.Engine
 			};
 		}
 
+
+		/// <summary>
+		/// Converts a Bullet matrix to an OpenTK matrix.
+		/// </summary>
+		/// <param name="matrix">The matrix to convert.</param>
+		/// <returns>The converted matrix.</returns>
 		public static Matrix4 ToOpenTK(this Matrix matrix)
 		{
 			return new Matrix4()
