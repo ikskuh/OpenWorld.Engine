@@ -113,7 +113,12 @@ namespace OpenWorld.Engine
 					{
 						assimpMaterial = scene.Materials[mesh.MaterialIndex];
 						diffuseTexture = LoadTexture(context, assimpMaterial.GetTexture(Assimp.TextureType.Diffuse, 0));
+
+						bool usedSRGB = Texture.UseSRGB;
+						Texture.UseSRGB = false; // We need "default" texture loading because normal maps are already linear space
 						normalMap = LoadTexture(context, assimpMaterial.GetTexture(Assimp.TextureType.Normals, 0));
+
+						Texture.UseSRGB = usedSRGB;
 					}
 
 					Vector3D[] texcoord0 = null;

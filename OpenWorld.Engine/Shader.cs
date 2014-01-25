@@ -49,6 +49,9 @@ namespace OpenWorld.Engine
 				if (attribs.Length != 1)
 					continue;
 
+				// Create a closure for each uniform.
+				// The closure later can simply and fast assign the uniform values.
+
 				AutomaticShaderUniform uniform = new AutomaticShaderUniform();
 
 				Type propertyType = property.PropertyType;

@@ -31,6 +31,7 @@
 	- Rendering
 		- Simple (plain texture, no shading)
 		- Deferred (Rendering with support for lots of lights)
+			- Point Lights
 			- Normal Mapping
 	- Cameras
 		- Scene, Camera and Renderer are separated so they can be combined in various ways

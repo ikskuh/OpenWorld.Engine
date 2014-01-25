@@ -149,10 +149,5 @@ namespace OpenWorld.Engine
 		/// Gets the height of the texture
 		/// </summary>
 		public int Height { get; private set; }
-
-		/// <summary>
-		/// Gets or sets a value that determines wheather sRGB is used or not.
-		/// </summary>
-		public static bool UseSRGB { get; set; }
 	}
 }

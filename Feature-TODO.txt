@@ -24,7 +24,6 @@ o OpenGL
 		o Automatic uniform assignment
 			- UniformAttribute
 			- Improve Apply-Method
-		o 
 	
 o Rendering
 	o Deferred SceneRenderer

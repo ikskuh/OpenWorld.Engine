@@ -164,5 +164,10 @@ namespace OpenWorld.Engine
 				GL.TexParameter(this.Target, TextureParameterName.TextureMinFilter, min);
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets a value that determines wheather sRGB is used or not.
+		/// </summary>
+		public static bool UseSRGB { get; set; }
 	}
 }

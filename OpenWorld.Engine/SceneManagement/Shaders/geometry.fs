@@ -19,7 +19,8 @@ void main()
 {
 	positionOut = vec4(position, 1);
 
-	vec3 bump = normalize((255.0f / 127.0f) * texture(textureNormalMap, uv).xyz - (127.0f / 255.0f));
+	//vec3 bump = normalize((255.0f / 127.0f) * texture(textureNormalMap, uv).xyz - (127.0f / 255.0f));
+	vec3 bump = normalize(2.0f * texture(textureNormalMap, uv).xyz - 1.0f);
     normalOut.xyz = mat3(tangent, bitangent, normal) * bump;
 	normalOut.w = 1.0f;
 }
