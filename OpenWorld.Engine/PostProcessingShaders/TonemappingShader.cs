@@ -10,7 +10,7 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class TonemappingShader : PostProcessingShader
 	{
-		static readonly string shaderSource = @"#version 330
+		static readonly string shaderSource = @"#version 410
 layout(location = 0) out vec4 result;
 
 uniform float hdrExposure;

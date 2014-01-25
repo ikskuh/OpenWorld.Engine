@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
-  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2013-12-29T19:56:59Z</created><keywords></keywords><modified>2013-12-29T19:56:59Z</modified><revision></revision><subject></subject><title></title><unit meter="0.025400" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
+  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2014-01-24T22:10:11Z</created><keywords></keywords><modified>2014-01-24T22:10:11Z</modified><revision></revision><subject></subject><title></title><unit meter="0.025400" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_images>
-    <image id="Map #1-image" name="Map #1"><init_from>file://D:\OpenWorld\Game\Assets\models\crate.png</init_from></image>
+    <image id="Map #1-image" name="Map #1"><init_from>file://D:\OpenWorld\Engine\Assets\crate.png</init_from></image>
+    <image id="Map #2-image" name="Map #2"><init_from>file://D:\OpenWorld\Engine\Assets\crate_nm.png</init_from></image>
   </library_images>
   <library_materials>
     <material id="Material #25" name="Material #25">
@@ -31,9 +32,17 @@
                 </extra>
               </texture>
             </diffuse>
-            <specular>
-              <color sid="specular">0.000000  0.000000 0.000000 1.000000</color>
-            </specular>
+            <bump>
+              <texture texture="Map #2-image" texcoord="CHANNEL0">
+                <extra>
+                  <technique profile="MAYA">
+                    <wrapU sid="wrapU0">TRUE</wrapU>
+                    <wrapV sid="wrapV0">TRUE</wrapV>
+                    <blend_mode>ADD</blend_mode>
+                  </technique>
+                </extra>
+              </texture>
+            </bump>
             <shininess>
               <float sid="shininess">2.000000</float>
             </shininess>
@@ -12764,9 +12773,28 @@
       </mesh>
     </geometry>
   </library_geometries>
+  <library_animations>
+    <animation id="Box001-anim" name="Box001"><animation><source id="Box001-Matrix-animation-input"><float_array id="Box001-Matrix-animation-input-array" count="0">
+</float_array><technique_common><accessor source="#Box001-Matrix-animation-input-array" count="0"><param name="TIME" type="float"/></accessor></technique_common></source><source id="Box001-Matrix-animation-output-transform"><float_array id="Box001-Matrix-animation-output-transform-array" count="0">
+</float_array><technique_common><accessor source="#Box001-Matrix-animation-output-transform-array" count="0" stride="16"><param type="float4x4"/></accessor></technique_common></source><source id="Box001-Interpolations"><Name_array id="Box001-Interpolations-array" count="0">
+</Name_array><technique_common><accessor source="#Box001-Interpolations-array" count="0"><param type="name"/></accessor></technique_common></source><sampler id="Box001-Matrix-animation-transform"><input semantic="INPUT" source="#Box001-Matrix-animation-input"/><input semantic="OUTPUT" source="#Box001-Matrix-animation-output-transform"/><input semantic="INTERPOLATION" source="#Box001-Interpolations"/></sampler><channel source="#Box001-Matrix-animation-transform" target="Box001/matrix"/></animation></animation>
+  </library_animations>
+  <library_lights>
+    <light id="_ncl1_1" name="_ncl1_1">
+      <technique_common>
+        <point>
+          <color sid="color">1.000000 1.000000 1.000000</color>
+        </point>
+      </technique_common>
+      <technique profile="MAYA">
+        <intensity sid="intensity">4774.640000</intensity>
+      </technique>
+    </light>
+  </library_lights>
   <library_visual_scenes>
     <visual_scene id="crate" name="crate">
       <node name="Box001" id="Box001" sid="Box001"><matrix sid="matrix">1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -0.500000 0.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000</matrix><instance_geometry url="#Box001-lib"><bind_material><technique_common><instance_material symbol="Material #25" target="#Material #25"/></technique_common></bind_material></instance_geometry><extra><technique profile="FCOLLADA"><visibility>1.000000</visibility></technique></extra></node>
+      <node name="PhotometricLight001" id="PhotometricLight001" sid="PhotometricLight001"><matrix sid="matrix">1.000000 0.000000 0.000000 -11.215965 0.000000 1.000000 0.000000 10.244211 0.000000 0.000000 1.000000 7.808988 0.000000 0.000000 0.000000 1.000000</matrix><instance_light url="#_ncl1_1"/><extra><technique profile="FCOLLADA"><visibility>1.000000</visibility></technique></extra></node>
       <extra><technique profile="MAX3D"><frame_rate>30.000000</frame_rate></technique><technique profile="FCOLLADA"><start_time>0.000000</start_time><end_time>3.333333</end_time></technique></extra>
     </visual_scene>
   </library_visual_scenes>

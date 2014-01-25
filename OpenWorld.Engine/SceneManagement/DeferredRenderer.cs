@@ -20,6 +20,7 @@ namespace OpenWorld.Engine.SceneManagement
 		private Texture2D normalBuffer;
 		private Texture2D lightBuffer;
 		private Texture2D resultBuffer;
+		private Texture2D flatNormalMap;
 
 		private PostProcessingPipeline pipeline;
 		private TonemappingShader tonemappingShader;
@@ -63,7 +64,10 @@ namespace OpenWorld.Engine.SceneManagement
 			this.lightBuffer = new Texture2D(width, height, PixelInternalFormat.Rgb16f, PixelFormat.Rgba, PixelType.Float);
 			this.resultBuffer = new Texture2D(width, height, PixelInternalFormat.Rgb16f, PixelFormat.Rgba, PixelType.Float);
 
-
+			using (var stream = Resource.Open("OpenWorld.Engine.Resources.flatNormals.png"))
+			{
+				this.flatNormalMap = new Texture2D(new System.Drawing.Bitmap(stream));
+			}
 			// Create 3d shaders
 			this.geometryShader = new GeometryShader();
 
@@ -151,7 +155,22 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.Viewport(viewport[0], viewport[1], viewport[2], viewport[3]);
 
-			this.pipeline.DrawQuad(this.resultBuffer);
+			if (Window.Current.InputManager.Keyboard[OpenTK.Input.Key.Number1])
+			{
+				this.pipeline.DrawQuad(this.normalBuffer);
+			}
+			else if (Window.Current.InputManager.Keyboard[OpenTK.Input.Key.Number2])
+			{
+				this.pipeline.DrawQuad(this.lightBuffer);
+			}
+			else if (Window.Current.InputManager.Keyboard[OpenTK.Input.Key.Number3])
+			{
+				this.pipeline.DrawQuad(this.positionBuffer);
+			}
+			else
+			{
+				this.pipeline.DrawQuad(this.resultBuffer);
+			}
 		}
 
 		private void RenderGeometry(Camera camera)
@@ -168,12 +187,20 @@ namespace OpenWorld.Engine.SceneManagement
 			this.geometryShader.Use();
 			foreach (var op in this.SolidRenderJobs)
 			{
+				// Assign default normal map if none.
+				this.geometryShader.NormalMap = this.flatNormalMap;
 				this.geometryShader.World = op.Transform;
 				this.geometryShader.View = camera.ViewMatrix;
 				this.geometryShader.Projection = camera.ProjectionMatrix;
 				this.geometryShader.Apply();
 
-				op.Model.Draw();
+				op.Model.Draw((type, texture) =>
+					{
+						if (type != TextureType.NormalMap)
+							return;
+						this.geometryShader.NormalMap = texture ?? this.flatNormalMap;
+						this.geometryShader.Apply();
+					});
 			}
 		}
 
@@ -193,7 +220,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 			//this.LightCount = 0;
 			this.pointLightShader.Use();
-		
+
 			foreach (var op in this.LightRenderJobs)
 			{
 				var world = Matrix4.CreateScale(2.0f * op.Radius) * Matrix4.CreateTranslation(op.Position);
@@ -210,7 +237,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 				//this.LightCount += 1;
 			}
-			
+
 			//this.sunLightShader.LightDirection = this.sky.GetSunDirection();
 			//this.sunLightShader.ShadowMatrix = shadowMatrix;
 			//this.ui.Draw(new RectangleF(-1, -1, 2, 2), this.normalBuffer, this.sunLightShader);

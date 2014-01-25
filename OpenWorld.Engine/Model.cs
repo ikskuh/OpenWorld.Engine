@@ -16,6 +16,13 @@ namespace OpenWorld.Engine
 	[AssetExtension(".dae", ".obj")]
 	public sealed partial class Model : IAsset
 	{
+		static PostProcessSteps postProcessing =
+			PostProcessSteps.Debone |
+			PostProcessSteps.PreTransformVertices |
+			PostProcessSteps.Triangulate |
+			PostProcessSteps.FlipUVs |
+			PostProcessSteps.CalculateTangentSpace;
+
 		ModelMesh[] meshes;
 
 		/// <summary>
@@ -65,12 +72,7 @@ namespace OpenWorld.Engine
 		{
 			using (var importer = new AssimpImporter())
 			{
-				var scene = importer.ImportFile(
-					fileName,
-					PostProcessSteps.Debone |
-					PostProcessSteps.PreTransformVertices |
-					PostProcessSteps.Triangulate |
-					PostProcessSteps.FlipUVs);
+				var scene = importer.ImportFile(fileName, postProcessing);
 
 				this.Load(new AssetLoadContext(assetManager, Path.GetFileNameWithoutExtension(fileName), "."), scene);
 			}
@@ -80,13 +82,7 @@ namespace OpenWorld.Engine
 		{
 			using (var importer = new AssimpImporter())
 			{
-				var scene = importer.ImportFileFromStream(
-					stream,
-					PostProcessSteps.Debone |
-					PostProcessSteps.PreTransformVertices |
-					PostProcessSteps.Triangulate |
-					PostProcessSteps.FlipUVs,
-					extensionHint);
+				var scene = importer.ImportFileFromStream(stream, postProcessing, extensionHint);
 				this.Load(context, scene);
 			}
 		}
@@ -112,18 +108,12 @@ namespace OpenWorld.Engine
 
 					Assimp.Material assimpMaterial = null;
 					Texture2D diffuseTexture = null;
+					Texture2D normalMap = null;
 					if (scene.HasMaterials && mesh.MaterialIndex >= 0)
 					{
 						assimpMaterial = scene.Materials[mesh.MaterialIndex];
-
-						var slot = assimpMaterial.GetTexture(Assimp.TextureType.Diffuse, 0);
-						if (!string.IsNullOrWhiteSpace(slot.FilePath))
-						{
-							string textureFilePath = Path.GetDirectoryName(slot.FilePath) + "/" + Path.GetFileNameWithoutExtension(slot.FilePath);
-							if (Path.IsPathRooted(textureFilePath))
-								textureFilePath = Path.GetFileNameWithoutExtension(slot.FilePath);
-							diffuseTexture = context.AssetManager.Load<Texture2D>(context.Directory + textureFilePath);
-						}
+						diffuseTexture = LoadTexture(context, assimpMaterial.GetTexture(Assimp.TextureType.Diffuse, 0));
+						normalMap = LoadTexture(context, assimpMaterial.GetTexture(Assimp.TextureType.Normals, 0));
 					}
 
 					Vector3D[] texcoord0 = null;
@@ -163,15 +153,39 @@ namespace OpenWorld.Engine
 								texcoord1[k].Y);
 						}
 
+						if(mesh.HasTangentBasis)
+						{
+							vertex.Tangent = new Vector3(
+								mesh.Tangents[k].X,
+								mesh.Tangents[k].Y,
+								mesh.Tangents[k].Z);
+
+							vertex.BiTangent = new Vector3(
+								mesh.BiTangents[k].X,
+								mesh.BiTangents[k].Y,
+								mesh.BiTangents[k].Z);
+						}
+
 						vertices[k] = vertex;
 					}
 
 					ModelMesh modelMesh = new ModelMesh(indices, vertices);
 					modelMesh.DiffuseTexture = diffuseTexture;
+					modelMesh.NormalMap = normalMap;
 					meshList.Add(modelMesh);
 				}
 			}
 			this.meshes = meshList.ToArray();
+		}
+
+		private static Texture2D LoadTexture(AssetLoadContext context, TextureSlot slot)
+		{
+			if (string.IsNullOrWhiteSpace(slot.FilePath))
+				return null;
+			string textureFilePath = Path.GetDirectoryName(slot.FilePath) + "/" + Path.GetFileNameWithoutExtension(slot.FilePath);
+			if (Path.IsPathRooted(textureFilePath))
+				textureFilePath = Path.GetFileNameWithoutExtension(slot.FilePath);
+			return context.AssetManager.Load<Texture2D>(context.Directory + textureFilePath);
 		}
 
 		/// <summary>
@@ -194,6 +208,8 @@ namespace OpenWorld.Engine
 			{
 				if (setTexture != null)
 					setTexture(TextureType.Diffuse, mesh.DiffuseTexture);
+				if (setTexture != null)
+					setTexture(TextureType.NormalMap, mesh.NormalMap);
 				mesh.Draw();
 			}
 		}

@@ -223,6 +223,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="SceneManagement\RigidBody.cs" />
+    <EmbeddedResource Include="Resources\flatNormals.png" />
     <EmbeddedResource Include="SceneManagement\Shaders\geometry.fs" />
     <EmbeddedResource Include="SceneManagement\Shaders\light.fs" />
     <EmbeddedResource Include="SceneManagement\Shaders\opaqueObject.fs" />

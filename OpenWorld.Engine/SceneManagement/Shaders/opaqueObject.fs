@@ -1,4 +1,4 @@
-#version 330
+#version 410
 
 //layout(pixel_center_integer) in vec4 gl_FragCoord;
 layout(location = 0) in vec2 uv;

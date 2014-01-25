@@ -30,11 +30,11 @@ namespace OpenWorld.Engine.SceneManagement
 				if (node.components.ContainsKey(typeof(T)))
 					throw new InvalidOperationException("Component " + typeof(T).Name + " already exists in " + node.GetType().Name);
 				RequiredComponentAttribute[] attribs = (RequiredComponentAttribute[])typeof(T).GetCustomAttributes(typeof(RequiredComponentAttribute), false);
-				foreach(var attrib in attribs)
+				foreach (var attrib in attribs)
 				{
 					if (!attrib.RequiredType.IsSubclassOf(typeof(Component)))
 						continue;
-					if(node.Components.Get(attrib.RequiredType) == null)
+					if (node.Components.Get(attrib.RequiredType) == null)
 						throw new InvalidOperationException("Cannot add component: " + attrib.RequiredType.Name + " is required.");
 				}
 				lock (Component.lockObject)
@@ -75,33 +75,51 @@ namespace OpenWorld.Engine.SceneManagement
 			}
 
 
-			internal void Update()
+			internal void Update(GameTime time)
 			{
 				if (this.Enabled)
 				{
 					if (!this.started)
 					{
-						this.OnStart();
+						this.OnStart(time);
 						this.started = true;
 					}
 					if (this.started)
 					{
-						this.OnUpdate();
+						this.OnUpdate(time);
 					}
 				}
 				else
 				{
 					if (this.started)
 					{
-						this.OnStop();
+						this.OnStop(time);
 					}
 				}
+			}
+
+			internal void PreRender(GameTime time, SceneRenderer renderer)
+			{
+				if (!this.Enabled) return;
+				this.OnPreRender(time, renderer);
+			}
+
+			internal void Render(GameTime time, SceneRenderer renderer)
+			{
+				if (!this.Enabled) return;
+				this.OnRender(time, renderer);
+			}
+			internal void PostRender(GameTime time, SceneRenderer renderer)
+			{
+				if (!this.Enabled) return;
+				this.OnPostRender(time, renderer);
 			}
 
 			/// <summary>
 			/// Starts the component.
 			/// </summary>
-			protected virtual void OnStart()
+			/// <param name="time">Time snapshot</param>
+			protected virtual void OnStart(GameTime time)
 			{
 
 			}
@@ -109,7 +127,40 @@ namespace OpenWorld.Engine.SceneManagement
 			/// <summary>
 			/// Updates the component every frame.
 			/// </summary>
-			protected virtual void OnUpdate()
+			/// <param name="time">Time snapshot</param>
+			protected virtual void OnUpdate(GameTime time)
+			{
+
+			}
+
+			/// <summary>
+			/// Initializes rendering of the scene node.
+			/// </summary>
+			/// <param name="time">Time snapshot</param>
+			/// <param name="renderer">The renderer that is used for drawing.</param>
+			protected virtual void OnPreRender(GameTime time, SceneRenderer renderer)
+			{
+
+			}
+
+
+			/// <summary>
+			/// Renders the scene node.
+			/// </summary>
+			/// <param name="time">Time snapshot</param>
+			/// <param name="renderer">The renderer that is used for drawing.</param>
+			protected virtual void OnRender(GameTime time, SceneRenderer renderer)
+			{
+
+			}
+
+
+			/// <summary>
+			/// Postprocesses rendering of the scene node.
+			/// </summary>
+			/// <param name="time">Time snapshot</param>
+			/// <param name="renderer">The renderer that is used for drawing.</param>
+			protected virtual void OnPostRender(GameTime time, SceneRenderer renderer)
 			{
 
 			}
@@ -117,7 +168,8 @@ namespace OpenWorld.Engine.SceneManagement
 			/// <summary>
 			/// Stops the component.
 			/// </summary>
-			protected virtual void OnStop()
+			/// <param name="time">Time snapshot</param>
+			protected virtual void OnStop(GameTime time)
 			{
 
 			}

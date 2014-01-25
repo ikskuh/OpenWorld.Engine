@@ -11,7 +11,7 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class LightScatteringShader : PostProcessingShader
 	{
-		const string shaderSource = @"#version 330
+		const string shaderSource = @"#version 410
 uniform float exposure;
 uniform float decay;
 uniform float density;
@@ -38,12 +38,12 @@ void main()
  	for(int i=0; i < NUM_SAMPLES ; i++)
   	{
     	texCoord -= deltaTextCoord;
-    	vec3 sample = texture(backBuffer, texCoord).rgb - 4.0f;
+    	vec3 smpl = texture(backBuffer, texCoord).rgb - 4.0f;
 		vec3 normal = texture(occlusionBuffer, texCoord).rgb;
 		if(length(normal) > 0.05f)
-			sample = vec3(0.0f);
-    	sample *= illuminationDecay * weight;
-    	color.rgb += sample;
+			smpl = vec3(0.0f);
+    	smpl *= illuminationDecay * weight;
+    	color.rgb += smpl;
     	illuminationDecay *= decay;
  	}
  	color.rgb *= exposure;

@@ -45,6 +45,9 @@ namespace OpenWorld.Engine
 			GL.EnableVertexAttribArray(0);
 			GL.EnableVertexAttribArray(1);
 			GL.EnableVertexAttribArray(2);
+			GL.EnableVertexAttribArray(3);
+			GL.EnableVertexAttribArray(4);
+			GL.EnableVertexAttribArray(5);
 
 			this.vertexBuffer.Bind();
 
@@ -59,6 +62,12 @@ namespace OpenWorld.Engine
 
 			// UV 2
 			GL.VertexAttribPointer(3, 2, VertexAttribPointerType.Float, false, Vertex.Size, 32);
+
+			// Tangent
+			GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, Vertex.Size, 40);
+
+			// BiTangent
+			GL.VertexAttribPointer(5, 3, VertexAttribPointerType.Float, false, Vertex.Size, 52);
 
 			// Bind element buffer
 			this.indexBuffer.Bind();
@@ -119,5 +128,10 @@ namespace OpenWorld.Engine
 		/// Gets or sets the diffuse texture of the mesh.
 		/// </summary>
 		public Texture2D DiffuseTexture { get; set; }
+
+		/// <summary>
+		/// Gets or sets the normal map of the mesh.
+		/// </summary>
+		public Texture2D NormalMap { get; set; }
 	}
 }

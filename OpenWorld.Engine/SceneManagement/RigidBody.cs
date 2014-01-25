@@ -18,7 +18,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Starts the component.
 		/// </summary>
-		protected override void OnStart()
+		protected override void OnStart(GameTime time)
 		{
 			if (this.rigidBody == null)
 			{
@@ -41,7 +41,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Updates the component every frame.
 		/// </summary>
-		protected override void OnUpdate()
+		protected override void OnUpdate(GameTime time)
 		{
 			this.Node.Transform.SetMatrix(this.rigidBody.Orientation.ToOpenTK(this.rigidBody.Position));
 		}
@@ -50,7 +50,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Stops the component.
 		/// </summary>
-		protected override void OnStop()
+		protected override void OnStop(GameTime time)
 		{
 			if (this.Node.Scene.PhysicsEnabled)
 			{

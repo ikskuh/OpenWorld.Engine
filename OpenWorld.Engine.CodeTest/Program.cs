@@ -23,12 +23,6 @@ namespace OpenWorld.Engine.CodeTest
 			}
 		}
 
-		class MyLocalization : Localization
-		{
-			[ID("name")]
-			public string Name { get; set; }
-		}
-
 		Scene scene;
 		PerspectiveLookAtCamera cameraLeft;
 		PerspectiveLookAtCamera cameraRight;
@@ -39,23 +33,15 @@ namespace OpenWorld.Engine.CodeTest
 			Texture2D.UseSRGB = true;
 
 			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
-			//this.Assets.Sources.Add(new ZipFileAssetSource("../../../Assets/assets.zip"));
-			//this.Assets.Sources.Add(new WebAssetSource("http://picshare.masterq32.de/"));
 			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
 
 			this.cameraLeft = new PerspectiveLookAtCamera();
 			this.cameraLeft.LookAt(
-				new Vector3(-0.1f, 1.9f, -4.0f),
+				new Vector3(1.0f, 5.0f, 8.0f),
 				new Vector3(0.0f, 0.0f, 0.0f));
-			this.cameraLeft.Area = new Box2(000, 0, 400, 480);
 
-			this.cameraRight = new PerspectiveLookAtCamera();
-			this.cameraRight.LookAt(
-				new Vector3(0.1f, 1.9f, -4.0f),
-				new Vector3(0.0f, 0.0f, 0.0f));
-			this.cameraRight.Area = new Box2(400, 0, 800, 480);
-
-			this.renderer = new DeferredRenderer(400, 480);
+			//this.renderer = new DeferredRenderer(400, 480);
+			this.renderer = new DeferredRenderer(800, 480);
 
 			this.scene = new Scene(SceneCreationFlags.EnablePhysics);
 
@@ -70,7 +56,7 @@ end";
 
 			SceneNode light = new SceneNode();
 			light.Components.Add<PointLight>();
-			light.Transform.Position = new Vector3(0, 0, 2);
+			light.Transform.LocalPosition = new Vector3(0, 0, 2);
 			light.Parent = child;
 
 			SceneNode demo = new SceneNode();
@@ -90,7 +76,7 @@ end";
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
 			this.scene.Draw(this.cameraLeft, this.renderer, time);
-			this.scene.Draw(this.cameraRight, this.renderer, time);
+			//this.scene.Draw(this.cameraRight, this.renderer, time);
 		}
 	}
 }

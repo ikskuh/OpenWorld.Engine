@@ -17,9 +17,9 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Starts the component.
 		/// </summary>
-		protected override void OnStart()
+		protected override void OnStart(GameTime time)
 		{
-			base.OnStart();
+			base.OnStart(time);
 			if (this.lua == null)
 				return;
 			var fn = this.lua.GetFunction("start");
@@ -31,29 +31,29 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Updates the component every frame.
 		/// </summary>
-		protected override void OnUpdate()
+		protected override void OnUpdate(GameTime time)
 		{
-			base.OnUpdate();
+			base.OnUpdate(time);
 			if (this.lua == null)
 				return;
 			var fn = this.lua.GetFunction("update");
 			if (fn == null)
 				return;
-			fn.Call(this);
+			fn.Call(this, time);
 		}
 
 		/// <summary>
 		/// Stops the component.
 		/// </summary>
-		protected override void OnStop()
+		protected override void OnStop(GameTime time)
 		{
-			base.OnStop();
+			base.OnStop(time);
 			if (this.lua == null)
 				return;
 			var fn = this.lua.GetFunction("stop");
 			if (fn == null)
 				return;
-			fn.Call(this);
+			fn.Call(this, time);
 		}
 
 		/// <summary>

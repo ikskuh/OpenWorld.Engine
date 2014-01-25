@@ -11,28 +11,15 @@ namespace OpenWorld.Engine.SceneManagement
 	public sealed class Renderer : SceneNode.Component
 	{
 		/// <summary>
-		/// Starts the component.
+		/// Renders the scene node.
 		/// </summary>
-		protected override void OnStart()
+		/// <param name="time">Time snapshot</param>
+		/// <param name="renderer">The renderer that is used for drawing.</param>
+		protected override void OnRender(GameTime time, SceneRenderer renderer)
 		{
-			this.Node.Draw += Node_Draw;
-		}
-
-		/// <summary>
-		/// Stops the component.
-		/// </summary>
-		protected override void OnStop()
-		{
-			this.Node.Draw -= Node_Draw;
-		}
-
-		void Node_Draw(object sender, SceneNodeDrawEventArgs e)
-		{
-			if (!this.Enabled)
-				return;
 			if (this.Model == null)
 				return;
-			e.Renderer.Draw(this.Model, this.Node.Transform.GetGlobalMatrix(), this.Node.Material);
+			renderer.Draw(this.Model, this.Node.Transform.GetGlobalMatrix(), this.Node.Material);
 		}
 
 		/// <summary>

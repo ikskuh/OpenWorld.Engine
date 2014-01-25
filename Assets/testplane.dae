@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2014-01-24T22:58:13Z</created><keywords></keywords><modified>2014-01-24T22:58:13Z</modified><revision></revision><subject></subject><title></title><unit meter="0.025400" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
+  <library_images>
+    <image id="Map #6-image" name="Map #6"><init_from>file://D:\OpenWorld\Engine\Assets\Stone wall diffuse.png</init_from></image>
+    <image id="Map #6-image-nm" name="Map #6-nm"><init_from>file://D:\OpenWorld\Engine\Assets\Stone wall normal.png</init_from></image>
+  </library_images>
+  <library_materials>
+    <material id="Simple Normalmapped" name="Simple Normalmapped">
+      <instance_effect url="#Simple Normalmapped-fx"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Simple Normalmapped-fx" name="Simple Normalmapped">
+      <profile_COMMON>
+        <technique sid="standard">
+          <phong>
+            <emission>
+              <color sid="emission">0.000000  0.000000 0.000000 1.000000</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0.588000  0.588000 0.588000 1.000000</color>
+            </ambient>
+            <diffuse>
+              <texture texture="Map #6-image" texcoord="CHANNEL0">
+                <extra>
+                  <technique profile="MAYA">
+                    <wrapU sid="wrapU0">TRUE</wrapU>
+                    <wrapV sid="wrapV0">TRUE</wrapV>
+                    <blend_mode>ADD</blend_mode>
+                  </technique>
+                </extra>
+              </texture>
+            </diffuse>
+            <bump>
+              <texture texture="Map #6-image-nm" texcoord="CHANNEL0">
+                <extra>
+                  <technique profile="MAYA">
+                    <wrapU sid="wrapU0">TRUE</wrapU>
+                    <wrapV sid="wrapV0">TRUE</wrapV>
+                    <blend_mode>ADD</blend_mode>
+                  </technique>
+                </extra>
+              </texture>
+            </bump>
+            <specular>
+              <color sid="specular">0.000000  0.000000 0.000000 1.000000</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">2.000000</float>
+            </shininess>
+            <reflective>
+              <color sid="reflective">0.000000  0.000000 0.000000 1.000000</color>
+            </reflective>
+            <reflectivity>
+              <float sid="reflectivity">1.000000</float>
+            </reflectivity>
+            <transparent opaque="RGB_ZERO">
+              <color sid="transparent">1.000000  1.000000 1.000000 1.000000</color>
+            </transparent>
+            <transparency>
+              <float sid="transparency">0.000000</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="Plane001-lib" name="Plane001Mesh">
+      <mesh>
+        <source id="Plane001-POSITION">
+          <float_array id="Plane001-POSITION-array" count="75">
+-0.500000 -0.500000 0.000000
+-0.250000 -0.500000 0.000000
+0.000000 -0.500000 0.000000
+0.250000 -0.500000 0.000000
+0.500000 -0.500000 0.000000
+-0.500000 -0.250000 0.000000
+-0.250000 -0.250000 0.000000
+0.000000 -0.250000 0.000000
+0.250000 -0.250000 0.000000
+0.500000 -0.250000 0.000000
+-0.500000 0.000000 0.000000
+-0.250000 0.000000 0.000000
+0.000000 0.000000 0.000000
+0.250000 0.000000 0.000000
+0.500000 0.000000 0.000000
+-0.500000 0.250000 0.000000
+-0.250000 0.250000 0.000000
+0.000000 0.250000 0.000000
+0.250000 0.250000 0.000000
+0.500000 0.250000 0.000000
+-0.500000 0.500000 0.000000
+-0.250000 0.500000 0.000000
+0.000000 0.500000 0.000000
+0.250000 0.500000 0.000000
+0.500000 0.500000 0.000000
+</float_array>
+          <technique_common>
+            <accessor source="#Plane001-POSITION-array" count="25" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plane001-Normal0">
+          <float_array id="Plane001-Normal0-array" count="288">
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000
+</float_array>
+          <technique_common>
+            <accessor source="#Plane001-Normal0-array" count="96" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plane001-UV0">
+          <float_array id="Plane001-UV0-array" count="50">
+0.000500 0.000500
+0.250250 0.000500
+0.500000 0.000500
+0.749750 0.000500
+0.999500 0.000500
+0.000500 0.250250
+0.250250 0.250250
+0.500000 0.250250
+0.749750 0.250250
+0.999500 0.250250
+0.000500 0.500000
+0.250250 0.500000
+0.500000 0.500000
+0.749750 0.500000
+0.999500 0.500000
+0.000500 0.749750
+0.250250 0.749750
+0.500000 0.749750
+0.749750 0.749750
+0.999500 0.749750
+0.000500 0.999501
+0.250250 0.999500
+0.500000 0.999500
+0.749750 0.999500
+0.999501 0.999500
+</float_array>
+          <technique_common>
+            <accessor source="#Plane001-UV0-array" count="25" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Plane001-VERTEX">
+          <input semantic="POSITION" source="#Plane001-POSITION"/>
+        </vertices>
+        <triangles count="32" material="Simple Normalmapped"><input semantic="VERTEX" offset="0" source="#Plane001-VERTEX"/><input semantic="NORMAL" offset="1" source="#Plane001-Normal0"/><input semantic="TEXCOORD" offset="2" set="0" source="#Plane001-UV0"/><p> 5 0 5 0 1 0 6 2 6 1 3 1 6 4 6 0 5 0 6 6 6 1 7 1 7 8 7 2 9 2 7 10 7 1 11 1 7 12 7 2 13 2 8 14 8 3 15 3 8 16 8 2 17 2 8 18 8 3 19 3 9 20 9 4 21 4 9 22 9 3 23 3 10 24 10 5 25 5 11 26 11 6 27 6 11 28 11 5 29 5 11 30 11 6 31 6 12 32 12 7 33 7 12 34 12 6 35 6 12 36 12 7 37 7 13 38 13 8 39 8 13 40 13 7 41 7 13 42 13 8 43 8 14 44 14 9 45 9 14 46 14 8 47 8 15 48 15 10 49 10 16 50 16 11 51 11 16 52 16 10 53 10 16 54 16 11 55 11 17 56 17 12 57 12 17 58 17 11 59 11 17 60 17 12 61 12 18 62 18 13 63 13 18 64 18 12 65 12 18 66 18 13 67 13 19 68 19 14 69 14 19 70 19 13 71 13 20 72 20 15 73 15 21 74 21 16 75 16 21 76 21 15 77 15 21 78 21 16 79 16 22 80 22 17 81 17 22 82 22 16 83 16 22 84 22 17 85 17 23 86 23 18 87 18 23 88 23 17 89 17 23 90 23 18 91 18 24 92 24 19 93 19 24 94 24 18 95 18</p></triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="testplane" name="testplane">
+      <node name="Plane001" id="Plane001" sid="Plane001"><matrix sid="matrix">1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000</matrix><instance_geometry url="#Plane001-lib"><bind_material><technique_common><instance_material symbol="Simple Normalmapped" target="#Simple Normalmapped"/></technique_common></bind_material></instance_geometry><extra><technique profile="FCOLLADA"><visibility>1.000000</visibility></technique></extra></node>
+      <extra><technique profile="MAX3D"><frame_rate>30.000000</frame_rate></technique><technique profile="FCOLLADA"><start_time>0.000000</start_time><end_time>3.333333</end_time></technique></extra>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#testplane"></instance_visual_scene>
+  </scene>
+</COLLADA>

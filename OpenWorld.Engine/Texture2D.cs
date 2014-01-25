@@ -12,7 +12,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Defines a 2-dimensional texture.
 	/// </summary>
-	[AssetExtension(".dds", ".png", ".bmp")]
+	[AssetExtension(".dds", ".png", ".bmp", ".jpg", ".gif")]
 	public sealed class Texture2D : Texture, IAsset
 	{
 		/// <summary>

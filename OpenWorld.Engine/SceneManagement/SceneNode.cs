@@ -1,4 +1,4 @@
-﻿using OpenTK;
+﻿﻿using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +17,6 @@ namespace OpenWorld.Engine.SceneManagement
 		private Scene scene;
 
 		/// <summary>
-		/// Occurs when the node is updated.
-		/// </summary>
-		public event EventHandler<SceneNodeUpdateEventArgs> Update;
-
-		/// <summary>
-		/// Occurs when the node is drawn.
-		/// </summary>
-		public event EventHandler<SceneNodeDrawEventArgs> Draw;
-
-		/// <summary>
 		/// Creates a new scene node.
 		/// </summary>
 		public SceneNode()
@@ -43,11 +33,10 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="time">Time snapshot</param>
 		internal void DoUpdate(GameTime time)
 		{
-			if (this.Update != null)
-				this.Update(this, new SceneNodeUpdateEventArgs(time));
 			foreach (var comp in this.Components)
 			{
-				comp.Update();
+				if(comp.Enabled)
+					comp.Update(time);
 			}
 			// Pass the call method to all children.
 			foreach (var child in this.Children)
@@ -61,11 +50,21 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="renderer">The renderer that draws the node.</param>
 		internal void DoDraw(GameTime time, SceneRenderer renderer)
 		{
-			if (this.Draw != null)
-				this.Draw(this, new SceneNodeDrawEventArgs(time, renderer));
+			foreach (var comp in this.Components)
+				if (comp.Enabled)
+					comp.PreRender(time, renderer);
+
+			foreach (var comp in this.Components)
+				if (comp.Enabled)
+					comp.Render(time, renderer);
+
 			// Pass the draw call to all children.
 			foreach (var child in this.Children)
 				child.DoDraw(time, renderer);
+
+			foreach (var comp in this.Components)
+				if (comp.Enabled)
+					comp.PostRender(time, renderer);
 		}
 
 		Matrix4 IViewMatrixSource.GetViewMatrix(Camera camera)

@@ -41,6 +41,16 @@ namespace OpenWorld.Engine
 		public Vector2 UV2;
 
 		/// <summary>
+		/// Gets or sets the tangent of the vertex.
+		/// </summary>
+		public Vector3 Tangent;
+
+		/// <summary>
+		/// Gets or sets the bi-tangent of the vertex.
+		/// </summary>
+		public Vector3 BiTangent;
+
+		/// <summary>
 		/// Instantiates a new vertex
 		/// </summary>
 		/// <param name="position"></param>
@@ -86,6 +96,8 @@ namespace OpenWorld.Engine
 			this.Normal = normal;
 			this.UV = uv;
 			this.UV2 = uv2;
+			this.Tangent = Vector3.UnitX;
+			this.BiTangent = Vector3.UnitZ;
 		}
 
 		/// <summary>

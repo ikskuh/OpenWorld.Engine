@@ -20,26 +20,13 @@ namespace OpenWorld.Engine.SceneManagement
 		}
 
 		/// <summary>
-		/// Starts the component.
+		/// Renders the scene node.
 		/// </summary>
-		protected override void OnStart()
+		/// <param name="time">Time snapshot</param>
+		/// <param name="renderer">The renderer that is used for drawing.</param>
+		protected override void OnRender(GameTime time, SceneRenderer renderer)
 		{
-			this.Node.Draw += Node_Draw;
-		}
-
-		/// <summary>
-		/// Stops the component.
-		/// </summary>
-		protected override void OnStop()
-		{
-			this.Node.Draw -= Node_Draw;
-		}
-
-		void Node_Draw(object sender, SceneNodeDrawEventArgs e)
-		{
-			if (!this.Enabled)
-				return;
-			e.Renderer.PointLight(this.Node.Transform.GetGlobalMatrix().Row3.Xyz, this.Radius, this.Color);
+			renderer.PointLight(this.Node.Transform.GetGlobalMatrix().Row3.Xyz, this.Radius, this.Color);
 		}
 
 		/// <summary>
