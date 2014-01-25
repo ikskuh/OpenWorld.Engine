@@ -13,17 +13,110 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public class Shader : IGLResource
 	{
+		private class AutomaticShaderUniform
+		{
+			// Using a closure here to get a maximum of performance
+			public Action Apply;
+		}
+
 		static Shader currentShader = null;
 
 		int programID;
 		Dictionary<string, int> uniforms = new Dictionary<string, int>();
+
+		private List<AutomaticShaderUniform> automaticUniforms;
 
 		/// <summary>
 		/// Instantiates a new shader.
 		/// </summary>
 		public Shader()
 		{
+			this.InitializeAutomaticUniforms();
+		}
 
+		/// <summary>
+		/// Gets and initializes all automatic uniforms
+		/// </summary>
+		private void InitializeAutomaticUniforms()
+		{
+			this.automaticUniforms = new List<AutomaticShaderUniform>();
+
+			foreach (var property in this.GetType().GetProperties())
+			{
+				if (!property.CanRead)
+					continue;
+				UniformAttribute[] attribs = (UniformAttribute[])property.GetCustomAttributes(typeof(UniformAttribute), false);
+				if (attribs.Length != 1)
+					continue;
+
+				AutomaticShaderUniform uniform = new AutomaticShaderUniform();
+
+				Type propertyType = property.PropertyType;
+				var name = attribs[0].UniformName;
+				if (propertyType == typeof(float))
+				{
+					uniform.Apply = () =>
+					{
+						var value = property.GetValue(this, new object[0]);
+						this.SetUniform(name, (float)value);
+					};
+				}
+				else if (propertyType == typeof(Vector2))
+				{
+					uniform.Apply = () =>
+					{
+						var value = property.GetValue(this, new object[0]);
+						this.SetUniform(name, (Vector2)value);
+					};
+				}
+				else if (propertyType == typeof(Vector3))
+				{
+					uniform.Apply = () =>
+					{
+						var value = property.GetValue(this, new object[0]);
+						this.SetUniform(name, (Vector3)value);
+					};
+				}
+				else if (propertyType == typeof(Vector4))
+				{
+					uniform.Apply = () =>
+					{
+						var value = property.GetValue(this, new object[0]);
+						this.SetUniform(name, (Vector4)value);
+					};
+				}
+				else if (propertyType == typeof(Color))
+				{
+					uniform.Apply = () =>
+					{
+						var value = property.GetValue(this, new object[0]);
+						this.SetUniform(name, (Color)value);
+					};
+				}
+				else if (propertyType == typeof(Matrix4))
+				{
+					uniform.Apply = () =>
+					{
+						var value = property.GetValue(this, new object[0]);
+						this.SetUniform(name, (Matrix4)value, attribs[0].Transpose);
+					};
+				}
+				else if (typeof(Texture).IsAssignableFrom(propertyType))
+				{
+					uniform.Apply = () =>
+					{
+						var value = property.GetValue(this, new object[0]);
+						this.SetTexture(name, (Texture)value, this.TextureCount);
+						this.TextureCount++;
+					};
+				}
+				else
+				{
+					Console.WriteLine("{0} is not supported for automatic uniform assignment.");
+					continue;
+				}
+				this.automaticUniforms.Add(uniform);
+			}
 		}
 
 		/// <summary>
@@ -129,50 +222,9 @@ namespace OpenWorld.Engine
 		{
 			// Load all properties with a Uniform-Attribute
 			this.TextureCount = 0; // Reset the texture count.
-			foreach (var property in this.GetType().GetProperties())
-			{
-				if (!property.CanRead)
-					continue;
-				UniformAttribute[] attribs = (UniformAttribute[])property.GetCustomAttributes(typeof(UniformAttribute), false);
-				if (attribs.Length != 1)
-					continue;
-				Type propertyType = property.PropertyType;
-				var name = attribs[0].UniformName;
-				var value = property.GetValue(this, new object[0]);
-				if (propertyType == typeof(float))
-				{
-					this.SetUniform(name, (float)value);
-				}
-				else if (propertyType == typeof(Vector2))
-				{
-					this.SetUniform(name, (Vector2)value);
-				}
-				else if (propertyType == typeof(Vector3))
-				{
-					this.SetUniform(name, (Vector3)value);
-				}
-				else if (propertyType == typeof(Vector4))
-				{
-					this.SetUniform(name, (Vector4)value);
-				}
-				else if (propertyType == typeof(Color))
-				{
-					this.SetUniform(name, (Color)value);
-				}
-				else if (propertyType == typeof(Matrix4))
-				{
-					this.SetUniform(name, (Matrix4)value, attribs[0].Transpose);
-				}
-				else if (typeof(Texture).IsAssignableFrom(propertyType))
-				{
-					this.SetTexture(name, (Texture)value, this.TextureCount);
-					this.TextureCount++;
-				}
-				else
-				{
-					Console.WriteLine("{0} is not supported for automatic uniform assignment.");
-				}
-			}
+
+			foreach (var uniform in this.automaticUniforms)
+				uniform.Apply();
 
 			this.OnApply();
 		}
