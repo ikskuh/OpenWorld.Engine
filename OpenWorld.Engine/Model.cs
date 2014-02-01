@@ -14,7 +14,7 @@ namespace OpenWorld.Engine
 	/// Represents a 3D model.
 	/// </summary>
 	[AssetExtension(".dae", ".obj")]
-	public sealed partial class Model : IAsset
+	public sealed partial class Model : Asset
 	{
 		static PostProcessSteps postProcessing =
 			PostProcessSteps.Debone |
@@ -78,7 +78,7 @@ namespace OpenWorld.Engine
 			}
 		}
 
-		void IAsset.Load(AssetLoadContext context, Stream stream, string extensionHint)
+		protected override void Load(AssetLoadContext context, Stream stream, string extensionHint)
 		{
 			using (var importer = new AssimpImporter())
 			{

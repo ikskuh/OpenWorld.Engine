@@ -11,8 +11,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Defines a cubemap texture
 	/// </summary>
-	[AssetExtension(".png", ".bmp")]
-	public sealed class TextureCube : Texture, IAsset
+	public sealed class TextureCube : Texture
 	{
 		/// <summary>
 		/// Instantiates a cubemap texture
@@ -25,7 +24,7 @@ namespace OpenWorld.Engine
 
 		// +X, +Y, +Z, -X, -Y und -Z
 
-		void IAsset.Load(AssetLoadContext manager, System.IO.Stream stream, string extensionHint)
+		protected override void Load(AssetLoadContext manager, System.IO.Stream stream, string extensionHint)
 		{
 			using(var bmp = new Bitmap(stream))
 			{

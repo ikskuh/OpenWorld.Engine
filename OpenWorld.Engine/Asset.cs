@@ -9,7 +9,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Defines an asset.
 	/// </summary>
-	public interface IAsset
+	public abstract class Asset
 	{
 		/// <summary>
 		/// Loads the asset.
@@ -17,6 +17,14 @@ namespace OpenWorld.Engine
 		/// <param name="context">The loading context.</param>
 		/// <param name="stream">The stream that contains the asset.</param>
 		/// <param name="extensionHint">Contains the extension of the asset file.</param>
-		void Load(AssetLoadContext context, Stream stream, string extensionHint);
+		protected abstract void Load(AssetLoadContext context, Stream stream, string extensionHint);
+
+		public static T Load<T>(AssetLoadContext context, Stream stream, string extensionHint)
+			where T : Asset
+		{
+			T a = Activator.CreateInstance<T>();
+			a.Load(context, stream, extensionHint);
+			return a;
+		}
 	}
 }

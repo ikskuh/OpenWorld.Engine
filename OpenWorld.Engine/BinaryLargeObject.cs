@@ -11,7 +11,7 @@ namespace OpenWorld.Engine
 	/// Asset type for unspecified binary data.
 	/// </summary>
 	[AssetExtension(".dat")]
-	public sealed class BinaryLargeObject : IAsset
+	public sealed class BinaryLargeObject : Asset
 	{
 		byte[] data;
 
@@ -38,10 +38,10 @@ namespace OpenWorld.Engine
 		/// <param name="stream">The stream that should be copied to the BLOB.</param>
 		public BinaryLargeObject(Stream stream)
 		{
-			((IAsset)this).Load(null, stream, null);
+			this.Load(null, stream, null);
 		}
 
-		void IAsset.Load(AssetLoadContext manager, Stream stream, string extensionHint)
+		protected override void Load(AssetLoadContext manager, Stream stream, string extensionHint)
 		{
 			if (stream == null)
 				throw new ArgumentNullException("stream");

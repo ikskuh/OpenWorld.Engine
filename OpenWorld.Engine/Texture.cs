@@ -8,7 +8,7 @@ using System.Text;
 namespace OpenWorld.Engine
 {
 	[AssetExtension(".dds")]
-	public partial class Texture : IGLResource
+	public abstract partial class Texture : Asset, IGLResource
 	{
 		private TextureTarget target;
 		private Filter filter;

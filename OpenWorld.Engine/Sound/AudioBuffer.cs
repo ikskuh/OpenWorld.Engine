@@ -13,7 +13,7 @@ namespace OpenWorld.Engine.Sound
 	/// Represents a buffer of raw audio data.
 	/// </summary>
     [AssetExtension(".ogg",".wav")]
-    public class AudioBuffer : IALResource, IAsset
+	public class AudioBuffer : Asset, IALResource
     {
         int id;
 
@@ -43,7 +43,7 @@ namespace OpenWorld.Engine.Sound
             id = sndID;
         }
 
-        public void Load(AssetLoadContext context, Stream stream, string extension)
+        protected override void Load(AssetLoadContext context, Stream stream, string extension)
         {
             AudioReader reader = null;
             if(extension == ".wav")

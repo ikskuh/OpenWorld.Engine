@@ -13,7 +13,7 @@ namespace OpenWorld.Engine
 	/// Defines a 2-dimensional texture.
 	/// </summary>
 	[AssetExtension(".dds", ".png", ".bmp", ".jpg", ".gif")]
-	public sealed class Texture2D : Texture, IAsset
+	public sealed class Texture2D : Texture
 	{
 		/// <summary>
 		/// Instantiates a Texture2D
@@ -86,7 +86,7 @@ namespace OpenWorld.Engine
 			}
 		}
 
-		void IAsset.Load(AssetLoadContext context, Stream stream, string extensionHint)
+		protected override void Load(AssetLoadContext context, Stream stream, string extensionHint)
 		{
 			if (extensionHint == ".dds")
 			{
