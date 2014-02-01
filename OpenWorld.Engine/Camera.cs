@@ -45,7 +45,7 @@ namespace OpenWorld.Engine
 			var area = this.Area;
 			// If we have no pixel to draw to
 			if (area.Width < 1.0f || area.Height < 1.0f)
-				area = new Box2(0, 0, Window.Current.ViewportWidth, Window.Current.ViewportHeight);
+				area = new Box2(0, 0, Game.Current.Size.Width, Game.Current.Size.Height);
 			return area;
 		}
 

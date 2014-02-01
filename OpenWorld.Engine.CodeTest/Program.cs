@@ -16,16 +16,12 @@ namespace OpenWorld.Engine.CodeTest
 	{
 		static void Main(string[] args)
 		{
-			using(Window window = new Window(800, 480))
-			{
-				window.Game = new Program();
-				window.Run(60, 60);
-			}
+			var game = new Program();
+			game.Run();
 		}
 
 		Scene scene;
 		PerspectiveLookAtCamera cameraLeft;
-		PerspectiveLookAtCamera cameraRight;
 		DeferredRenderer renderer;
 
 		protected override void OnLoad()

@@ -1,7 +1,12 @@
-﻿using System;
+﻿using OpenTK;
+using OpenTK.Audio;
+using OpenTK.Graphics;
+using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenWorld.Engine
@@ -11,33 +16,219 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public abstract class Game
 	{
+		private InputManager input;
+		private Thread updateThread;
+		private Thread[] deferralThreads;
+
+		private volatile bool isRendering = false;
+		private bool isRunning = false;
+
+		private AudioContext audioContext;
+
+		private readonly ConcurrentQueue<DeferredRoutine> deferredRoutines = new ConcurrentQueue<DeferredRoutine>();
+
+		/// <summary>
+		/// Occurs periodically when the engine doesn't render anything.
+		/// </summary>
+		/// <remarks>Event gets called from the OpenGL thread.</remarks>
+		public event EventHandler OpenGLTick;
+		
 		/// <summary>
 		/// Instantiates a new game.
 		/// </summary>
 		protected Game()
 		{
+			this.deferralThreads = new Thread[2];
 			this.Assets = new AssetManager();
 		}
 
-		internal void Load()
+		public void Run()
 		{
-			this.OnLoad();
+			Game.currentGame.Value = this;
+
+			var presentation = this.GetPresentationParameters();
+
+			using (GameWindow window = new GameWindow(
+				presentation.Resolution.Width,
+				presentation.Resolution.Height,
+				GraphicsMode.Default,
+				presentation.Title,
+				presentation.IsFullscreen ? GameWindowFlags.Fullscreen : GameWindowFlags.Default,
+				presentation.DisplayDevice ?? DisplayDevice.Default,
+				3, 3,
+#if DEBUG
+ GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
+#else
+				GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible))	
+#endif
+			{
+				window.VSync = presentation.VSync ? VSyncMode.On : VSyncMode.Off;
+				window.Closing += (s, e) => { this.isRunning = false; };
+				window.Visible = true;
+
+				this.input = new InputManager(
+					window.Keyboard,
+					window.Mouse,
+					window.Joysticks.ToArray());
+				this.Size = presentation.Resolution;
+
+				this.isRunning = true;
+
+				this.audioContext = this.CreateAudioContext();
+
+				// Load everything in the draw thread
+				this.OnLoad();
+
+				// Start the deferral threads for deferred routines
+				for (int i = 0; i < this.deferralThreads.Length; i++)
+				{
+					this.deferralThreads[i] = new Thread(this.DeferRoutines);
+					this.deferralThreads[i].Name = "OpenWorld Deferred Routines Host";
+					this.deferralThreads[i].Start();
+				}
+
+				// Start the update thread.
+				this.updateThread = new Thread(this.UpdateLoop);
+				this.updateThread.Name = "OpenWorld Game Update Thread";
+				this.updateThread.Start();
+
+				Thread.CurrentThread.Name = "OpenWorld Game Render Thread";
+
+				while (this.isRunning)
+				{
+					while (!this.isRendering)
+					{
+						// Send out ticks for assets to be integrated into OpenGL.
+						if (this.OpenGLTick != null)
+							this.OpenGLTick(this, EventArgs.Empty);
+						Thread.Sleep(0);
+					}
+
+					// Process the window, draw everything, then show it.
+					window.ProcessEvents();
+					if (!window.IsExiting)
+					{
+						this.OnDraw(this.Time);
+						window.SwapBuffers();
+					}
+					this.isRendering = false;
+				}
+
+				// Unload everything in the draw thread.
+				this.OnUnload();
+
+				for (int i = 0; i < this.deferralThreads.Length; i++)
+				{
+					this.deferralThreads[i].Join();
+					this.deferralThreads[i] = null;
+				}
+
+				this.updateThread.Join();
+
+				if(this.audioContext != null)
+					this.audioContext.Dispose();
+
+				this.input = null;
+				this.Size = new System.Drawing.Size();
+			}
+
+			Game.currentGame.Value = null;
 		}
 
-		internal void Update(GameTime time)
+		/// <summary>
+		/// Defers a routine execution into the current thread.
+		/// </summary>
+		private void DeferRoutines()
 		{
-			this.OnUpdate(time);
+			Game.currentGame.Value = this;
+			while(this.isRunning)
+			{
+				DeferredRoutine routine;
+				if (!this.deferredRoutines.TryDequeue(out routine))
+					continue;
+				if (routine == null)
+					continue;
+				routine();
+			}
+			Game.currentGame.Value = null;
 		}
 
-		internal void Draw(GameTime time)
+		private void UpdateLoop()
 		{
-			this.OnDraw(time);
+			Game.currentGame.Value = this;
+
+			if (this.audioContext != null)
+				this.audioContext.MakeCurrent();
+
+			DateTime start = DateTime.Now;
+			GameTime timeLast = new GameTime(0, 0);
+			while (this.isRunning)
+			{
+				float total = (float)(DateTime.Now - start).TotalSeconds;
+				this.Time = new GameTime(total, total - timeLast.TotalTime);
+
+				// Update the game
+				this.OnUpdate(this.Time);
+
+				this.isRendering = true;
+
+				// TODO: Update physics here
+
+				// Wait for the rendering to be finished.
+				while (this.isRendering) Thread.Sleep(0);
+
+				timeLast = this.Time;
+			}
+
+			Game.currentGame.Value = null;
 		}
 
-		internal void Unload()
+		/// <summary>
+		/// Creates the games audio context.
+		/// </summary>
+		/// <returns>New AudioContext or null if no audio should be used.</returns>
+		protected virtual AudioContext CreateAudioContext()
 		{
-			this.OnUnload();
+			return new AudioContext();
 		}
+
+		/// <summary>
+		/// Returns the presentation parameters for this game.
+		/// </summary>
+		/// <returns>Presentation parameters used for setting up the window.</returns>
+		protected virtual PresentationParameters GetPresentationParameters()
+		{
+			return new PresentationParameters()
+			{
+				Resolution = new System.Drawing.Size(1024, 768),
+				IsFullscreen = false,
+				Title = this.GetType().Name,
+				DisplayDevice = DisplayDevice.Default,
+				VSync = false
+			};
+		}
+
+		/// <summary>
+		/// Stops the game.
+		/// </summary>
+		public void Exit()
+		{
+			this.isRunning = false;
+		}
+
+		/// <summary>
+		/// Deferres a routine into another thread so the current thread can continue.
+		/// </summary>
+		/// <remarks>Useful for loading assets or resources.</remarks>
+		/// <param name="routine">The routine to be deferred.</param>
+		public void DeferRoutine(DeferredRoutine routine)
+		{
+			if (routine == null)
+				return;
+			this.deferredRoutines.Enqueue(routine);
+		}
+
+		#region Pure Virtual Methods
 
 		/// <summary>
 		/// Gets called if the game should load its resources.
@@ -59,6 +250,8 @@ namespace OpenWorld.Engine
 		/// </summary>
 		protected virtual void OnUnload() { }
 
+		#endregion
+
 		/// <summary>
 		/// Gets or sets the asset manager.
 		/// </summary>
@@ -74,17 +267,36 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public InputManager Input
 		{
-			get
-			{
-				if (this.Window != null)
-					return this.Window.InputManager;
-				return null;
-			}
+			get { return this.input; }
 		}
 
 		/// <summary>
-		/// Gets the games window.
+		/// Gets the current time snapshot.
 		/// </summary>
-		public Window Window { get; internal set; }
+		public GameTime Time { get; private set; }
+
+		/// <summary>
+		/// Gets the screen size.
+		/// </summary>
+		public System.Drawing.Size Size { get; private set; }
+
+		/// <summary>
+		/// Gets the aspect of the screen.
+		/// </summary>
+		public float Aspect { get { return (float)this.Size.Width / (float)this.Size.Height; } }
+
+		#region Static Part
+
+		private static readonly ThreadLocal<Game> currentGame = new ThreadLocal<Game>(() => null);
+
+		/// <summary>
+		/// Gets the current game for the current thread.
+		/// </summary>
+		public static Game Current
+		{
+			get { return Game.currentGame.Value; }
+		}
+
+		#endregion
 	}
 }

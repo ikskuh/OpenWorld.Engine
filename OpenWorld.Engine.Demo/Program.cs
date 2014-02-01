@@ -43,15 +43,9 @@ namespace OpenWorld.Engine.Demo
 		static void StartDemo<T>()
 			where T: Game
 		{
-			// Create window to host game.
-			using (Window window = new Window(1024, 768))
-			{
-				// Create instance of game
-				window.Game = Activator.CreateInstance<T>();
-				
-				// Start the update loop.
-				window.Run(60, 60);
-			}
+			// Create the game and run it.
+			var game = Activator.CreateInstance<T>();
+			game.Run();
 		}
 	}
 }

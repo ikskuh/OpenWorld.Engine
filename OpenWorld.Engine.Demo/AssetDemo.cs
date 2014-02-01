@@ -46,7 +46,7 @@ namespace OpenWorld.Engine.Demo
 			}
 			this.shader.Projection = Matrix4.CreatePerspectiveFieldOfView(
 				GameMath.ToRadians(60), // 60° field of view
-				this.Window.Aspect,     // Just take the window aspect
+				this.Aspect,     // Just take the window aspect
 				0.1f,                   // z near
 				1000.0f);               // z far
 			this.shader.View = Matrix4.LookAt(
