@@ -153,6 +153,7 @@
     <Compile Include="SceneManagement\Shaders\PointLightShader.cs" />
     <Compile Include="SceneManagement\Shape.cs" />
     <Compile Include="SceneManagement\SimpleRenderer.cs" />
+    <Compile Include="SceneManagement\Sound3D.cs" />
     <Compile Include="SceneManagement\SphereShape.cs" />
     <Compile Include="SceneManagement\Transform.cs" />
     <Compile Include="Shader.cs" />

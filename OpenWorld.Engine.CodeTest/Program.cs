@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenWorld.Engine.SceneManagement;
+using OpenWorld.Engine.Sound;
 using OpenWorld.Engine.UserInterface;
 using System;
 using System.Collections.Generic;
@@ -24,8 +25,8 @@ namespace OpenWorld.Engine.CodeTest
 		}
 
 		Scene scene;
-		PerspectiveLookAtCamera cameraLeft;
-		PerspectiveLookAtCamera cameraRight;
+		SceneNode cameraNode;
+		CompositeCamera camera;
 		DeferredRenderer renderer;
 
 		protected override void OnLoad()
@@ -33,39 +34,57 @@ namespace OpenWorld.Engine.CodeTest
 			Texture2D.UseSRGB = true;
 
 			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
-			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
-
-			this.cameraLeft = new PerspectiveLookAtCamera();
-			this.cameraLeft.LookAt(
-				new Vector3(2.0f, 10.0f, 16.0f),
-				new Vector3(0.0f, 0.0f, 0.0f));
-
-			//this.renderer = new DeferredRenderer(400, 480);
-			this.renderer = new DeferredRenderer(800, 480);
+			FrameBuffer.ClearColor = Color.SkyBlue;
 
 			this.scene = new Scene(SceneCreationFlags.EnablePhysics);
+
+			this.cameraNode = new SceneNode();
+			this.cameraNode.Transform.LocalPosition = new Vector3(8.0f, 10.0f, 5.0f);
+			this.cameraNode.Transform.LookAt(new Vector3(0.0f, -2.0f, 0.0f));
+			this.cameraNode.Parent = this.scene.Root;
+
+			this.camera = new CompositeCamera();
+			this.camera.ProjectionMatrixSource = new Perspective(70.0f);
+			this.camera.ViewMatrixSource = this.cameraNode;
+
+			this.renderer = new DeferredRenderer(800, 480);
+
+			//this.Assets.Load<Model>("rope");
 
 			CreateBox();
 
 			SceneNode demo = new SceneNode();
 			demo.Components.Add<Renderer>().Model = this.Assets.Load<Model>("demoscene");
-
-			var polygonShape = demo.Components.Add<PolygonShape>();
-			polygonShape.Model = this.Assets.Load<Model>("demoscene");
-
-			var demoRigidBody = demo.Components.Add<RigidBody>();
-			//demoRigidBody.IsStatic = true;
+			demo.Components.Add<PolygonShape>().Model = this.Assets.Load<Model>("demoscene");
+			demo.Components.Add<RigidBody>();
+			demo.Transform.LocalPosition = new Vector3(0, -11, 0);
 			demo.Parent = scene.Root;
 
-			SceneNode ground = new SceneNode();
-			var boxShape = ground.Components.Add<BoxShape>();
-			boxShape.Width = 100.0f;
-			boxShape.Height = 0.5f;
-			boxShape.Length = 100.0f;
+			SceneNode fesant = new SceneNode();
+			fesant.Components.Add<Renderer>().Model = this.Assets.Load<Model>("felix/fesant");
+			fesant.Transform.SetMatrix(Matrix4.CreateScale(0.125f) * Matrix4.CreateRotationX(-GameMath.ToRadians(90)) * Matrix4.CreateTranslation(0, -10, -4));
+			fesant.Parent = scene.Root;
 
-			var groundRigidBody = ground.Components.Add<RigidBody>();
-			//groundRigidBody.IsStatic = true;
-			ground.Parent = scene.Root;
+			SceneNode light = new SceneNode();
+			light.Components.Add<PointLight>();
+			light.Transform.LocalPosition = new Vector3(2, 8, 1);
+			light.Parent = scene.Root;
+
+			var soundContainer = new SceneNode();
+			soundContainer.Components.Add<Scriptable>().Script =
+@"function update(self)
+	self.Node.Transform:Rotate(0, 0.4, 0);
+end";
+			soundContainer.Parent = this.cameraNode;
+
+			var soundEmitter = new SceneNode();
+			var soundSource = soundEmitter.Components.Add<Sound3D>();
+			soundSource.Sound = this.Assets.Load<AudioBuffer>("Sounds/computerbeep");
+			soundSource.AutoPlay = true;
+			soundSource.IsLooped = true;
+			soundEmitter.Components.Add<Renderer>().Model = Model.CreateCube(0.25f);
+			soundEmitter.Transform.LocalPosition = new Vector3(0, 0, 5);
+			soundEmitter.Parent = soundContainer;
 		}
 
 		private void CreateBox()
@@ -73,7 +92,12 @@ namespace OpenWorld.Engine.CodeTest
 			SceneNode child = new SceneNode();
 			var renderer = child.Components.Add<Renderer>();
 			renderer.Model = this.Assets.Load<Model>("crate");
-			child.Components.Add<PointLight>();
+			var light = child.Components.Add<PointLight>();
+			Random rnd = new Random();
+			light.Color = new Color(
+				(float)rnd.NextDouble(),
+				(float)rnd.NextDouble(),
+				(float)rnd.NextDouble());
 			child.Components.Add<SphereShape>();
 			child.Components.Add<RigidBody>().Mass = 1.0f;
 			child.Transform.LocalPosition = new Vector3(0, 5, 0);
@@ -86,6 +110,9 @@ namespace OpenWorld.Engine.CodeTest
 				CreateBox();
 
 			this.scene.Update(time);
+
+			AudioListener.Instance.Position = this.cameraNode.Transform.WorldPosition;
+			AudioListener.Instance.LookAt = this.cameraNode.Transform.Forward;
 		}
 
 		protected override void OnDraw(GameTime time)
@@ -93,10 +120,7 @@ namespace OpenWorld.Engine.CodeTest
 			// Clear the screen, as usual
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
-
-
-			this.scene.Draw(this.cameraLeft, this.renderer, time);
-			//this.scene.Draw(this.cameraRight, this.renderer, time);
+			this.scene.Draw(this.camera, this.renderer, time);
 		}
 	}
 }

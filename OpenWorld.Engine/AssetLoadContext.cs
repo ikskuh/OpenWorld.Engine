@@ -31,5 +31,10 @@ namespace OpenWorld.Engine
 		/// Gets the name of the asset that is loaded.
 		/// </summary>
 		public string Name { get; private set; }
+
+		public override string ToString()
+		{
+			return "Asset: " + this.Name;
+		}
 	}
 }

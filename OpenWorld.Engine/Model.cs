@@ -13,7 +13,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Represents a 3D model.
 	/// </summary>
-	[AssetExtension(".dae", ".obj")]
+	[AssetExtension(".dae", ".3ds", ".blend", ".obj")]
 	public sealed partial class Model : IAsset
 	{
 		static PostProcessSteps postProcessing =
@@ -87,7 +87,6 @@ namespace OpenWorld.Engine
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Objekte verwerfen, bevor Bereich verloren geht")]
 		private void Load(AssetLoadContext context, Scene scene)
 		{
 			Node[] nodes = new[] { scene.RootNode };

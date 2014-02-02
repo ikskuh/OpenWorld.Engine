@@ -59,6 +59,15 @@ namespace OpenWorld.Engine.SceneManagement
 		}
 
 		/// <summary>
+		/// Transforms the rotation to let the node target the given position.
+		/// </summary>
+		/// <param name="target">The local(!) target to look at.</param>
+		public void LookAt(Vector3 target)
+		{
+			this.matrix = Matrix4.Invert(Matrix4.LookAt(this.LocalPosition, target, Vector3.UnitY));
+		}
+
+		/// <summary>
 		/// Returns the global transformation matrix.
 		/// </summary>
 		/// <returns></returns>
@@ -99,6 +108,25 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			get { return this.matrix.Row3.Xyz; }
 			set { this.matrix.Row3.Xyz = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the local position of the transform.
+		/// </summary>
+		public Vector3 WorldPosition
+		{
+			get { return this.GetGlobalMatrix().Row3.Xyz; }
+		}
+
+		/// <summary>
+		/// Gets the global forward direction of the node.
+		/// </summary>
+		public Vector3 Forward
+		{
+			get
+			{
+				return -this.GetGlobalMatrix().Row2.Xyz;
+			}
 		}
 	}
 }
