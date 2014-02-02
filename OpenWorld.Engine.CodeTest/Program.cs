@@ -17,17 +17,14 @@ namespace OpenWorld.Engine.CodeTest
 	{
 		static void Main(string[] args)
 		{
-			using(Window window = new Window(800, 480))
-			{
-				window.Game = new Program();
-				window.Run(60, 60);
-			}
+			var game = new Program();
+			game.Run();
 		}
 
 		Scene scene;
 		SceneNode cameraNode;
 		CompositeCamera camera;
-		DeferredRenderer renderer;
+		SceneRenderer renderer;
 
 		protected override void OnLoad()
 		{
@@ -43,11 +40,12 @@ namespace OpenWorld.Engine.CodeTest
 			this.cameraNode.Transform.LookAt(new Vector3(0.0f, -2.0f, 0.0f));
 			this.cameraNode.Parent = this.scene.Root;
 
+			//this.renderer = new DeferredRenderer(400, 480);
+			this.renderer = new SimpleRenderer();// new DeferredRenderer(800, 480);
+
 			this.camera = new CompositeCamera();
 			this.camera.ProjectionMatrixSource = new Perspective(70.0f);
 			this.camera.ViewMatrixSource = this.cameraNode;
-
-			this.renderer = new DeferredRenderer(800, 480);
 
 			//this.Assets.Load<Model>("rope");
 
@@ -85,6 +83,15 @@ end";
 			soundEmitter.Components.Add<Renderer>().Model = Model.CreateCube(0.25f);
 			soundEmitter.Transform.LocalPosition = new Vector3(0, 0, 5);
 			soundEmitter.Parent = soundContainer;
+		}
+
+		private IEnumerable<CoRoutineResult> Ticker()
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				Console.WriteLine("{0}", i);
+				yield return CoRoutineResult.Frame;
+			}
 		}
 
 		private void CreateBox()

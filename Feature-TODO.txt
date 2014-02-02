@@ -13,6 +13,7 @@ o Engine
 	o Co-Routines
 	o Deferred asset loading
 	o Threaded Singleton
+	o Defer physics into update loop while engine is rendering
 o OpenGL
 	o Rework FrameBuffer
 	o Use modern GL commands [GL.ProgramUniform, ...]

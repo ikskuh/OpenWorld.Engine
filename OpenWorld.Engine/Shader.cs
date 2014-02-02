@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace OpenWorld.Engine
 {
 	/// <summary>
 	/// Represents an OpenGL shader program.
 	/// </summary>
-	public class Shader : IGLResource
+	public class Shader : Asset, IGLResource
 	{
 		private class AutomaticShaderUniform
 		{
@@ -473,6 +474,16 @@ namespace OpenWorld.Engine
 
 		}
 
+		static readonly XmlSerializer serializer = new XmlSerializer(typeof(Source));
+		protected override void Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
+		{	
+			Source source = serializer.Deserialize(stream) as Source;
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Compile(source.VertexShader, source.FragmentShader);
+				});
+		}
+
 		/// <summary>
 		/// Gets the id of the OpenGL program.
 		/// </summary>
@@ -483,5 +494,23 @@ namespace OpenWorld.Engine
 		/// <remarks>This can be used as a base texture offset for custom textures.</remarks>
 		/// </summary>
 		protected int TextureCount { get; private set; }
+		
+		/// <summary>
+		/// Defines a serializable shader code container.
+		/// </summary>
+		[Serializable]
+		[XmlRoot("Shader")]
+		public class Source
+		{
+			/// <summary>
+			/// Gets or sets vertex shader source
+			/// </summary>
+			public string VertexShader { get; set; }
+
+			/// <summary>
+			/// Gets or sets fragment shader source
+			/// </summary>
+			public string FragmentShader { get; set; }
+		}
 	}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ShaderSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Shader xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<VertexShader>#version 330
 layout(location = 0) in vec3 vertexPosition;
 layout(location = 1) in vec3 vertexNormal;
@@ -27,4 +27,4 @@ void main()
 	color.rgb = 0.5f + 0.5f * normal;
 	color.a = 1.0f;
 }</FragmentShader>
-</ShaderSource>
+</Shader>

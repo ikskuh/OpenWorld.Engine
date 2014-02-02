@@ -7,14 +7,15 @@ using Assimp;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.IO;
+using System.Threading;
 
 namespace OpenWorld.Engine
 {
 	/// <summary>
 	/// Represents a 3D model.
 	/// </summary>
-	[AssetExtension(".dae", ".3ds", ".blend", ".obj")]
-	public sealed partial class Model : IAsset
+	[AssetExtension(".dae", ".obj")]
+	public sealed partial class Model : Asset
 	{
 		static PostProcessSteps postProcessing =
 			PostProcessSteps.Debone |
@@ -78,7 +79,7 @@ namespace OpenWorld.Engine
 			}
 		}
 
-		void IAsset.Load(AssetLoadContext context, Stream stream, string extensionHint)
+		protected override void Load(AssetLoadContext context, Stream stream, string extensionHint)
 		{
 			using (var importer = new AssimpImporter())
 			{
@@ -159,7 +160,7 @@ namespace OpenWorld.Engine
 								texcoord1[k].Y);
 						}
 
-						if(mesh.HasTangentBasis)
+						if (mesh.HasTangentBasis)
 						{
 							vertex.Tangent = new Vector3(
 								mesh.Tangents[k].X,
@@ -175,11 +176,14 @@ namespace OpenWorld.Engine
 						vertices[k] = vertex;
 					}
 
-					ModelMesh modelMesh = new ModelMesh(indices, vertices);
-					modelMesh.DiffuseTexture = diffuseTexture;
-					modelMesh.SpecularTexture = specularTexture;
-					modelMesh.NormalMap = normalMap;
-					meshList.Add(modelMesh);
+					Game.Current.InvokeOpenGL(() =>
+						{
+							ModelMesh modelMesh = new ModelMesh(indices, vertices);
+							modelMesh.DiffuseTexture = diffuseTexture;
+							modelMesh.SpecularTexture = specularTexture;
+							modelMesh.NormalMap = normalMap;
+							meshList.Add(modelMesh);
+						});
 				}
 			}
 			this.meshes = meshList.ToArray();

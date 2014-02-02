@@ -14,6 +14,7 @@ namespace OpenWorld.Engine
 	{
 		private readonly AssetCache cache = new AssetCache();
 		private readonly ICollection<AssetSource> sources = new List<AssetSource>();
+		private readonly List<Asset> loadedAssets = new List<Asset>();
 
 		/// <summary>
 		/// Loads an asset.
@@ -22,7 +23,7 @@ namespace OpenWorld.Engine
 		/// <param name="name">Name of the asset. Can contain path information.</param>
 		/// <returns>Loaded asset.</returns>
 		public T Load<T>(string name)
-			where T : IAsset
+			where T : Asset
 		{
 			return this.Load<T>(name, false);
 		}
@@ -35,7 +36,7 @@ namespace OpenWorld.Engine
 		/// <param name="loadNew">If true, the asset will be loaded non-cached.</param>
 		/// <returns>Loaded asset.</returns>
 		public T Load<T>(string name, bool loadNew)
-			where T : IAsset
+			where T : Asset
 		{
 			string selectedExtension;
 
@@ -45,13 +46,13 @@ namespace OpenWorld.Engine
 			if (!loadNew && this.cache.Contains<T>(name))
 				return this.cache.Get<T>(name);
 
-			T asset = Activator.CreateInstance<T>();
-			using (var stream = this.OpenAssetStream<T>(name, out selectedExtension))
-			{
-				// Explicit cast to get also hidden interface implementations
-				IAsset a = (IAsset)asset;
-				a.Load(new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"), stream, selectedExtension);
-			}
+			T asset = Asset.Load<T>(
+				new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"),
+				this.OpenAssetStream<T>(name, out selectedExtension), 
+				selectedExtension);
+
+			this.loadedAssets.Add(asset);
+
 			if(!loadNew)
 				this.cache.Add<T>(name, asset);
 			return asset;
@@ -65,7 +66,7 @@ namespace OpenWorld.Engine
 		/// <param name="selectedExtension">The extension that the asset stream has.</param>
 		/// <returns>Opened stream to load asset from.</returns>
 		private Stream OpenAssetStream<T>(string name, out string selectedExtension)
-			where T : IAsset
+			where T : Asset
 		{
 			var extensions = GetValidExtensions<T>();
 			
@@ -91,7 +92,7 @@ namespace OpenWorld.Engine
 		}
 
 		private static string[] GetValidExtensions<T>()
-			where T : IAsset
+			where T : Asset
 		{
 			HashSet<string> validExtensions = new HashSet<string>();
 			Type type = typeof(T);
@@ -109,6 +110,18 @@ namespace OpenWorld.Engine
 			}
 
 			return validExtensions.ToArray();
+		}
+
+		/// <summary>
+		/// Diposes all loaded assets.
+		/// </summary>
+		public void CleanUp()
+		{
+			foreach(var asset in this.loadedAssets)
+			{
+				asset.Unload();
+			}
+			this.loadedAssets.Clear();
 		}
 
 		/// <summary>

@@ -11,11 +11,11 @@ namespace OpenWorld.Engine
 	/// Defines a localization asset.
 	/// </summary>
 	[AssetExtension(".loc")]
-	public class Localization : IAsset
+	public class Localization : Asset
 	{
 		private readonly Dictionary<string, string> translations = new Dictionary<string, string>();
 
-		void IAsset.Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
+		protected override void Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
 		{
 			var culture = CultureInfo.CurrentCulture;
 			Log.WriteLine("Loading localization for {0} - {1}", culture.ThreeLetterISOLanguageName, culture.EnglishName);

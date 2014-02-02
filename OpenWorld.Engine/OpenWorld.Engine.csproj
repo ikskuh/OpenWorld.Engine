@@ -86,10 +86,12 @@
     <Compile Include="AssetSource.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CompositeCamera.cs" />
+    <Compile Include="CoRoutineHost.cs" />
+    <Compile Include="Delegates.cs" />
     <Compile Include="DiGraph.cs" />
     <Compile Include="FileSystemAssetSource.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IAsset.cs" />
+    <Compile Include="Asset.cs" />
     <Compile Include="AssetExtensionAttribute.cs" />
     <Compile Include="AssetLoadContext.cs" />
     <Compile Include="AssetManager.cs" />
@@ -131,6 +133,7 @@
     <Compile Include="PostProcessingShaders\LightScatteringShader.cs" />
     <Compile Include="PostProcessingShaders\TonemappingShader.cs" />
     <Compile Include="PostProcessingStage.cs" />
+    <Compile Include="PresentationParameters.cs" />
     <Compile Include="RenderBuffer.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="SceneManagement\BoxShape.cs" />
@@ -210,7 +213,6 @@
     <Compile Include="VertexArray.cs" />
     <Compile Include="WebAssetSource.cs" />
     <Compile Include="WebColors.cs" />
-    <Compile Include="Window.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZipFileAssetSource.cs" />
   </ItemGroup>

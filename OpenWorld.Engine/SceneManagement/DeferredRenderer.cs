@@ -45,7 +45,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// Creates a new deferred renderer that uses the whole screen.
 		/// </summary>
 		public DeferredRenderer()
-			: this(Window.Current.ViewportWidth, Window.Current.ViewportHeight)
+			: this(Game.Current.Size.Width, Game.Current.Size.Height)
 		{
 
 		}
@@ -169,19 +169,19 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.Viewport(viewport[0], viewport[1], viewport[2], viewport[3]);
 
-			if (Window.Current.InputManager.Keyboard[OpenTK.Input.Key.Number1])
+			if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number1])
 			{
 				this.pipeline.DrawQuad(this.normalBuffer);
 			}
-			else if (Window.Current.InputManager.Keyboard[OpenTK.Input.Key.Number2])
+			else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number2])
 			{
 				this.pipeline.DrawQuad(this.diffuseLightBuffer);
 			}
-			else if (Window.Current.InputManager.Keyboard[OpenTK.Input.Key.Number3])
+			else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number3])
 			{
 				this.pipeline.DrawQuad(this.specularLightBuffer);
 			}
-			else if (Window.Current.InputManager.Keyboard[OpenTK.Input.Key.Number4])
+			else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number4])
 			{
 				this.pipeline.DrawQuad(this.positionBuffer);
 			}
@@ -230,7 +230,7 @@ namespace OpenWorld.Engine.SceneManagement
 			GL.CullFace(CullFaceMode.Front);
 			GL.DepthFunc(DepthFunction.Lequal);
 
-			
+
 			this.frameBuffer.SetTextures(this.diffuseLightBuffer, this.specularLightBuffer);
 			this.frameBuffer.Use();
 

@@ -11,8 +11,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Defines an object shader for 3d objects.
 	/// </summary>
-	[AssetExtension(".shader")]
-	public class ObjectShader : Shader, IAsset
+	public class ObjectShader : Shader
 	{
 		const string defaultVertexShader = @"#version 330
 layout(location = 0) in vec3 vertexPosition;
@@ -50,13 +49,6 @@ void main()
 			this.Compile(defaultVertexShader, defaultFragmentShader);
 		}
 
-		void IAsset.Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
-		{
-			XmlSerializer serializer = new XmlSerializer(typeof(ShaderSource));
-			ShaderSource source = serializer.Deserialize(stream) as ShaderSource;
-			this.Compile(source.VertexShader, source.FragmentShader);
-		}
-
 		/// <summary>
 		/// Gets or sets the world transformation matrix.
 		/// <remarks>Shader uniform: mat4 World</remarks>
@@ -83,22 +75,5 @@ void main()
 		/// </summary>
 		[Uniform("textureDiffuse")]
 		public Texture DiffuseTexture { get; set; }
-
-		/// <summary>
-		/// Defines a serializable shader code container.
-		/// </summary>
-		[Serializable]
-		public class ShaderSource
-		{
-			/// <summary>
-			/// Gets or sets vertex shader source
-			/// </summary>
-			public string VertexShader { get; set; }
-			
-			/// <summary>
-			/// Gets or sets fragment shader source
-			/// </summary>
-			public string FragmentShader { get; set; }
-		}
 	}
 }
