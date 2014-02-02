@@ -476,10 +476,12 @@ namespace OpenWorld.Engine
 
 		static readonly XmlSerializer serializer = new XmlSerializer(typeof(Source));
 		protected override void Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
-		{
-			
+		{	
 			Source source = serializer.Deserialize(stream) as Source;
-			this.Compile(source.VertexShader, source.FragmentShader);
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Compile(source.VertexShader, source.FragmentShader);
+				});
 		}
 
 		/// <summary>

@@ -21,8 +21,11 @@ namespace OpenWorld.Engine.Sound
         /// Instantiates a new Audio Buffer.
         /// </summary>
         public AudioBuffer()
-        {
-            id = AL.GenBuffer();
+		{
+			Game.Current.InvokeOpenGL(() =>
+				{
+					id = AL.GenBuffer();
+				});
         }
         
         /// <summary>
@@ -73,16 +76,21 @@ namespace OpenWorld.Engine.Sound
 
             IntPtr buffer = Marshal.AllocHGlobal(data.Buffer.Length);
             Marshal.Copy(data.Buffer,0,buffer,data.Buffer.Length);
-
-            AL.BufferData(id, data.Format, buffer, data.Buffer.Length, data.Frequency);
+			Game.Current.InvokeOpenGL(() =>
+				{
+					AL.BufferData(id, data.Format, buffer, data.Buffer.Length, data.Frequency);
+				});
             Marshal.FreeHGlobal(buffer);
         }
 
         public void Dispose()
         {
             if(this.id != 0)
-            {
-                AL.DeleteBuffer(id);
+			{
+				Game.Current.InvokeOpenGL(() =>
+				   {
+					   AL.DeleteBuffer(id);
+				   });
                 this.id = 0; 
             }
 

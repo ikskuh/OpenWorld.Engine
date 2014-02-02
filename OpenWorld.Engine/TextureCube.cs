@@ -37,13 +37,15 @@ namespace OpenWorld.Engine
 				LoadSide(bmp, 4, TextureTarget.TextureCubeMapNegativeY);
 				LoadSide(bmp, 5, TextureTarget.TextureCubeMapNegativeZ);
 			}
-
-			this.Bind();
-			GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-			GL.TexParameter(this.Target, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+					GL.TexParameter(this.Target, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+				});
 		}
 
-		private static void LoadSide(Bitmap bmp, int offset, TextureTarget target)
+		private void LoadSide(Bitmap bmp, int offset, TextureTarget target)
 		{
 			Rectangle area = new Rectangle(0, offset * bmp.Width, bmp.Width, bmp.Width);
 			/*
@@ -61,15 +63,19 @@ namespace OpenWorld.Engine
 			}
 			*/
 			var lockData = bmp.LockBits(area, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			GL.TexImage2D(
-				target,
-				0,
-				PixelInternalFormat.Rgba,
-				bmp.Width, bmp.Width,
-				0,
-				OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
-				PixelType.UnsignedByte,
-				lockData.Scan0);
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.TexImage2D(
+						target,
+						0,
+						PixelInternalFormat.Rgba,
+						bmp.Width, bmp.Width,
+						0,
+						OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
+						PixelType.UnsignedByte,
+						lockData.Scan0);
+				});
 			bmp.UnlockBits(lockData);
 		}
 	}
