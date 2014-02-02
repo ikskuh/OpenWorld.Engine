@@ -23,8 +23,26 @@ namespace OpenWorld.Engine
 			where T : Asset
 		{
 			T a = Activator.CreateInstance<T>();
-			a.Load(context, stream, extensionHint);
+			a.IsLoading = true;
+			Game.Current.DeferRoutine(() =>
+				{
+					a.Load(context, stream, extensionHint);
+					a.IsLoading = false;
+					a.IsLoaded = true;
+					if (stream != null)
+						stream.Close();
+				});
 			return a;
 		}
+
+		/// <summary>
+		/// Gets a value that indicates wheather the asset is currently loading.
+		/// </summary>
+		public bool IsLoading { get; private set; }
+
+		/// <summary>
+		/// Gets a value that indicates wheather the asset is loaded or not.
+		/// </summary>
+		public bool IsLoaded { get; private set; }
 	}
 }

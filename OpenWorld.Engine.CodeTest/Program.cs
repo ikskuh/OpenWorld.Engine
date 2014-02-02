@@ -22,7 +22,7 @@ namespace OpenWorld.Engine.CodeTest
 
 		Scene scene;
 		PerspectiveLookAtCamera cameraLeft;
-		DeferredRenderer renderer;
+		SceneRenderer renderer;
 
 		protected override void OnLoad()
 		{
@@ -37,7 +37,7 @@ namespace OpenWorld.Engine.CodeTest
 				new Vector3(0.0f, 0.0f, 0.0f));
 
 			//this.renderer = new DeferredRenderer(400, 480);
-			this.renderer = new DeferredRenderer(800, 480);
+			this.renderer = new SimpleRenderer();// new DeferredRenderer(800, 480);
 
 			this.scene = new Scene(SceneCreationFlags.EnablePhysics);
 
@@ -61,7 +61,6 @@ namespace OpenWorld.Engine.CodeTest
 			polygonShape.Model = this.Assets.Load<Model>("demoscene");
 
 			var demoRigidBody = demo.Components.Add<RigidBody>();
-			//demoRigidBody.IsStatic = true;
 			demo.Parent = scene.Root;
 
 			SceneNode ground = new SceneNode();

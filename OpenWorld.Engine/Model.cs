@@ -7,6 +7,7 @@ using Assimp;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.IO;
+using System.Threading;
 
 namespace OpenWorld.Engine
 {
@@ -174,10 +175,13 @@ namespace OpenWorld.Engine
 						vertices[k] = vertex;
 					}
 
-					ModelMesh modelMesh = new ModelMesh(indices, vertices);
-					modelMesh.DiffuseTexture = diffuseTexture;
-					modelMesh.NormalMap = normalMap;
-					meshList.Add(modelMesh);
+					Game.Current.InvokeOpenGL(() =>
+						{
+							ModelMesh modelMesh = new ModelMesh(indices, vertices);
+							modelMesh.DiffuseTexture = diffuseTexture;
+							modelMesh.NormalMap = normalMap;
+							meshList.Add(modelMesh);
+						});
 				}
 			}
 			this.meshes = meshList.ToArray();

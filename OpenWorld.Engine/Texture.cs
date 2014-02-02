@@ -21,14 +21,17 @@ namespace OpenWorld.Engine
 		/// <param name="target">Texture target</param>
 		protected Texture(TextureTarget target)
 		{
-			this.target = target;
-			this.id = GL.GenTexture();
+			Game.Current.InvokeOpenGL(() =>
+					{
+						this.target = target;
+						this.id = GL.GenTexture();
 
-			this.WrapS = TextureWrapMode.Repeat;
-			this.WrapT = TextureWrapMode.Repeat;
-			this.WrapR = TextureWrapMode.Repeat;
+						this.WrapS = TextureWrapMode.Repeat;
+						this.WrapT = TextureWrapMode.Repeat;
+						this.WrapR = TextureWrapMode.Repeat;
 
-			this.Filter = Filter.Nearest;
+						this.Filter = Filter.Nearest;
+					});
 		}
 
 		/// <summary>
@@ -58,7 +61,10 @@ namespace OpenWorld.Engine
 			{
 				if (this.id != 0)
 				{
-					GL.DeleteTexture(this.id);
+					Game.Current.InvokeOpenGL(() =>
+					   {
+						   GL.DeleteTexture(this.id);
+					   });
 					this.id = 0;
 				}
 			}
@@ -88,9 +94,12 @@ namespace OpenWorld.Engine
 			}
 			set
 			{
-				this.Bind();
 				this.wrapS = value;
-				GL.TexParameter(this.Target, TextureParameterName.TextureWrapS, (int)this.wrapS);
+				Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.TexParameter(this.Target, TextureParameterName.TextureWrapS, (int)this.wrapS);
+				});
 			}
 		}
 
@@ -105,9 +114,12 @@ namespace OpenWorld.Engine
 			}
 			set
 			{
-				this.Bind();
 				this.wrapT = value;
-				GL.TexParameter(this.Target, TextureParameterName.TextureWrapT, (int)this.wrapS);
+				Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.TexParameter(this.Target, TextureParameterName.TextureWrapT, (int)this.wrapS);
+				});
 			}
 		}
 
@@ -122,9 +134,12 @@ namespace OpenWorld.Engine
 			}
 			set
 			{
-				this.Bind();
 				this.wrapR = value;
-				GL.TexParameter(this.Target, TextureParameterName.TextureWrapR, (int)this.wrapS);
+				Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.TexParameter(this.Target, TextureParameterName.TextureWrapR, (int)this.wrapS);
+				});
 			}
 		}
 
@@ -158,10 +173,12 @@ namespace OpenWorld.Engine
 					default:
 						throw new ArgumentException("Filter is not valid.", "filter");
 				}
-
-				this.Bind();
-				GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, mag);
-				GL.TexParameter(this.Target, TextureParameterName.TextureMinFilter, min);
+				Game.Current.InvokeOpenGL(() =>
+					{
+						this.Bind();
+						GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, mag);
+						GL.TexParameter(this.Target, TextureParameterName.TextureMinFilter, min);
+					});
 			}
 		}
 

@@ -16,7 +16,15 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public abstract class Game
 	{
+		private class DeferredRoutineHandler
+		{
+			public ManualResetEvent WaitHandle { get; set; }
+
+			public DeferredRoutine Routine { get; set; }
+		}
+
 		private InputManager input;
+		private Thread drawThread;
 		private Thread updateThread;
 		private Thread[] deferralThreads;
 
@@ -25,14 +33,9 @@ namespace OpenWorld.Engine
 
 		private AudioContext audioContext;
 
-		private readonly ConcurrentQueue<DeferredRoutine> deferredRoutines = new ConcurrentQueue<DeferredRoutine>();
+		private readonly ConcurrentQueue<DeferredRoutineHandler> deferredRoutines = new ConcurrentQueue<DeferredRoutineHandler>();
+		private readonly ConcurrentQueue<DeferredRoutineHandler> deferredGLRoutines = new ConcurrentQueue<DeferredRoutineHandler>();
 
-		/// <summary>
-		/// Occurs periodically when the engine doesn't render anything.
-		/// </summary>
-		/// <remarks>Event gets called from the OpenGL thread.</remarks>
-		public event EventHandler OpenGLTick;
-		
 		/// <summary>
 		/// Instantiates a new game.
 		/// </summary>
@@ -44,6 +47,8 @@ namespace OpenWorld.Engine
 
 		public void Run()
 		{
+			this.drawThread = Thread.CurrentThread;
+
 			Game.currentGame.Value = this;
 
 			var presentation = this.GetPresentationParameters();
@@ -98,9 +103,12 @@ namespace OpenWorld.Engine
 				{
 					while (!this.isRendering)
 					{
-						// Send out ticks for assets to be integrated into OpenGL.
-						if (this.OpenGLTick != null)
-							this.OpenGLTick(this, EventArgs.Empty);
+						DeferredRoutineHandler handler = null;
+						if (this.deferredGLRoutines.TryDequeue(out handler))
+						{
+							handler.Routine();
+							handler.WaitHandle.Set();
+						}
 						Thread.Sleep(0);
 					}
 
@@ -125,7 +133,7 @@ namespace OpenWorld.Engine
 
 				this.updateThread.Join();
 
-				if(this.audioContext != null)
+				if (this.audioContext != null)
 					this.audioContext.Dispose();
 
 				this.input = null;
@@ -133,6 +141,7 @@ namespace OpenWorld.Engine
 			}
 
 			Game.currentGame.Value = null;
+			this.drawThread = null;
 		}
 
 		/// <summary>
@@ -141,14 +150,15 @@ namespace OpenWorld.Engine
 		private void DeferRoutines()
 		{
 			Game.currentGame.Value = this;
-			while(this.isRunning)
+			while (this.isRunning)
 			{
-				DeferredRoutine routine;
-				if (!this.deferredRoutines.TryDequeue(out routine))
+				DeferredRoutineHandler handler;
+				if (!this.deferredRoutines.TryDequeue(out handler))
 					continue;
-				if (routine == null)
+				if (handler == null)
 					continue;
-				routine();
+				handler.Routine();
+				handler.WaitHandle.Set();
 			}
 			Game.currentGame.Value = null;
 		}
@@ -221,11 +231,44 @@ namespace OpenWorld.Engine
 		/// </summary>
 		/// <remarks>Useful for loading assets or resources.</remarks>
 		/// <param name="routine">The routine to be deferred.</param>
-		public void DeferRoutine(DeferredRoutine routine)
+		public WaitHandle DeferRoutine(DeferredRoutine routine)
+		{
+			return this.DeferRoutine(false, routine);
+		}
+
+		/// <summary>
+		/// Deferres a routine into another thread so the current thread can continue.
+		/// </summary>
+		/// <remarks>Useful for loading assets or resources.</remarks>
+		/// <param name="openGL">Defines if the routine is deferred into the OpenGL thread or not.</param>
+		/// <param name="routine">The routine to be deferred.</param>
+		public WaitHandle DeferRoutine(bool openGL, DeferredRoutine routine)
 		{
 			if (routine == null)
-				return;
-			this.deferredRoutines.Enqueue(routine);
+				return null;
+			var handler = new DeferredRoutineHandler()
+			{
+				Routine = routine,
+				WaitHandle = new ManualResetEvent(false)
+			};
+			if(openGL)
+				this.deferredGLRoutines.Enqueue(handler);
+			else
+				this.deferredRoutines.Enqueue(handler);
+			return handler.WaitHandle;
+		}
+
+		/// <summary>
+		/// Deferres a routine into the OpenGL thread and waits for the execution.
+		/// </summary>
+		/// <remarks>Useful for mapping OpenGL resources from another thread.</remarks>
+		/// <param name="routine">The routine to be deferred.</param>
+		public void InvokeOpenGL(DeferredRoutine routine)
+		{
+			if (Thread.CurrentThread == this.drawThread)
+				routine();
+			else
+				this.DeferRoutine(true, routine).WaitOne();
 		}
 
 		#region Pure Virtual Methods

@@ -35,16 +35,19 @@ namespace OpenWorld.Engine
 		public Texture2D(int width, int height, PixelInternalFormat internalFormat, OpenTK.Graphics.OpenGL.PixelFormat pixelFormat, PixelType pixelType)
 			: this()
 		{
-			this.Bind();
-			GL.TexImage2D(
-				this.Target,
-				0,
-				internalFormat,
-				width, height,
-				0,
-				pixelFormat,
-				pixelType,
-				IntPtr.Zero);
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.TexImage2D(
+						this.Target,
+						0,
+						internalFormat,
+						width, height,
+						0,
+						pixelFormat,
+						pixelType,
+						IntPtr.Zero);
+				});
 			this.Width = width;
 			this.Height = height;
 		}
@@ -112,20 +115,23 @@ namespace OpenWorld.Engine
 				throw new ArgumentNullException("bmp");
 			Rectangle area = new Rectangle(0, 0, bmp.Width, bmp.Height);
 			var lockData = bmp.LockBits(area, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
 
-			this.Bind();
-			GL.TexImage2D(
-				this.Target,
-				0,
-				Texture2D.UseSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
-				bmp.Width, bmp.Height,
-				0,
-				OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
-				PixelType.UnsignedByte,
-				lockData.Scan0);
-			bmp.UnlockBits(lockData);
+					GL.TexImage2D(
+						this.Target,
+						0,
+						Texture2D.UseSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
+						bmp.Width, bmp.Height,
+						0,
+						OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
+						PixelType.UnsignedByte,
+						lockData.Scan0);
+					bmp.UnlockBits(lockData);
 
-			this.GenerateMipMaps();
+					this.GenerateMipMaps();
+				});
 
 			this.Width = bmp.Width;
 			this.Height = bmp.Height;
@@ -136,8 +142,11 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void GenerateMipMaps()
 		{
-			this.Bind();
-			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+				});
 		}
 
 		/// <summary>

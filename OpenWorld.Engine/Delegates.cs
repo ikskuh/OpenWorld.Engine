@@ -12,7 +12,7 @@ namespace OpenWorld.Engine
 	public delegate IEnumerable<CoRoutineResult> CoRoutine();
 
 	/// <summary>
-	/// Defines a deferred loading routine. Not executed in the main threads.
+	/// Defines a deferred loading routine.
 	/// </summary>
 	public delegate void DeferredRoutine();
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace OpenWorld.Engine.SceneManagement
 {
@@ -20,6 +21,8 @@ namespace OpenWorld.Engine.SceneManagement
 		protected override void OnStart(GameTime time)
 		{
 			base.OnStart(time);
+
+			while (!this.Model.IsLoaded) Thread.Sleep(0);
 
 			List<Vector3> positions = new List<Vector3>();
 			List<int> indexList = new List<int>();

@@ -46,14 +46,12 @@ namespace OpenWorld.Engine
 				return this.cache.Get<T>(name);
 
 			T asset;
-			using (var stream = this.OpenAssetStream<T>(name, out selectedExtension))
-			{
-				asset = Asset.Load<T>(
-					new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"), 
-					stream, 
-					selectedExtension);
-				
-			}
+
+			asset = Asset.Load<T>(
+				new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"),
+				this.OpenAssetStream<T>(name, out selectedExtension), 
+				selectedExtension);
+
 			if(!loadNew)
 				this.cache.Add<T>(name, asset);
 			return asset;
