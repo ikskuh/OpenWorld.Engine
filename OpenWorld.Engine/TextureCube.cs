@@ -24,6 +24,12 @@ namespace OpenWorld.Engine
 
 		// +X, +Y, +Z, -X, -Y und -Z
 
+		/// <summary>
+		/// Loads the cube texture.
+		/// </summary>
+		/// <param name="manager"></param>
+		/// <param name="stream"></param>
+		/// <param name="extensionHint"></param>
 		protected override void Load(AssetLoadContext manager, System.IO.Stream stream, string extensionHint)
 		{
 			using(var bmp = new Bitmap(stream))

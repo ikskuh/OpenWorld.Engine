@@ -25,8 +25,19 @@ namespace OpenWorld.Engine.Sound
             Frequency = frequency;
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public Byte[] Buffer { get; private set; }
-        public ALFormat Format { get; private set; }
+        
+		/// <summary>
+		/// 
+		/// </summary>
+		public ALFormat Format { get; private set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
         public int Frequency { get; private set; }
     }
     
@@ -35,7 +46,17 @@ namespace OpenWorld.Engine.Sound
     /// </summary>
     public abstract class AudioReader : BinaryReader
     {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="input"></param>
         protected AudioReader(Stream input) : base(input) { }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="input"></param>
+		/// <param name="encoding"></param>
         protected AudioReader(Stream input, Encoding encoding) : base(input, encoding) { }
 
         /// <summary>

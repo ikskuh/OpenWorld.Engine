@@ -7,16 +7,32 @@ using OpenTK.Audio.OpenAL;
 
 namespace OpenWorld.Engine.Sound
 {
+	/// <summary>
+	/// 
+	/// </summary>
     public class WAVReader : AudioReader
     {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="stream"></param>
         public WAVReader(Stream stream) : base(stream)
         {
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <param name="encoding"></param>
         public WAVReader(Stream stream, Encoding encoding) : base(stream,encoding)
         {
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
         public override AudioData ReadAudioData()
         {
             string chunkDescriptor = Encoding.ASCII.GetString(ReadBytes(4));

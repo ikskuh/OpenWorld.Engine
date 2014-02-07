@@ -77,7 +77,7 @@ end";
 
 			var soundEmitter = new SceneNode();
 			var soundSource = soundEmitter.Components.Add<Sound3D>();
-			soundSource.Sound = this.Assets.Load<AudioBuffer>("Sounds/computerbeep");
+			soundSource.Sound = this.Assets.Load<AudioBuffer>("Birdy01");
 			soundSource.AutoPlay = true;
 			soundSource.IsLooped = true;
 			soundEmitter.Components.Add<Renderer>().Model = Model.CreateCube(0.25f);

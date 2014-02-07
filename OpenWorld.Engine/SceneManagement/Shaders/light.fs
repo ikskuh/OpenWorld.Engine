@@ -26,13 +26,19 @@ void main()
 
 	float falloff = max(0.0f, 1.0f - length(distance) / Radius);
 
+	float diffuseStrength = clamp(dot(dir, -normal.xyz), 0.0f, 1.0f);
+
 	diffuse = 
 		Color *
-		clamp(dot(dir, -normal.xyz), 0.0f, 1.0f) * 
+		diffuseStrength * 
 		falloff;
 
-	specular = 
-		Color *
-		pow(clamp(dot(reflect(dir, normalize(pos - ViewPosition)), -normal.xyz), 0.0f, 1.0f), normal.w) * 
-		falloff;
+	if(diffuseStrength >= 0) {
+		specular = 
+			Color *
+			pow(clamp(dot(reflect(dir, normalize(pos - ViewPosition)), -normal.xyz), 0.0f, 1.0f), normal.w) * 
+			falloff;
+	} else {
+		specular = vec4(0);
+	}
 }

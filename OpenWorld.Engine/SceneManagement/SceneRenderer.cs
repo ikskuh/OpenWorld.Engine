@@ -20,7 +20,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		protected SceneRenderer()
 		{
-
+			this.Sky = new ColorSky();
 		}
 
 		/// <summary>
@@ -122,5 +122,10 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			get { return this.lightRenderJobs; }
 		}
+
+		/// <summary>
+		/// Gets or sets the sky for this renderer.
+		/// </summary>
+		public Sky Sky { get; set; }
 	}
 }

@@ -43,21 +43,24 @@ namespace OpenWorld.Engine.UserInterface
 					-this.gui.ScreenSize.Y, 0.0f,
 					0.0f, 1.0f);
 
-			this.vertexArray = new VertexArray();
-			this.vertexArray.Bind();
+			Game.Current.InvokeOpenGL(() =>
+			{
+				this.vertexArray = new VertexArray();
+				this.vertexArray.Bind();
 
-			this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
-			this.vertexBuffer.Bind();
+				this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
+				this.vertexBuffer.Bind();
 
-			GL.EnableVertexAttribArray(0);
-			GL.EnableVertexAttribArray(1);
-			GL.EnableVertexAttribArray(2);
+				GL.EnableVertexAttribArray(0);
+				GL.EnableVertexAttribArray(1);
+				GL.EnableVertexAttribArray(2);
 
-			GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, UIVertex.Size, 0);  // Position
-			GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, UIVertex.Size, 8);  // Color
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, UIVertex.Size, 24); // UV
+				GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, UIVertex.Size, 0);  // Position
+				GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, UIVertex.Size, 8);  // Color
+				GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, UIVertex.Size, 24); // UV
 
-			VertexArray.Unbind();
+				VertexArray.Unbind();
+			});
 
 			using (var bmp = new System.Drawing.Bitmap(2, 2))
 			{
@@ -433,12 +436,11 @@ namespace OpenWorld.Engine.UserInterface
 		{
 			this.vertexBuffer.SetData(BufferUsageHint.StaticDraw, vertices);
 
-			this.shader.Texture = texture;
+			this.shader.Texture = texture ?? this.blankWhite;
 			this.shader.Use();
 			this.vertexArray.Bind();
 
 			GL.DrawArrays(type, 0, vertices.Length);
-            
 
 			VertexArray.Unbind();
 		}

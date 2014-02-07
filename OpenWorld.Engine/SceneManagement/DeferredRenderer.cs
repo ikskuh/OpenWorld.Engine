@@ -71,7 +71,10 @@ namespace OpenWorld.Engine.SceneManagement
 
 			using (var stream = Resource.Open("OpenWorld.Engine.Resources.flatNormals.png"))
 			{
+				bool srgb = Texture2D.UseSRGB;
+				Texture2D.UseSRGB = false;
 				this.flatNormalMap = new Texture2D(new System.Drawing.Bitmap(stream));
+				Texture2D.UseSRGB = srgb;
 			}
 			using (var stream = Resource.Open("OpenWorld.Engine.Resources.black.png"))
 			{
@@ -282,7 +285,8 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
-			//this.sky.Draw(args);
+
+			this.Sky.Draw(this, camera);
 
 			GL.DepthMask(true);
 			GL.CullFace(CullFaceMode.Back);

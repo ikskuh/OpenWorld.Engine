@@ -25,6 +25,7 @@ namespace OpenWorld.Engine
 
 		private InputManager input;
 		private Thread drawThread;
+		private Thread soundThread;
 		private Thread updateThread;
 		private Thread[] deferralThreads;
 
@@ -35,8 +36,12 @@ namespace OpenWorld.Engine
 
 		private readonly ConcurrentQueue<DeferredRoutineHandler> deferredRoutines = new ConcurrentQueue<DeferredRoutineHandler>();
 		private readonly ConcurrentQueue<DeferredRoutineHandler> deferredGLRoutines = new ConcurrentQueue<DeferredRoutineHandler>();
+		private readonly ConcurrentQueue<DeferredRoutineHandler> deferredALRoutines = new ConcurrentQueue<DeferredRoutineHandler>();
 
 		private readonly CoRoutineHost coRoutineHost = new CoRoutineHost();
+
+		private GameState currentState;
+		private GameState nextState;
 
 		/// <summary>
 		/// Instantiates a new game.
@@ -46,6 +51,9 @@ namespace OpenWorld.Engine
 			this.deferralThreads = new Thread[2];
 		}
 
+		/// <summary>
+		/// Starts the game main loop.
+		/// </summary>
 		public void Run()
 		{
 			this.drawThread = Thread.CurrentThread;
@@ -81,11 +89,6 @@ namespace OpenWorld.Engine
 
 				this.isRunning = true;
 
-				this.audioContext = this.CreateAudioContext();
-
-				// Load everything in the draw thread
-				this.OnLoad();
-
 				// Start the deferral threads for deferred routines
 				for (int i = 0; i < this.deferralThreads.Length; i++)
 				{
@@ -93,6 +96,14 @@ namespace OpenWorld.Engine
 					this.deferralThreads[i].Name = "OpenWorld Deferred Routines Host";
 					this.deferralThreads[i].Start();
 				}
+
+				// Start the sound thread.
+				this.soundThread = new Thread(this.SoundLoop);
+				this.soundThread.Name = "OpenWorld Sound Thread";
+				this.soundThread.Start();
+
+				// Load everything in the draw thread
+				this.OnLoad();
 
 				// Start the update thread.
 				this.updateThread = new Thread(this.UpdateLoop);
@@ -119,6 +130,10 @@ namespace OpenWorld.Engine
 					if (!window.IsExiting)
 					{
 						this.OnDraw(this.Time);
+
+						if (this.currentState != null)
+							this.currentState.Draw(this.Time);
+
 						window.SwapBuffers();
 					}
 					this.isRendering = false;
@@ -134,9 +149,6 @@ namespace OpenWorld.Engine
 				}
 
 				this.updateThread.Join();
-
-				if (this.audioContext != null)
-					this.audioContext.Dispose();
 
 				this.input = null;
 				this.Size = new System.Drawing.Size();
@@ -157,7 +169,7 @@ namespace OpenWorld.Engine
 			Game.currentGame.Value = this;
 			while (this.isRunning)
 			{
-				Thread.Sleep(1);
+				Thread.Sleep(0);
 
 				DeferredRoutineHandler handler;
 				if (!this.deferredRoutines.TryDequeue(out handler))
@@ -170,12 +182,44 @@ namespace OpenWorld.Engine
 			Game.currentGame.Value = null;
 		}
 
-		private void UpdateLoop()
+		/// <summary>
+		/// Defers a routine execution into the current thread.
+		/// </summary>
+		private void SoundLoop()
 		{
 			Game.currentGame.Value = this;
 
-			if (this.audioContext != null)
-				this.audioContext.MakeCurrent();
+			this.audioContext = this.CreateAudioContext();
+			this.audioContext.MakeCurrent();
+
+			while (this.isRunning)
+			{
+				Thread.Sleep(0);
+
+				DeferredRoutineHandler handler;
+				if (!this.deferredALRoutines.TryDequeue(out handler))
+					continue;
+				if (handler == null)
+					continue;
+				handler.Routine();
+				var error = OpenTK.Audio.OpenAL.AL.GetError();
+				if(error != OpenTK.Audio.OpenAL.ALError.NoError)
+				{
+					System.Diagnostics.Debug.WriteLine("AL Error: " + error);
+					System.Diagnostics.Debugger.Break();
+				}
+				handler.WaitHandle.Set();
+			}
+
+			this.audioContext.Dispose();
+			this.audioContext = null; 
+
+			Game.currentGame.Value = null;
+		}
+
+		private void UpdateLoop()
+		{
+			Game.currentGame.Value = this;
 
 			DateTime start = DateTime.Now;
 			GameTime timeLast = new GameTime(0, 0);
@@ -190,6 +234,24 @@ namespace OpenWorld.Engine
 				// Step all co-routines
 				this.coRoutineHost.Step();
 
+				if(this.nextState != this.currentState)
+				{
+					if (this.currentState != null)
+					{
+						this.currentState.Leave();
+						this.currentState.Game = null;
+					}
+					this.currentState = this.nextState;
+					if (this.currentState != null)
+					{
+						this.currentState.Game = this;
+						this.currentState.Enter();
+					}
+				}
+
+				if (this.currentState != null)
+					this.currentState.Update(this.Time);
+
 				this.isRendering = true;
 
 				// TODO: Update physics here
@@ -199,6 +261,9 @@ namespace OpenWorld.Engine
 
 				timeLast = this.Time;
 			}
+
+			if (this.currentState != null)
+				this.currentState.Leave();
 
 			Game.currentGame.Value = null;
 		}
@@ -275,10 +340,35 @@ namespace OpenWorld.Engine
 		/// <param name="routine">The routine to be deferred.</param>
 		public void InvokeOpenGL(DeferredRoutine routine)
 		{
+			if (routine == null)
+				return;
 			if (Thread.CurrentThread == this.drawThread)
 				routine();
 			else
 				this.DeferRoutine(true, routine).WaitOne();
+		}
+
+
+		/// <summary>
+		/// Deferres a routine into the OpenAL thread and waits for the execution.
+		/// </summary>
+		/// <param name="routine">The routine to be deferred.</param>
+		public void InvokeOpenAL(DeferredRoutine routine)
+		{
+			if (routine == null)
+				return;
+			if (Thread.CurrentThread == this.soundThread)
+				routine();
+			else
+			{
+				var handler = new DeferredRoutineHandler()
+				{
+					Routine = routine,
+					WaitHandle = new ManualResetEvent(false)
+				};
+				this.deferredALRoutines.Enqueue(handler);
+				handler.WaitHandle.WaitOne();
+			}
 		}
 
 		/// <summary>
@@ -288,6 +378,15 @@ namespace OpenWorld.Engine
 		public void StartCoRoutine(CoRoutine routine)
 		{
 			this.coRoutineHost.Start(routine);
+		}
+
+		/// <summary>
+		/// Sets the next game state.
+		/// </summary>
+		/// <param name="state">The state that is used from the next frame on.</param>
+		public void SetState(GameState state)
+		{
+			this.nextState = state;
 		}
 
 		#region Pure Virtual Methods
@@ -346,6 +445,14 @@ namespace OpenWorld.Engine
 		/// Gets the aspect of the screen.
 		/// </summary>
 		public float Aspect { get { return (float)this.Size.Width / (float)this.Size.Height; } }
+
+		/// <summary>
+		/// Gets the current game state.
+		/// </summary>
+		public GameState State
+		{
+			get { return currentState; }
+		}
 
 		#region Static Part
 

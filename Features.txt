@@ -1,4 +1,3 @@
-- Window Management
 - Asset Manager
 	- Asset Types
 		- Models via Assimp.NET
@@ -23,6 +22,9 @@
 		- Object Shaders (with world matrices)
 		- Post Processing Shaders (fixed VertexShader, custom FragmentShader)
 		- Automatic shader uniforms via Properties + Attributes
+- Multithreaded architecture
+	- Co-Routines
+	- Deferred asset loading
 - Input Manager
 	- Keyboard
 	- Mouse

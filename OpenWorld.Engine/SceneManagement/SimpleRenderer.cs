@@ -37,6 +37,8 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.Clear(ClearBufferMask.DepthBufferBit);
 
+			this.Sky.Draw(this, camera);
+
 			this.Draw(scene, camera, this.SolidRenderJobs);
 
 			GL.Disable(EnableCap.DepthTest);

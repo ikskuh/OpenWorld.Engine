@@ -41,6 +41,9 @@ namespace OpenWorld.Engine
 			this.Load(null, stream, null);
 		}
 
+		/// <summary>
+		/// Loads the blob.
+		/// </summary>
 		protected override void Load(AssetLoadContext manager, Stream stream, string extensionHint)
 		{
 			if (stream == null)

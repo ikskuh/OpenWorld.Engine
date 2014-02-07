@@ -168,11 +168,9 @@ namespace OpenWorld.Engine
 		/// 
 		/// </summary>
 		/// <param name="stream"></param>
-		/// <param name="textureHandle"></param>
-		/// <param name="useSRGB"></param>
 		/// <returns></returns>
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "DDS"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "SRGB")]
-		protected static TextureTarget LoadDDS(Stream stream, int textureHandle, bool useSRGB)
+		protected TextureTarget LoadDDS(Stream stream)
 		{
 			if (stream == null)
 				throw new ArgumentNullException("stream");
@@ -271,7 +269,7 @@ namespace OpenWorld.Engine
 					switch ((eFOURCC)pfFourCC)
 					{
 						case eFOURCC.DXT1:
-							if (useSRGB)
+							if (this.IsSRGB)
 								_PixelInternalFormat = PixelInternalFormat.CompressedSrgbAlphaS3tcDxt1Ext;
 							else
 								_PixelInternalFormat = (PixelInternalFormat)ExtTextureCompressionS3tc.CompressedRgbS3tcDxt1Ext;
@@ -279,7 +277,7 @@ namespace OpenWorld.Engine
 							break;
 						//case eFOURCC.DXT2:
 						case eFOURCC.DXT3:
-							if (useSRGB)
+							if (this.IsSRGB)
 								_PixelInternalFormat = PixelInternalFormat.CompressedSrgbAlphaS3tcDxt3Ext;
 							else
 								_PixelInternalFormat = (PixelInternalFormat)ExtTextureCompressionS3tc.CompressedRgbaS3tcDxt3Ext;
@@ -287,7 +285,7 @@ namespace OpenWorld.Engine
 							break;
 						//case eFOURCC.DXT4:
 						case eFOURCC.DXT5:
-							if (useSRGB)
+							if (this.IsSRGB)
 								_PixelInternalFormat = PixelInternalFormat.CompressedSrgbAlphaS3tcDxt5Ext;
 							else
 								_PixelInternalFormat = (PixelInternalFormat)ExtTextureCompressionS3tc.CompressedRgbaS3tcDxt5Ext;
@@ -311,7 +309,7 @@ namespace OpenWorld.Engine
 				//if (TextureLoaderParameters.Verbose)
 				//	Trace.WriteLine("\n" + GetDescriptionFromMemory(filename, dimension));
 
-				GL.BindTexture(dimension, textureHandle);
+				GL.BindTexture(dimension, this.id);
 
 				int Cursor = HeaderSizeInBytes;
 				// foreach face in the cubemap, get all it's mipmaps levels. Only one iteration for Texture2D
@@ -394,7 +392,7 @@ namespace OpenWorld.Engine
 							//	Trace.WriteLine("GL: " + GLError.ToString() + " Level: " + Level + " DXTn: " + ((compressed == 1) ? "Yes" : "No") + " Frmt:" + (ExtTextureCompressionS3tc)internalformat + " " + width + "*" + height);
 							if (GLError != ErrorCode.NoError || compressed == 0 || width == 0 || height == 0 || internalformat == 0)
 							{
-								GL.DeleteTextures(1, ref textureHandle);
+								//GL.DeleteTextures(1, ref textureHandle);
 								Log.Error("ERROR: Something went wrong after GL.CompressedTexImage(); Last GL Error: " + GLError.ToString());
 							}
 						}

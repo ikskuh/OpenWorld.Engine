@@ -21,7 +21,6 @@ namespace OpenWorld.Engine
 		public Texture2D()
 			: base(TextureTarget.Texture2D)
 		{
-
 		}
 
 		/// <summary>
@@ -89,11 +88,17 @@ namespace OpenWorld.Engine
 			}
 		}
 
+		/// <summary>
+		/// Loads the 2d texture.
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="stream"></param>
+		/// <param name="extensionHint"></param>
 		protected override void Load(AssetLoadContext context, Stream stream, string extensionHint)
 		{
 			if (extensionHint == ".dds")
 			{
-				if (LoadDDS(stream, this.Id, Texture2D.UseSRGB) != this.Target)
+				if (LoadDDS(stream) != this.Target)
 					throw new InvalidDataException("Could not load texture: Invalid texture format.");
 			}
 			else
@@ -122,7 +127,7 @@ namespace OpenWorld.Engine
 					GL.TexImage2D(
 						this.Target,
 						0,
-						Texture2D.UseSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
+						this.IsSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
 						bmp.Width, bmp.Height,
 						0,
 						OpenTK.Graphics.OpenGL.PixelFormat.Bgra,

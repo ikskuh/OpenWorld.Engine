@@ -79,6 +79,9 @@ namespace OpenWorld.Engine
 			}
 		}
 
+		/// <summary>
+		/// Loads the model.
+		/// </summary>
 		protected override void Load(AssetLoadContext context, Stream stream, string extensionHint)
 		{
 			using (var importer = new AssimpImporter())

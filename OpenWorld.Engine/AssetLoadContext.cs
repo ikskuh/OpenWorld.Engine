@@ -32,6 +32,10 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public string Name { get; private set; }
 
+
+		/// <summary>
+		/// Converts the load context to a string.
+		/// </summary>
 		public override string ToString()
 		{
 			return "Asset: " + this.Name;

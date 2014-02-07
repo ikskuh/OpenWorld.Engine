@@ -130,68 +130,71 @@ namespace OpenWorld.Engine
 		/// <param name="fragmentSource">Fragment shader source</param>
 		public void Compile(string vertexSource, string fragmentSource)
 		{
-			int status;
-			string infoLog;
-
-			// Create the shaders
-			int vertexShader = GL.CreateShader(ShaderType.VertexShader);
-			int fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-
-			// Compile Vertex Shader
-			GL.ShaderSource(vertexShader, vertexSource);
-			GL.CompileShader(vertexShader);
-
-			// Check Vertex Shader
-			infoLog = GL.GetShaderInfoLog(vertexShader);
-			if (!string.IsNullOrWhiteSpace(infoLog))
+			Game.Current.InvokeOpenGL(() =>
 			{
-				Log.WriteLine(LocalizedStrings.VertexShaderCompilerResult);
-				Log.WriteLine(infoLog);
-			}
-			GL.GetShader(vertexShader, ShaderParameter.CompileStatus, out status);
-			if (status == 0)
-				throw new ShaderCompilationException(infoLog);
+				int status;
+				string infoLog;
 
-			// Compile Fragment Shader
-			GL.ShaderSource(fragmentShader, fragmentSource);
-			GL.CompileShader(fragmentShader);
+				// Create the shaders
+				int vertexShader = GL.CreateShader(ShaderType.VertexShader);
+				int fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
 
-			// Check Fragment Shader
-			infoLog = GL.GetShaderInfoLog(fragmentShader);
-			if (!string.IsNullOrWhiteSpace(infoLog))
-			{
-				Log.WriteLine(LocalizedStrings.FragmentShaderCompilerResult);
-				Log.WriteLine(infoLog);
-			}
-			GL.GetShader(fragmentShader, ShaderParameter.CompileStatus, out status);
-			if (status == 0)
-				throw new ShaderCompilationException(infoLog);
+				// Compile Vertex Shader
+				GL.ShaderSource(vertexShader, vertexSource);
+				GL.CompileShader(vertexShader);
 
-			// Link the program
-			if (this.programID != 0)
-			{
-				this.Dispose();
-			}
-			this.programID = GL.CreateProgram();
-			GL.AttachShader(this.programID, vertexShader);
-			GL.AttachShader(this.programID, fragmentShader);
-			GL.LinkProgram(this.programID);
+				// Check Vertex Shader
+				infoLog = GL.GetShaderInfoLog(vertexShader);
+				if (!string.IsNullOrWhiteSpace(infoLog))
+				{
+					Log.WriteLine(LocalizedStrings.VertexShaderCompilerResult);
+					Log.WriteLine(infoLog);
+				}
+				GL.GetShader(vertexShader, ShaderParameter.CompileStatus, out status);
+				if (status == 0)
+					throw new ShaderCompilationException(infoLog);
 
-			// Check the program
-			infoLog = GL.GetProgramInfoLog(this.programID);
-			if (!string.IsNullOrWhiteSpace(infoLog))
-			{
-				Log.WriteLine(LocalizedStrings.ShaderLinkerResult);
-				Log.WriteLine(infoLog);
-			}
+				// Compile Fragment Shader
+				GL.ShaderSource(fragmentShader, fragmentSource);
+				GL.CompileShader(fragmentShader);
 
-			GL.GetProgram(this.programID, GetProgramParameterName.LinkStatus, out status);
+				// Check Fragment Shader
+				infoLog = GL.GetShaderInfoLog(fragmentShader);
+				if (!string.IsNullOrWhiteSpace(infoLog))
+				{
+					Log.WriteLine(LocalizedStrings.FragmentShaderCompilerResult);
+					Log.WriteLine(infoLog);
+				}
+				GL.GetShader(fragmentShader, ShaderParameter.CompileStatus, out status);
+				if (status == 0)
+					throw new ShaderCompilationException(infoLog);
 
-			if (status == 0)
-				throw new ShaderLinkingException(infoLog);
+				// Link the program
+				if (this.programID != 0)
+				{
+					this.Dispose();
+				}
+				this.programID = GL.CreateProgram();
+				GL.AttachShader(this.programID, vertexShader);
+				GL.AttachShader(this.programID, fragmentShader);
+				GL.LinkProgram(this.programID);
 
-			GL.DeleteShader(vertexShader);
-			GL.DeleteShader(fragmentShader);
+				// Check the program
+				infoLog = GL.GetProgramInfoLog(this.programID);
+				if (!string.IsNullOrWhiteSpace(infoLog))
+				{
+					Log.WriteLine(LocalizedStrings.ShaderLinkerResult);
+					Log.WriteLine(infoLog);
+				}
+
+				GL.GetProgram(this.programID, GetProgramParameterName.LinkStatus, out status);
+
+				if (status == 0)
+					throw new ShaderLinkingException(infoLog);
+
+				GL.DeleteShader(vertexShader);
+				GL.DeleteShader(fragmentShader);
+			});
 		}
 
 		/// <summary>
@@ -475,6 +478,11 @@ namespace OpenWorld.Engine
 		}
 
 		static readonly XmlSerializer serializer = new XmlSerializer(typeof(Source));
+
+
+		/// <summary>
+		/// Loads the shader.
+		/// </summary>
 		protected override void Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
 		{	
 			Source source = serializer.Deserialize(stream) as Source;

@@ -15,6 +15,9 @@ namespace OpenWorld.Engine
 	{
 		private readonly Dictionary<string, string> translations = new Dictionary<string, string>();
 
+		/// <summary>
+		/// Loads the localization definition.
+		/// </summary>
 		protected override void Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
 		{
 			var culture = CultureInfo.CurrentCulture;

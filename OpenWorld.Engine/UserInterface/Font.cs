@@ -53,14 +53,17 @@ namespace OpenWorld.Engine.UserInterface
 			this.face = Font.library.NewFace(fileName, 0);
 			this.face.SetPixelSizes(0, (uint)height);
 
-			this.vao = new VertexArray();
-			this.vao.Bind();
-			GL.EnableVertexAttribArray(0);
-			VertexArray.Unbind();
+			Game.Current.InvokeOpenGL(() =>
+			{
+				this.vao = new VertexArray();
+				this.vao.Bind();
+				GL.EnableVertexAttribArray(0);
+				VertexArray.Unbind();
+			});
 
 			this.fontShader = new Shader();
-			this.fontShader.Compile(
-@"#version 330
+			 this.fontShader.Compile(
+	 @"#version 330
 layout(location = 0) in vec4 inVertex;
 uniform mat4 orthoMatrix;
 uniform mat4 worldMatrix;
@@ -72,7 +75,7 @@ void main()
 	gl_Position = orthoMatrix * worldMatrix * vec4(inVertex.xy, 0.0f, 1.0f);
 	uv = inVertex.zw;
 }",
-@"#version 330
+	 @"#version 330
 layout(location = 0) out vec4 result;
 in vec2 uv;
 uniform vec4 color;
@@ -113,7 +116,7 @@ void main()
 					var data = g.Glyph.Bitmap.BufferData;
 					for (int x = 0; x < bmp.Width; x++)
 					{
-						for(int y = 0; y < bmp.Height; y++)
+						for (int y = 0; y < bmp.Height; y++)
 						{
 							bmp.SetPixel(x, y, System.Drawing.Color.FromArgb(
 								data[bmp.Width * y + x],
@@ -126,19 +129,21 @@ void main()
 					g.Texture.WrapS = TextureWrapMode.ClampToEdge;
 					g.Texture.WrapT = TextureWrapMode.ClampToEdge;
 				}
-				
+
 				float w = g.Glyph.Bitmap.Width;
 				float h = g.Glyph.Bitmap.Rows;
 				float x2 = g.Glyph.BitmapLeft;
 				float y2 = this.Height - g.Glyph.BitmapTop;
-
-				g.VertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
-				g.VertexBuffer.SetData(BufferUsageHint.StaticDraw, new[]
+				Game.Current.InvokeOpenGL(() =>
 					{
-						new Vector4(x2,     y2    , 0, 0),
-						new Vector4(x2 + w, y2    , 1, 0),
-						new Vector4(x2,     y2 + h, 0, 1),
-						new Vector4(x2 + w, y2 + h, 1, 1)
+						g.VertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
+						g.VertexBuffer.SetData(BufferUsageHint.StaticDraw, new[]
+							{
+								new Vector4(x2,     y2    , 0, 0),
+								new Vector4(x2 + w, y2    , 1, 0),
+								new Vector4(x2,     y2 + h, 0, 1),
+								new Vector4(x2 + w, y2 + h, 1, 1)
+							});
 					});
 			}
 
@@ -160,7 +165,7 @@ void main()
 			for (int i = 0; i < text.Length; i++)
 			{
 				char c = text[i];
-				if(c == '\n')
+				if (c == '\n')
 				{
 					penX = 0;
 					penY += face.Size.Metrics.Height / 64.0f;
@@ -225,7 +230,7 @@ void main()
 					this.fontShader.SetUniform("worldMatrix", Matrix4.CreateTranslation(penX, penY, 0.0f));
 					this.fontShader.SetTexture("glyph", g.Texture, 0);
 
-                    GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+					GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 				}
 
 
@@ -258,7 +263,7 @@ void main()
 				this.vao.Dispose();
 
 			// Dispose every self-made glyph texture and vertex buffers...
-			foreach(var g in this.glyphs)
+			foreach (var g in this.glyphs)
 			{
 				if (g.Value.Texture != null)
 					g.Value.Texture.Dispose();

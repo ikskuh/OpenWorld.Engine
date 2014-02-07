@@ -22,7 +22,7 @@ namespace OpenWorld.Engine.Sound
         /// </summary>
         public AudioBuffer()
 		{
-			Game.Current.InvokeOpenGL(() =>
+			Game.Current.InvokeOpenAL(() =>
 				{
 					id = AL.GenBuffer();
 				});
@@ -36,12 +36,20 @@ namespace OpenWorld.Engine.Sound
             Dispose();
         }
 
+		/// <summary>
+		/// Unloads the sound.
+		/// </summary>
 		protected override void OnUnload()
 		{
 			this.Dispose();
 		}
 
-        public AudioBuffer(AudioData data) : this()
+		/// <summary>
+		/// Creates a new audio buffer with given audio data.
+		/// </summary>
+		/// <param name="data"></param>
+        public AudioBuffer(AudioData data)
+			: this()
         {
             SetData(data);
         }
@@ -51,6 +59,9 @@ namespace OpenWorld.Engine.Sound
             id = sndID;
         }
 
+		/// <summary>
+		/// Loads the audio buffer.
+		/// </summary>
         protected override void Load(AssetLoadContext context, Stream stream, string extension)
         {
             AudioReader reader = null;
@@ -79,20 +90,20 @@ namespace OpenWorld.Engine.Sound
             if (this.id == 0) throw new InvalidOperationException("Buffer was disposed");
             if (data == null) throw new ArgumentNullException("data is null");
 
-            IntPtr buffer = Marshal.AllocHGlobal(data.Buffer.Length);
-            Marshal.Copy(data.Buffer,0,buffer,data.Buffer.Length);
-			Game.Current.InvokeOpenGL(() =>
+			Game.Current.InvokeOpenAL(() =>
 				{
-					AL.BufferData(id, data.Format, buffer, data.Buffer.Length, data.Frequency);
+					AL.BufferData(id, data.Format, data.Buffer, data.Buffer.Length, data.Frequency);
 				});
-            Marshal.FreeHGlobal(buffer);
         }
 
+		/// <summary>
+		/// Disposes the audio buffer.
+		/// </summary>
         public void Dispose()
         {
             if(this.id != 0)
 			{
-				Game.Current.InvokeOpenGL(() =>
+				Game.Current.InvokeOpenAL(() =>
 				   {
 					   AL.DeleteBuffer(id);
 				   });
@@ -102,11 +113,19 @@ namespace OpenWorld.Engine.Sound
             GC.SuppressFinalize(this);
         }
 
+		/// <summary>
+		/// Creates an existing audio buffer from a native OpenAL buffer id.
+		/// </summary>
+		/// <param name="sndID"></param>
+		/// <returns></returns>
         public static AudioBuffer CreateFromNative(int sndID)
         {
             return new AudioBuffer(sndID);
         }
-       
+
+		/// <summary>
+		/// 
+		/// </summary>
         public int Id { get { return this.id; } }
     }
 }

@@ -90,6 +90,7 @@
     <Compile Include="Delegates.cs" />
     <Compile Include="DiGraph.cs" />
     <Compile Include="FileSystemAssetSource.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="AssetExtensionAttribute.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="RenderBuffer.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="SceneManagement\BoxShape.cs" />
+    <Compile Include="SceneManagement\ColorSky.cs" />
     <Compile Include="SceneManagement\DeferredRenderer.cs" />
     <Compile Include="SceneManagement\PolygonShape.cs" />
     <Compile Include="SceneManagement\Shaders\OpaqueObjectShader.cs" />
@@ -156,6 +158,7 @@
     <Compile Include="SceneManagement\Shaders\PointLightShader.cs" />
     <Compile Include="SceneManagement\Shape.cs" />
     <Compile Include="SceneManagement\SimpleRenderer.cs" />
+    <Compile Include="SceneManagement\Sky.cs" />
     <Compile Include="SceneManagement\Sound3D.cs" />
     <Compile Include="SceneManagement\SphereShape.cs" />
     <Compile Include="SceneManagement\Transform.cs" />

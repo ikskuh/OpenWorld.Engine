@@ -10,10 +10,7 @@ x Done
 
 Features:
 o Engine
-	o Co-Routines
-	o Deferred asset loading
 	o Threaded Singleton
-	o Defer physics into update loop while engine is rendering
 o OpenGL
 	o Rework FrameBuffer
 	o Use modern GL commands [GL.ProgramUniform, ...]
@@ -41,12 +38,6 @@ o Rendering
 	o Abstract Instancing in SceneRenderer
 o Scene Management
 	o Improve Scene Tree
-		o Components don't need to use the Draw event
-		o New methods:
-			o PreRender  [Gets called before any child is rendered]
-			o Render [Gets called if the component has to be rendered]
-			o PostRender [Gets called after all childs have been rendered]
-		o Only render component if Component.Enabled
 		o Update modification of Transform only in update step, not in draw step.
 		o Component / Node Serialization
 	o Saving / Loading of a scene
@@ -72,6 +63,7 @@ o Physics
 	o Adding kinematic bodies
 	o Add raycasting methods
 	o Connect RigidBody with component [so raycast can return the hit Shape component]
+	o Defer physics into update loop while engine is rendering
 o Network
 	o Integrate Lidgren3 (https://code.google.com/p/lidgren-network-gen3/)
 	o Network synchronisation system

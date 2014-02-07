@@ -10,6 +10,7 @@ namespace OpenWorld.Engine
 	[AssetExtension(".dds")]
 	public abstract partial class Texture : Asset, IGLResource
 	{
+		bool isSRGB;
 		private TextureTarget target;
 		private Filter filter;
 		private TextureWrapMode wrapS, wrapT, wrapR;
@@ -21,6 +22,7 @@ namespace OpenWorld.Engine
 		/// <param name="target">Texture target</param>
 		protected Texture(TextureTarget target)
 		{
+			this.isSRGB = Texture.UseSRGB;
 			Game.Current.InvokeOpenGL(() =>
 					{
 						this.target = target;
@@ -34,6 +36,9 @@ namespace OpenWorld.Engine
 					});
 		}
 
+		/// <summary>
+		/// Unloads the texture.
+		/// </summary>
 		protected override void OnUnload()
 		{
 			this.Dispose();
@@ -191,5 +196,13 @@ namespace OpenWorld.Engine
 		/// Gets or sets a value that determines wheather sRGB is used or not.
 		/// </summary>
 		public static bool UseSRGB { get; set; }
+
+		/// <summary>
+		/// Gets a value that indicates wheather the texture uses sRGB or not.
+		/// </summary>
+		public bool IsSRGB
+		{
+			get { return isSRGB; }
+		}
 	}
 }
