@@ -119,6 +119,7 @@
       <DependentUpon>LocalizedStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
+    <Compile Include="LookAt.cs" />
     <Compile Include="LookAtCamera.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Model.cs" />
@@ -138,9 +139,12 @@
     <Compile Include="RenderBuffer.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="SceneManagement\BoxShape.cs" />
+    <Compile Include="SceneManagement\CharacterController.cs" />
     <Compile Include="SceneManagement\ColorSky.cs" />
+    <Compile Include="SceneManagement\Component.cs" />
     <Compile Include="SceneManagement\DeferredRenderer.cs" />
     <Compile Include="SceneManagement\PolygonShape.cs" />
+    <Compile Include="SceneManagement\SceneNodeMotionState.cs" />
     <Compile Include="SceneManagement\Shaders\OpaqueObjectShader.cs" />
     <Compile Include="SceneManagement\PointLight.cs" />
     <Compile Include="SceneManagement\Renderer.cs" />
@@ -179,6 +183,7 @@
     <Compile Include="TextureCube.cs" />
     <Compile Include="TextureType.cs" />
     <Compile Include="UniformAttribute.cs" />
+    <Compile Include="UpdateEventArgs.cs" />
     <Compile Include="UserInterface\Button.cs" />
     <Compile Include="UserInterface\Control.cs" />
     <Compile Include="UserInterface\DefaultRenderers\FormRenderer.cs" />
@@ -226,6 +231,10 @@
     </Content>
     <Content Include="..\..\..\Libraries\AssimpNet-3.2\Bin\Assimp64.dll">
       <Link>Assimp64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\NLua.1.3.0.2\lib\native\x86\lua52.dll">
+      <Link>lua52.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="freetype6.dll">

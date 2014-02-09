@@ -9,7 +9,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a component that enables lua scriptable objects.
 	/// </summary>
-	public class Scriptable : SceneNode.Component
+	public class Scriptable : Component
 	{
 		Lua lua;
 		private string script;

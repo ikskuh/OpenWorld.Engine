@@ -8,7 +8,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a component that draws a scene node.
 	/// </summary>
-	public sealed class Renderer : SceneNode.Component
+	public sealed class Renderer : Component
 	{
 		/// <summary>
 		/// Renders the scene node.
@@ -19,7 +19,7 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			if (this.Model == null)
 				return;
-			renderer.Draw(this.Model, this.Node.Transform.GetGlobalMatrix(), this.Node.Material);
+			renderer.Draw(this.Model, this.Node.Transform.WorldTransform, this.Node.Material);
 		}
 
 		/// <summary>

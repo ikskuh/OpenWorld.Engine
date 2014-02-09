@@ -12,7 +12,8 @@ namespace OpenWorld.Engine.SceneManagement
 	public class Transform
 	{
 		private readonly SceneNode parent;
-		private Matrix4 matrix;
+		private Matrix4 localMatrix;
+
 
 		/// <summary>
 		/// Creates a new transform.
@@ -20,7 +21,7 @@ namespace OpenWorld.Engine.SceneManagement
 		internal Transform(SceneNode node)
 		{
 			this.parent = node;
-			this.matrix = Matrix4.Identity;
+			this.localMatrix = Matrix4.Identity;
 		}
 
 		/// <summary>
@@ -40,7 +41,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="translation"></param>
 		public void Translate(Vector3 translation)
 		{
-			this.matrix = Matrix4.CreateTranslation(translation) * this.matrix;
+			this.localMatrix = Matrix4.CreateTranslation(translation) * this.localMatrix;
 		}
 
 		/// <summary>
@@ -55,50 +56,15 @@ namespace OpenWorld.Engine.SceneManagement
 				Matrix4.CreateFromAxisAngle(Vector3.UnitX, GameMath.ToRadians(x)) *
 				Matrix4.CreateFromAxisAngle(Vector3.UnitY, GameMath.ToRadians(y)) *
 				Matrix4.CreateFromAxisAngle(Vector3.UnitZ, GameMath.ToRadians(z));
-			this.matrix = rot * this.matrix;
+			this.localMatrix = this.localMatrix * rot;
 		}
 
 		/// <summary>
 		/// Transforms the rotation to let the node target the given position.
 		/// </summary>
-		/// <param name="target">The local(!) target to look at.</param>
 		public void LookAt(Vector3 target)
 		{
-			this.matrix = Matrix4.Invert(Matrix4.LookAt(this.LocalPosition, target, Vector3.UnitY));
-		}
-
-		/// <summary>
-		/// Returns the global transformation matrix.
-		/// </summary>
-		/// <returns></returns>
-		public Matrix4 GetGlobalMatrix()
-		{
-			Matrix4 matrix = Matrix4.Identity;
-			var node = this.parent;
-			while(node != null)
-			{
-				matrix = matrix * node.Transform.GetMatrix();
-				node = node.Parent;
-			}
-			return matrix;
-		}
-
-		/// <summary>
-		/// Returns the local transformation matrix.
-		/// </summary>
-		/// <returns></returns>
-		public Matrix4 GetMatrix()
-		{
-			return this.matrix;
-		}
-
-		/// <summary>
-		/// Sets the local transformation matrix.
-		/// </summary>
-		/// <param name="matrix4"></param>
-		public void SetMatrix(Matrix4 matrix4)
-		{
-			this.matrix = matrix4;
+			this.WorldTransform = Matrix4.Invert(Matrix4.LookAt(this.LocalPosition, target, Vector3.UnitY));
 		}
 
 		/// <summary>
@@ -106,8 +72,8 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		public Vector3 LocalPosition
 		{
-			get { return this.matrix.Row3.Xyz; }
-			set { this.matrix.Row3.Xyz = value; }
+			get { return this.localMatrix.Row3.Xyz; }
+			set { this.localMatrix.Row3.Xyz = value; }
 		}
 
 		/// <summary>
@@ -115,7 +81,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		public Vector3 WorldPosition
 		{
-			get { return this.GetGlobalMatrix().Row3.Xyz; }
+			get { return this.WorldTransform.Row3.Xyz; }
 		}
 
 		/// <summary>
@@ -125,7 +91,41 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			get
 			{
-				return -this.GetGlobalMatrix().Row2.Xyz;
+				return -this.WorldTransform.Row2.Xyz;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the local transform.
+		/// </summary>
+		public Matrix4 LocalTransform
+		{
+			get { return this.localMatrix; }
+			set { this.localMatrix = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the global transform.
+		/// </summary>
+		public Matrix4 WorldTransform
+		{
+			get
+			{
+				var node = this.parent;
+				if (node.Parent == null)
+					return node.Transform.localMatrix;
+				else
+					return node.Transform.localMatrix * node.Parent.Transform.WorldTransform;
+			}
+			set
+			{
+				var node = this.parent;
+				if (node.Parent == null)
+					node.Transform.localMatrix = value;
+				else
+					node.Transform.localMatrix = value * Matrix4.Invert(node.Parent.Transform.WorldTransform);
+				if (float.IsNaN(node.Transform.localMatrix.Row3.X))
+					return;
 			}
 		}
 	}

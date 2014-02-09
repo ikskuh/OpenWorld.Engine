@@ -9,7 +9,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a 3D sound source.
 	/// </summary>
-	public sealed class Sound3D : SceneNode.Component
+	public sealed class Sound3D : Component
 	{
 		AudioSource source;
 

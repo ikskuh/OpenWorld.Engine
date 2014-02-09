@@ -8,7 +8,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a point light.
 	/// </summary>
-	public sealed class PointLight  : SceneNode.Component
+	public sealed class PointLight  : Component
 	{
 		/// <summary>
 		/// Creates a new point light.
@@ -26,7 +26,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="renderer">The renderer that is used for drawing.</param>
 		protected override void OnRender(GameTime time, SceneRenderer renderer)
 		{
-			renderer.PointLight(this.Node.Transform.GetGlobalMatrix().Row3.Xyz, this.Radius, this.Color);
+			renderer.PointLight(this.Node.Transform.WorldPosition, this.Radius, this.Color);
 		}
 
 		/// <summary>

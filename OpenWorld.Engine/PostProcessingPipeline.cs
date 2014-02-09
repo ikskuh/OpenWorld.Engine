@@ -26,8 +26,10 @@ namespace OpenWorld.Engine
 		/// <param name="height">Screen height></param>
 		public PostProcessingPipeline(int width, int height)
 		{
-			this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
-			this.vertexBuffer.SetData<float>(BufferUsageHint.StaticDraw, new[]
+			Game.Current.InvokeOpenGL(() =>
+			   {
+				   this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
+				   this.vertexBuffer.SetData<float>(BufferUsageHint.StaticDraw, new[]
 				{
 					-1.0f, -1.0f,
 					-1.0f, 1.0f,
@@ -35,16 +37,17 @@ namespace OpenWorld.Engine
 					1.0f, 1.0f
 				});
 
-			this.vao = new VertexArray();
-			this.vao.Bind();
-			this.vertexBuffer.Bind();
+				   this.vao = new VertexArray();
+				   this.vao.Bind();
+				   this.vertexBuffer.Bind();
 
-			GL.EnableVertexAttribArray(0);
-			GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 0, 0);
+				   GL.EnableVertexAttribArray(0);
+				   GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 0, 0);
 
-			VertexArray.Unbind();
+				   VertexArray.Unbind();
 
-			this.frameBuffer = new FrameBuffer();
+				   this.frameBuffer = new FrameBuffer();
+			   });
 
 			this.swapBuffer = new Texture2D(width, height, PixelInternalFormat.Rgb16f, PixelFormat.Rgba, PixelType.Float);
 
@@ -138,18 +141,20 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Dispose()
 		{
-			if (this.vertexBuffer != null)
-				this.vertexBuffer.Dispose();
-			if (this.vao != null)
-				this.vao.Dispose();
+			Game.Current.InvokeOpenGL(() =>
+			   {
+				   if (this.vertexBuffer != null)
+					   this.vertexBuffer.Dispose();
+				   if (this.vao != null)
+					   this.vao.Dispose();
 
-			if (this.frameBuffer != null)
-				this.frameBuffer.Dispose();
-			if (this.swapBuffer != null)
-				this.swapBuffer.Dispose();
-			if (this.swapShader != null)
-				this.swapShader.Dispose();
-
+				   if (this.frameBuffer != null)
+					   this.frameBuffer.Dispose();
+				   if (this.swapBuffer != null)
+					   this.swapBuffer.Dispose();
+				   if (this.swapShader != null)
+					   this.swapShader.Dispose();
+			   });
 			this.vertexBuffer = null;
 			this.vao = null;
 			this.frameBuffer = null;

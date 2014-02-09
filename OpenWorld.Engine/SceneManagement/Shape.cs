@@ -9,7 +9,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Defines a physical shape.
 	/// </summary>
-	public abstract class Shape : SceneNode.Component
+	public abstract class Shape : Component
 	{
 		/// <summary>
 		/// Gets the Jitter shape fitting this shape component.

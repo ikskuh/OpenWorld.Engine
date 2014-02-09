@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace OpenWorld.Engine
 {
@@ -42,6 +43,8 @@ namespace OpenWorld.Engine
 
 		private GameState currentState;
 		private GameState nextState;
+
+		internal event EventHandler<UpdateEventArgs> UpdateNonScene;
 
 		/// <summary>
 		/// Instantiates a new game.
@@ -194,7 +197,7 @@ namespace OpenWorld.Engine
 
 			while (this.isRunning)
 			{
-				Thread.Sleep(0);
+				Thread.Sleep(1);
 
 				DeferredRoutineHandler handler;
 				if (!this.deferredALRoutines.TryDequeue(out handler))
@@ -221,12 +224,15 @@ namespace OpenWorld.Engine
 		{
 			Game.currentGame.Value = this;
 
-			DateTime start = DateTime.Now;
-			GameTime timeLast = new GameTime(0, 0);
+			Stopwatch watch = new Stopwatch();
+			watch.Start();
+			long lastTicks = 0;
 			while (this.isRunning)
 			{
-				float total = (float)(DateTime.Now - start).TotalSeconds;
-				this.Time = new GameTime(total, total - timeLast.TotalTime);
+				long current = watch.ElapsedTicks;
+				this.Time = new GameTime(
+					(float)current / (float)Stopwatch.Frequency,
+					(float)(current - lastTicks) / (float)Stopwatch.Frequency);
 
 				// Update the game
 				this.OnUpdate(this.Time);
@@ -254,12 +260,14 @@ namespace OpenWorld.Engine
 
 				this.isRendering = true;
 
-				// TODO: Update physics here
+				// Update non-scene stuff here (physics, ...)
+				if (this.UpdateNonScene != null)
+					this.UpdateNonScene(this, new UpdateEventArgs(this.Time));
 
 				// Wait for the rendering to be finished.
-				while (this.isRendering) Thread.Sleep(0);
+				while (this.isRendering) Thread.Sleep(1);
 
-				timeLast = this.Time;
+				lastTicks = current;
 			}
 
 			if (this.currentState != null)

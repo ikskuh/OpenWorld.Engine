@@ -25,9 +25,12 @@ namespace OpenWorld.Engine
 			private Dictionary<string, Asset> GetCache<T>()
 				where T : Asset
 			{
-				if (!this.cache.ContainsKey(typeof(T)))
-					this.cache.Add(typeof(T), new Dictionary<string, Asset>());
-				return this.cache[typeof(T)];
+				lock (this.cache)
+				{
+					if (!this.cache.ContainsKey(typeof(T)))
+						this.cache.Add(typeof(T), new Dictionary<string, Asset>());
+					return this.cache[typeof(T)];
+				}
 			}
 
 			/// <summary>
@@ -49,7 +52,7 @@ namespace OpenWorld.Engine
 			/// <param name="name"></param>
 			/// <param name="asset"></param>
 			public void Add<T>(string name, Asset asset)
-				where T: Asset
+				where T : Asset
 			{
 				this.GetCache<T>().Add(name, asset);
 			}

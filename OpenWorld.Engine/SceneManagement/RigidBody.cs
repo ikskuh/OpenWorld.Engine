@@ -10,8 +10,9 @@ namespace OpenWorld.Engine.SceneManagement
 	/// Defines a rigid body object.
 	/// </summary>
 	[RequiredComponent(typeof(Shape))]
-	public sealed class RigidBody : SceneNode.Component
+	public sealed class RigidBody : Component
 	{
+		bool isKinematic;
 		BulletSharp.RigidBody rigidBody;
 
 
@@ -26,30 +27,20 @@ namespace OpenWorld.Engine.SceneManagement
 				if (shape == null)
 					throw new NullReferenceException("Could not find a shape component for the rigid body.");
 
-				MotionState motionState = new DefaultMotionState(this.Node.Transform.GetGlobalMatrix().ToBullet());
-
 				var constructionInfo = new RigidBodyConstructionInfo(
 					this.Mass,
-					motionState,
+					new SceneNodeMotionState(this.Node),
 					shape.GetShape());
 
 				this.rigidBody = new BulletSharp.RigidBody(constructionInfo);
 				this.rigidBody.UserObject = this;
+				this.IsKinematic = this.isKinematic; // Just make sure the body gets its correct rigid body state.
 			}
 
 			if (this.Node.Scene.PhysicsEnabled)
 			{
 				this.Node.Scene.World.AddRigidBody(this.rigidBody);
 			}
-		}
-
-
-		/// <summary>
-		/// Updates the component every frame.
-		/// </summary>
-		protected override void OnUpdate(GameTime time)
-		{
-			this.Node.Transform.SetMatrix(this.rigidBody.WorldTransform.ToOpenTK());
 		}
 
 
@@ -68,5 +59,28 @@ namespace OpenWorld.Engine.SceneManagement
 		/// Gets or sets the mass of the rigid body.
 		/// </summary>
 		public float Mass { get; set; }
+
+		/// <summary>
+		/// Gets or sets value that determines if the rigid body is kinematic or not.
+		/// </summary>
+		public bool IsKinematic
+		{
+			get
+			{
+				return this.isKinematic;
+			}
+			set
+			{
+				this.isKinematic = value;
+				if (this.rigidBody != null)
+				{
+					if (this.isKinematic)
+						this.rigidBody.CollisionFlags |= CollisionFlags.KinematicObject;
+					else
+						this.rigidBody.CollisionFlags &= ~CollisionFlags.KinematicObject;
+				}
+			}
+		}
+
 	}
 }

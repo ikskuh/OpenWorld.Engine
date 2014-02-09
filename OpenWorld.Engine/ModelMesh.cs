@@ -33,46 +33,49 @@ namespace OpenWorld.Engine
 			this.indexes = indexes;
 			this.vertices = vertices;
 
-			this.vertexArray = new VertexArray();
-			this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
-			this.indexBuffer = new Buffer(BufferTarget.ElementArrayBuffer);
+			Game.Current.InvokeOpenGL(() =>
+			{
+				this.vertexArray = new VertexArray();
+				this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
+				this.indexBuffer = new Buffer(BufferTarget.ElementArrayBuffer);
 
-			this.vertexBuffer.SetData(BufferUsageHint.StaticDraw, this.vertices);
-			this.indexBuffer.SetData(BufferUsageHint.StaticDraw, this.indexes);
+				this.vertexBuffer.SetData(BufferUsageHint.StaticDraw, this.vertices);
+				this.indexBuffer.SetData(BufferUsageHint.StaticDraw, this.indexes);
 
-			this.vertexArray.Bind();
+				this.vertexArray.Bind();
 
-			GL.EnableVertexAttribArray(0);
-			GL.EnableVertexAttribArray(1);
-			GL.EnableVertexAttribArray(2);
-			GL.EnableVertexAttribArray(3);
-			GL.EnableVertexAttribArray(4);
-			GL.EnableVertexAttribArray(5);
+				GL.EnableVertexAttribArray(0);
+				GL.EnableVertexAttribArray(1);
+				GL.EnableVertexAttribArray(2);
+				GL.EnableVertexAttribArray(3);
+				GL.EnableVertexAttribArray(4);
+				GL.EnableVertexAttribArray(5);
 
-			this.vertexBuffer.Bind();
+				this.vertexBuffer.Bind();
 
-			// Position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vertex.Size, 0);
+				// Position
+				GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vertex.Size, 0);
 
-			// Normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Vertex.Size, 12);
+				// Normal
+				GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Vertex.Size, 12);
 
-			// UV 1
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, Vertex.Size, 24);
+				// UV 1
+				GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, Vertex.Size, 24);
 
-			// UV 2
-			GL.VertexAttribPointer(3, 2, VertexAttribPointerType.Float, false, Vertex.Size, 32);
+				// UV 2
+				GL.VertexAttribPointer(3, 2, VertexAttribPointerType.Float, false, Vertex.Size, 32);
 
-			// Tangent
-			GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, Vertex.Size, 40);
+				// Tangent
+				GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, Vertex.Size, 40);
 
-			// BiTangent
-			GL.VertexAttribPointer(5, 3, VertexAttribPointerType.Float, false, Vertex.Size, 52);
+				// BiTangent
+				GL.VertexAttribPointer(5, 3, VertexAttribPointerType.Float, false, Vertex.Size, 52);
 
-			// Bind element buffer
-			this.indexBuffer.Bind();
+				// Bind element buffer
+				this.indexBuffer.Bind();
 
-			VertexArray.Unbind();
+				VertexArray.Unbind();
+			});
 		}
 
 		/// <summary>
@@ -94,12 +97,15 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Dispose()
 		{
-			if (this.vertexBuffer != null)
-				this.vertexBuffer.Dispose();
-			if (this.indexBuffer != null)
-				this.indexBuffer.Dispose();
-			if (this.vertexArray != null)
-				this.vertexArray.Dispose();
+			Game.Current.InvokeOpenGL(() =>
+			   {
+				   if (this.vertexBuffer != null)
+					   this.vertexBuffer.Dispose();
+				   if (this.indexBuffer != null)
+					   this.indexBuffer.Dispose();
+				   if (this.vertexArray != null)
+					   this.vertexArray.Dispose();
+			   });
 
 			this.vertexBuffer = null;
 			this.indexBuffer = null;

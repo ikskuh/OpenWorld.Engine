@@ -69,7 +69,15 @@ namespace OpenWorld.Engine.SceneManagement
 
 		Matrix4 IViewMatrixSource.GetViewMatrix(Camera camera)
 		{
-			return Matrix4.Invert(this.transform.GetGlobalMatrix());
+			return Matrix4.Invert(this.transform.WorldTransform);
+		}
+
+		internal void Release()
+		{
+			foreach (var component in this.Components)
+				component.Release();
+			foreach (var child in this.Children)
+				child.Release();
 		}
 
 		/// <summary>

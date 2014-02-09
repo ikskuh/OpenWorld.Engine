@@ -121,9 +121,11 @@ namespace OpenWorld.Engine.SceneManagement
 			this.pipeline.Stages.Add(this.gammaCorrection);
 			this.pipeline.Stages.Add(this.dithering);
 
-
-			this.frameBuffer = new FrameBuffer();
-			this.frameBuffer.DepthBuffer = new RenderBuffer(width, height);
+			Game.Current.InvokeOpenGL(() =>
+			{
+				this.frameBuffer = new FrameBuffer();
+				this.frameBuffer.DepthBuffer = new RenderBuffer(width, height);
+			});
 		}
 
 		/// <summary>

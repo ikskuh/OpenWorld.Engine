@@ -68,7 +68,7 @@ namespace OpenWorld.Engine.SceneManagement
 			/// <summary>
 			/// Creates a new component.
 			/// </summary>
-			protected Component()
+			internal Component()
 			{
 				this.node = Component.componentNode;
 				this.Enabled = true;
@@ -119,29 +119,20 @@ namespace OpenWorld.Engine.SceneManagement
 			/// Starts the component.
 			/// </summary>
 			/// <param name="time">Time snapshot</param>
-			protected virtual void OnStart(GameTime time)
-			{
-
-			}
+			protected virtual void OnStart(GameTime time) { }
 
 			/// <summary>
 			/// Updates the component every frame.
 			/// </summary>
 			/// <param name="time">Time snapshot</param>
-			protected virtual void OnUpdate(GameTime time)
-			{
-
-			}
+			protected virtual void OnUpdate(GameTime time) { }
 
 			/// <summary>
 			/// Initializes rendering of the scene node.
 			/// </summary>
 			/// <param name="time">Time snapshot</param>
 			/// <param name="renderer">The renderer that is used for drawing.</param>
-			protected virtual void OnPreRender(GameTime time, SceneRenderer renderer)
-			{
-
-			}
+			protected virtual void OnPreRender(GameTime time, SceneRenderer renderer) { }
 
 
 			/// <summary>
@@ -149,10 +140,7 @@ namespace OpenWorld.Engine.SceneManagement
 			/// </summary>
 			/// <param name="time">Time snapshot</param>
 			/// <param name="renderer">The renderer that is used for drawing.</param>
-			protected virtual void OnRender(GameTime time, SceneRenderer renderer)
-			{
-
-			}
+			protected virtual void OnRender(GameTime time, SceneRenderer renderer) { }
 
 
 			/// <summary>
@@ -160,19 +148,18 @@ namespace OpenWorld.Engine.SceneManagement
 			/// </summary>
 			/// <param name="time">Time snapshot</param>
 			/// <param name="renderer">The renderer that is used for drawing.</param>
-			protected virtual void OnPostRender(GameTime time, SceneRenderer renderer)
-			{
-
-			}
+			protected virtual void OnPostRender(GameTime time, SceneRenderer renderer) { }
 
 			/// <summary>
 			/// Stops the component.
 			/// </summary>
 			/// <param name="time">Time snapshot</param>
-			protected virtual void OnStop(GameTime time)
-			{
+			protected virtual void OnStop(GameTime time) { }
 
-			}
+			/// <summary>
+			/// Calls OnStop, then releases all other non-released resources.
+			/// </summary>
+			protected internal void Release() { this.OnStop(Game.Current.Time); }
 
 			/// <summary>
 			/// Gets the hosting scene node.

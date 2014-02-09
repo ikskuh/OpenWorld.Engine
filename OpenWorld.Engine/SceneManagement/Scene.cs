@@ -40,8 +40,12 @@ namespace OpenWorld.Engine.SceneManagement
 				this.CollisionConfiguration = new DefaultCollisionConfiguration();
 				this.Dispatcher = new CollisionDispatcher(this.CollisionConfiguration);
 				this.Broadphase = new DbvtBroadphase();
+				this.Broadphase.OverlappingPairCache.SetInternalGhostPairCallback(new GhostPairCallback());
 
 				this.world = new DiscreteDynamicsWorld(this.Dispatcher, this.Broadphase, null, this.CollisionConfiguration);
+
+				// Register physics handler
+				Game.Current.UpdateNonScene += this.UpdatePhysics;
 			}
 		}
 
@@ -59,12 +63,16 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="time">Time snapshot</param>
 		public void Update(GameTime time)
 		{
-			if (this.PhysicsEnabled)
-			{
-				this.world.StepSimulation(time.DeltaTime, 15);
-			}
 			// Just update the root node.
 			this.root.DoUpdate(time);
+		}
+
+		private void UpdatePhysics(object sender, UpdateEventArgs e)
+		{
+			if (this.PhysicsEnabled)
+			{
+				this.world.StepSimulation(e.Time.DeltaTime);
+			}
 		}
 
 		/// <summary>
@@ -100,10 +108,16 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		public void Dispose()
 		{
-			if (this.World != null)
+			if(this.PhysicsEnabled)
 			{
- 				
+				// Unregister physics handler
+				Game.Current.UpdateNonScene -= this.UpdatePhysics;
 			}
+
+			this.root.Release();
+
+			if (this.World != null)
+				this.World.Dispose();
 			if (this.Broadphase != null)
 				this.Broadphase.Dispose();
 			if (this.Dispatcher != null)
