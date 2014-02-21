@@ -10,15 +10,12 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class GammaCorrectionShader : PostProcessingShader
 	{
-		static readonly string shaderSource = @"#version 410
-uniform sampler2D backBuffer;
-uniform float gamma;
-
+		static readonly string shaderSource =
+@"uniform float gamma;
 out vec4 color;
-
 void main()
 {
-	color = texelFetch(backBuffer, ivec2(gl_FragCoord), 0);
+	color = texture(backBuffer, uv);
 	color.rgb = pow(color.rgb, vec3(1.0f) / gamma); // Gamma correction
 }";
 

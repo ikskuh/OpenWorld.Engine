@@ -10,15 +10,12 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class TonemappingShader : PostProcessingShader
 	{
-		static readonly string shaderSource = @"#version 410
-layout(location = 0) out vec4 result;
-
+		static readonly string shaderSource =
+@"layout(location = 0) out vec4 result;
 uniform float hdrExposure;
-uniform sampler2D backBuffer;
-
 void main()
 {
-	result = texelFetch(backBuffer, ivec2(gl_FragCoord), 0);
+	result = texture(backBuffer, uv);
 
 	//Adjust color from HDR
 	result.rgb = 1.0 - exp(result.rgb * -hdrExposure);	

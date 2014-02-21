@@ -2,8 +2,10 @@
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -126,48 +128,19 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Compiles the shader.
 		/// </summary>
-		/// <param name="vertexSource">Vertex shader source</param>
-		/// <param name="fragmentSource">Fragment shader source</param>
-		public void Compile(string vertexSource, string fragmentSource)
+		/// <param name="shadercode">Shader source code</param>
+		public void Compile(string shadercode)
 		{
 			Game.Current.InvokeOpenGL(() =>
 			{
 				int status;
 				string infoLog;
 
-				// Create the shaders
-				int vertexShader = GL.CreateShader(ShaderType.VertexShader);
-				int fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-
-				// Compile Vertex Shader
-				GL.ShaderSource(vertexShader, vertexSource);
-				GL.CompileShader(vertexShader);
-
-				// Check Vertex Shader
-				infoLog = GL.GetShaderInfoLog(vertexShader);
-				if (!string.IsNullOrWhiteSpace(infoLog))
-				{
-					Log.WriteLine(LocalizedStrings.VertexShaderCompilerResult);
-					Log.WriteLine(infoLog);
-				}
-				GL.GetShader(vertexShader, ShaderParameter.CompileStatus, out status);
-				if (status == 0)
-					throw new ShaderCompilationException(infoLog);
-
-				// Compile Fragment Shader
-				GL.ShaderSource(fragmentShader, fragmentSource);
-				GL.CompileShader(fragmentShader);
-
-				// Check Fragment Shader
-				infoLog = GL.GetShaderInfoLog(fragmentShader);
-				if (!string.IsNullOrWhiteSpace(infoLog))
-				{
-					Log.WriteLine(LocalizedStrings.FragmentShaderCompilerResult);
-					Log.WriteLine(infoLog);
-				}
-				GL.GetShader(fragmentShader, ShaderParameter.CompileStatus, out status);
-				if (status == 0)
-					throw new ShaderCompilationException(infoLog);
+				int vertexShader = this.CompileShader(ShaderType.VertexShader, shadercode);
+				int geometryShader = this.CompileShader(ShaderType.GeometryShader, shadercode);
+				int tessControlShader = this.CompileShader(ShaderType.TessControlShader, shadercode);
+				int tessEvaluationShader = this.CompileShader(ShaderType.TessEvaluationShader, shadercode);
+				int fragmentShader = this.CompileShader(ShaderType.FragmentShader, shadercode);
 
 				// Link the program
 				if (this.programID != 0)
@@ -175,8 +148,16 @@ namespace OpenWorld.Engine
 					this.Dispose();
 				}
 				this.programID = GL.CreateProgram();
-				GL.AttachShader(this.programID, vertexShader);
-				GL.AttachShader(this.programID, fragmentShader);
+				if (vertexShader != -1)
+					GL.AttachShader(this.programID, vertexShader);
+				if (geometryShader != -1)
+					GL.AttachShader(this.programID, geometryShader);
+				if (tessControlShader != -1)
+					GL.AttachShader(this.programID, tessControlShader);
+				if (tessEvaluationShader != -1)
+					GL.AttachShader(this.programID, tessEvaluationShader);
+				if (fragmentShader != -1)
+					GL.AttachShader(this.programID, fragmentShader);
 				GL.LinkProgram(this.programID);
 
 				// Check the program
@@ -192,9 +173,48 @@ namespace OpenWorld.Engine
 				if (status == 0)
 					throw new ShaderLinkingException(infoLog);
 
-				GL.DeleteShader(vertexShader);
-				GL.DeleteShader(fragmentShader);
+				this.HasTesselation = (tessControlShader != -1) && (tessEvaluationShader != -1);
+
+				if (vertexShader != -1)
+					GL.DeleteShader(vertexShader);
+				if (geometryShader != -1)
+					GL.DeleteShader(geometryShader);
+				if (tessControlShader != -1)
+					GL.DeleteShader(tessControlShader);
+				if (tessEvaluationShader != -1)
+					GL.DeleteShader(tessEvaluationShader);
+				if (fragmentShader != -1)
+					GL.DeleteShader(fragmentShader);
 			});
+		}
+
+		private int CompileShader(ShaderType type, string source)
+		{
+			if (!Regex.IsMatch(source, @"\#ifdef\s+__" + type + @"(\n|(\s*\n))"))
+				return -1;
+
+			source = "#define __" + type.ToString() + "\n" + source;
+
+			int shader = GL.CreateShader(type);
+			GL.ShaderSource(shader, source);
+			GL.CompileShader(shader);
+
+			// Check Vertex Shader
+			string infoLog = GL.GetShaderInfoLog(shader);
+			if (!string.IsNullOrWhiteSpace(infoLog))
+			{
+				Log.WriteLine(LocalizedStrings.ShaderCompilerResult + " " + type);
+				Log.WriteLine(infoLog);
+			}
+
+			int status;
+			GL.GetShader(shader, ShaderParameter.CompileStatus, out status);
+			if (status == 0)
+			{
+				GL.DeleteShader(shader);
+				return -1;
+			}
+			return shader;
 		}
 
 		/// <summary>
@@ -477,18 +497,15 @@ namespace OpenWorld.Engine
 
 		}
 
-		static readonly XmlSerializer serializer = new XmlSerializer(typeof(Source));
-
-
 		/// <summary>
 		/// Loads the shader.
 		/// </summary>
 		protected override void Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
-		{	
-			Source source = serializer.Deserialize(stream) as Source;
+		{
+			StreamReader reader = new StreamReader(stream, Encoding.ASCII);
 			Game.Current.InvokeOpenGL(() =>
 				{
-					this.Compile(source.VertexShader, source.FragmentShader);
+					this.Compile(reader.ReadToEnd());
 				});
 		}
 
@@ -502,23 +519,10 @@ namespace OpenWorld.Engine
 		/// <remarks>This can be used as a base texture offset for custom textures.</remarks>
 		/// </summary>
 		protected int TextureCount { get; private set; }
-		
-		/// <summary>
-		/// Defines a serializable shader code container.
-		/// </summary>
-		[Serializable]
-		[XmlRoot("Shader")]
-		public class Source
-		{
-			/// <summary>
-			/// Gets or sets vertex shader source
-			/// </summary>
-			public string VertexShader { get; set; }
 
-			/// <summary>
-			/// Gets or sets fragment shader source
-			/// </summary>
-			public string FragmentShader { get; set; }
-		}
+		/// <summary>
+		/// Gets a value that indicates wheather this shader has a tesselation part or not.
+		/// </summary>
+		public bool HasTesselation { get; private set; }
 	}
 }

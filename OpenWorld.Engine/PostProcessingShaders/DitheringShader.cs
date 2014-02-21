@@ -10,11 +10,10 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class DitheringShader : PostProcessingShader
 	{
-		static readonly string shaderSource = @"#version 410
-out vec4 color;
-
-uniform sampler2D backBuffer;
+		static readonly string shaderSource = 
+@"out vec4 color;
 uniform float time;
+uniform float strength;
 
 // A single iteration of Bob Jenkins' One-At-A-Time hashing algorithm.
 uint hash( uint x ) {
@@ -25,8 +24,6 @@ uint hash( uint x ) {
     x += ( x << 15u );
     return x;
 }
-
-
 
 // Compound versions of the hashing algorithm I whipped together.
 uint hash( uvec2 v ) { return hash( v.x ^ hash(v.y)                         ); }
@@ -65,11 +62,9 @@ vec3 rand3(vec2 v)
 	return r;
 }
 
-uniform float strength;
-
 void main()
 {
-	color = texelFetch(backBuffer, ivec2(gl_FragCoord), 0);
+	color = texture(backBuffer, uv);
 	vec3  inputs = vec3( gl_FragCoord.xy, time ); // Spatial and temporal inputs
     float rand   = random( inputs );              // Random per-pixel value
 

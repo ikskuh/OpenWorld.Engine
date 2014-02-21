@@ -117,16 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FragmentShaderCompilerResult" xml:space="preserve">
-    <value>Fragment shader compiler result:</value>
-  </data>
   <data name="LoadingUncompressedBitmapFromStream" xml:space="preserve">
     <value>Loading uncompressed bitmap file from stream...</value>
   </data>
+  <data name="ShaderCompilerResult" xml:space="preserve">
+    <value>Shader compiler result: </value>
+  </data>
   <data name="ShaderLinkerResult" xml:space="preserve">
     <value>Shader linker result:</value>
-  </data>
-  <data name="VertexShaderCompilerResult" xml:space="preserve">
-    <value>Vertex shader compiler result:</value>
   </data>
 </root>

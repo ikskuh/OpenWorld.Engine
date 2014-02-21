@@ -83,9 +83,18 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Draw()
 		{
+			this.Draw(false);
+		}
+
+		/// <summary>
+		/// Draws the mesh.
+		/// </summary>
+		/// <param name="drawPatches">Determines if the system will draw patches or triangles.</param>
+		public void Draw(bool drawPatches)
+		{
 			this.vertexArray.Bind();
 			GL.DrawElements(
-				BeginMode.Triangles,
+				drawPatches ? BeginMode.Patches : BeginMode.Triangles,
 				this.indexes.Length,
 				DrawElementsType.UnsignedInt,
 				0);

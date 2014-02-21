@@ -13,8 +13,9 @@ namespace OpenWorld.Engine
 	{
 		// If const is used and a newer version of the DLL is provided, this string won't change.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1802:UseLiteralsWhereAppropriate")]
-		private static readonly string vertexShader =
+		private static readonly string shaderStart =
 @"#version 330
+#ifdef __VertexShader
 layout(location = 0) in vec2 vertexPosition;
 
 out vec2 uv;
@@ -23,22 +24,25 @@ void main()
 {
 	gl_Position = vec4(vertexPosition.xy, 0.0f, 1.0f);
 	uv = 0.5f + 0.5f * vertexPosition.xy;
-}";
+}
+#endif
+#ifdef __FragmentShader
+in vec2 uv;
+uniform sampler2D backBuffer;";
+
+
+		// If const is used and a newer version of the DLL is provided, this string won't change.
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1802:UseLiteralsWhereAppropriate")]
+		private static readonly string shaderEnd = "#endif";
 
 		// If const is used and a newer version of the DLL is provided, this string won't change.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1802:UseLiteralsWhereAppropriate")]
 		private static readonly string defaultFragmentShader =
-@"#version 330
-layout(location = 0) out vec4 result;
-
-in vec2 uv;
-uniform sampler2D backBuffer;
-
+@"layout(location = 0) out vec4 result;
 void main()
 {
 	result = texture(backBuffer, uv);
-}
-";
+}";
 
 		/// <summary>
 		/// Instantiates a new post processing shader.
@@ -46,7 +50,7 @@ void main()
 		public PostProcessingShader()
 			: base()
 		{
-			this.Compile(vertexShader, defaultFragmentShader);
+			this.Compile(BuildSource(defaultFragmentShader));
 		}
 
 		/// <summary>
@@ -56,7 +60,12 @@ void main()
 		public PostProcessingShader(string fragmentShader)
 			: base()
 		{
-			this.Compile(vertexShader, fragmentShader);
+			this.Compile(BuildSource(fragmentShader));
+		}
+
+		private static string BuildSource(string fragment)
+		{
+			return shaderStart + "\n" + fragment + "\n" + shaderEnd;
 		}
 
 		/// <summary>

@@ -74,7 +74,7 @@ namespace OpenWorld.Engine
 				presentation.DisplayDevice ?? DisplayDevice.Default,
 				3, 3,
 #if DEBUG
- GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
+				GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
 #else
 				GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible))	
 #endif
