@@ -11,18 +11,16 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	/// </summary>
 	public sealed class LightScatteringShader : PostProcessingShader
 	{
-		const string shaderSource = @"#version 410
-uniform float exposure;
+		const string shaderSource =
+@"uniform float exposure;
 uniform float decay;
 uniform float density;
 uniform float weight;
 uniform vec2 lightPositionOnScreen;
-uniform sampler2D backBuffer;
 uniform sampler2D occlusionBuffer;
 
 const int NUM_SAMPLES = 150;
 
-in vec2 uv;
 out vec4 color;
 
 void main()

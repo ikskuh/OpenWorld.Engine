@@ -1,10 +1,8 @@
 #version 410
 
-//layout(pixel_center_integer) in vec4 gl_FragCoord;
-in vec2 uv;
-
-layout(location = 0) out vec4 diffuse;
-layout(location = 1) out vec4 specular;
+uniform mat4 World;
+uniform mat4 View;
+uniform mat4 Projection;
 
 uniform float Radius;
 uniform vec4 Color;
@@ -15,6 +13,27 @@ uniform vec3 ViewPosition;
 
 uniform sampler2D texturePosition;
 uniform sampler2D textureNormal;
+
+#ifdef __VertexShader
+
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexNormal;
+layout(location = 2) in vec2 vertexUV;
+
+void main()
+{
+	vec4 pos = vec4(vertexPosition, 1);
+	gl_Position = Projection * View * World * pos;
+}
+
+#endif
+
+#ifdef __FragmentShader
+
+in vec2 uv;
+
+layout(location = 0) out vec4 diffuse;
+layout(location = 1) out vec4 specular;
 
 void main()
 {
@@ -42,3 +61,5 @@ void main()
 		specular = vec4(0);
 	}
 }
+
+#endif

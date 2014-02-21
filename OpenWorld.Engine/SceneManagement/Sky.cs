@@ -15,6 +15,6 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		/// <param name="renderer">The renderer that is drawing the sky.</param>
 		/// <param name="camera">The camera that shows the sky.</param>
-		protected internal abstract void Draw(SceneRenderer renderer, Camera camera);
+		public abstract void Draw(SceneRenderer renderer, Camera camera);
 	}
 }

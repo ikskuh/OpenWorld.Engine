@@ -10,13 +10,17 @@ namespace OpenWorld.Engine.UserInterface
 {
 	class GUIShader : Shader
 	{
-		string vertexShader =
+		string source =
 @"#version 330
+
+uniform mat4 Transform;
+uniform sampler2D uiTexture;
+
+#ifdef __VertexShader
+
 layout(location = 0) in vec2 vertexPosition;
 layout(location = 1) in vec4 vertexColor;
 layout(location = 2) in vec2 vertexUV;
-
-uniform mat4 Transform;
 
 out vec2 uv;
 out vec4 color;
@@ -26,30 +30,24 @@ void main()
 	gl_Position = Transform * vec4(vertexPosition, 0.0f, 1.0f);
 	uv = vertexUV;
 	color = vertexColor;
-}";
+}
+#endif
+#ifdef __FragmentShader
 
-		string fragmentShader =
-@"#version 330
 layout(location = 0) out vec4 result;
 
 in vec2 uv;
 in vec4 color;
 
-uniform sampler2D uiTexture;
-
 void main()
 {
 	result = color * texture(uiTexture, uv);
-}";
+}
+#endif";
 
 		public GUIShader()
 		{
-			this.Compile(this.vertexShader, this.fragmentShader);
-		}
-
-		public void Compile(string fragmentShader)
-		{
-			this.Compile(this.vertexShader, fragmentShader);
+			this.Compile(this.source);
 		}
 
 		[Uniform("Transform")]

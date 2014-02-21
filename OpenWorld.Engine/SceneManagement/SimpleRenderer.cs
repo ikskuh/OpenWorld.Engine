@@ -67,7 +67,7 @@ namespace OpenWorld.Engine.SceneManagement
 							return;
 						shader.DiffuseTexture = texture;
 						shader.Apply();
-					});
+					}, shader.HasTesselation);
 			}
 		}
 	}

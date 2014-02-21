@@ -243,15 +243,12 @@
     <EmbeddedResource Include="Resources\missing.png" />
     <EmbeddedResource Include="Resources\black.png" />
     <EmbeddedResource Include="Resources\flatNormals.png" />
-    <EmbeddedResource Include="SceneManagement\Shaders\geometry.fs" />
-    <EmbeddedResource Include="SceneManagement\Shaders\light.fs" />
-    <EmbeddedResource Include="SceneManagement\Shaders\opaqueObject.fs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="SceneManagement\Shaders\geometry.vs" />
-    <EmbeddedResource Include="SceneManagement\Shaders\light.vs" />
-    <EmbeddedResource Include="SceneManagement\Shaders\opaqueObject.vs" />
+    <EmbeddedResource Include="SceneManagement\Shaders\geometry.glsl" />
+    <EmbeddedResource Include="SceneManagement\Shaders\light.glsl" />
+    <EmbeddedResource Include="SceneManagement\Shaders\opaqueObject.glsl" />
     <None Include="SharpFont.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -262,7 +259,9 @@
       <LastGenOutput>LocalizedStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ObjectShaders\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.0.2\lib\native\x86" "$(TargetDir)"</PostBuildEvent>

@@ -63,28 +63,30 @@ namespace OpenWorld.Engine.UserInterface
 
 			this.fontShader = new Shader();
 			 this.fontShader.Compile(
-	 @"#version 330
-layout(location = 0) in vec4 inVertex;
+@"#version 330
 uniform mat4 orthoMatrix;
 uniform mat4 worldMatrix;
+uniform vec4 color;
+uniform sampler2D glyph;
+#ifdef __VertexShader
+layout(location = 0) in vec4 inVertex;
 
-out vec2 uv;
+out vec2 uv;6
 
 void main()
 {
 	gl_Position = orthoMatrix * worldMatrix * vec4(inVertex.xy, 0.0f, 1.0f);
 	uv = inVertex.zw;
-}",
-	 @"#version 330
+}
+#endif
+#ifdef __FragmentShader
 layout(location = 0) out vec4 result;
 in vec2 uv;
-uniform vec4 color;
-uniform sampler2D glyph;
 void main()
 {
 	result = color * texture(glyph, uv);
 }
-");
+#endif");
 
 			// Take all characters from space to tilde
 			for (char c = ' '; c <= '~'; c++)

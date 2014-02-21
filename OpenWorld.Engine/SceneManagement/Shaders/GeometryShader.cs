@@ -10,9 +10,7 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 	{
 		public GeometryShader()
 		{
-			this.Compile(
-				Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.geometry.vs"),
-				Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.geometry.fs"));
+			this.Compile(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.geometry.glsl"));
 		}
 
 		[Uniform("textureNormalMap")]

@@ -13,13 +13,15 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public class ObjectShader : Shader
 	{
-		const string defaultVertexShader = @"#version 330
-layout(location = 0) in vec3 vertexPosition;
-layout(location = 2) in vec2 vertexUV;
-
+		const string source = @"#version 330
 uniform mat4 World;
 uniform mat4 View;
 uniform mat4 Projection;
+uniform sampler2D textureDiffuse;
+
+#ifdef __VertexShader
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 2) in vec2 vertexUV;
 
 out vec2 uv;
 
@@ -29,24 +31,24 @@ void main()
 	gl_Position = Projection * View * World * pos;
 	
 	uv = vertexUV;
-}";
-		const string defaultFragmentShader = @"#version 330
+}
+#endif
+#ifdef __FragmentShader
 layout(location = 0) out vec4 color;
 
 in vec2 uv;
 
-uniform sampler2D textureDiffuse;
-
 void main()
 {
 	color = texture(textureDiffuse, uv);
-}";
+}
+#endif";
 		/// <summary>
 		/// Instantiates a new object shader.
 		/// </summary>
 		public ObjectShader()
 		{
-			this.Compile(defaultVertexShader, defaultFragmentShader);
+			this.Compile(source);
 		}
 
 		/// <summary>

@@ -24,7 +24,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		/// <param name="renderer"></param>
 		/// <param name="camera"></param>
-		protected internal override void Draw(SceneRenderer renderer, Camera camera)
+		public override void Draw(SceneRenderer renderer, Camera camera)
 		{
 			GL.ClearColor(
 				this.Color.R,

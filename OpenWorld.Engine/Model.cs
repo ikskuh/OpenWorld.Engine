@@ -216,8 +216,19 @@ namespace OpenWorld.Engine
 		/// <param name="setTexture">Callback that allows to set shader parameters</param>
 		public void Draw(SetTexture setTexture)
 		{
+			this.Draw(setTexture, false);
+		}
+
+		/// <summary>
+		/// Draws the model.
+		/// </summary>
+		/// <param name="setTexture">Callback that allows to set shader parameters</param>
+		/// <param name="drawPatches">Determines if OpenGL will draw patches or triangles.</param>
+		public void Draw(SetTexture setTexture, bool drawPatches)
+		{
 			if (this.meshes == null)
 				return;
+			GL.PatchParameter(PatchParameterInt.PatchVertices, 3);
 			foreach (var mesh in this.meshes)
 			{
 				if (setTexture != null)
@@ -226,7 +237,7 @@ namespace OpenWorld.Engine
 					setTexture(TextureType.Specular, mesh.SpecularTexture);
 				if (setTexture != null)
 					setTexture(TextureType.NormalMap, mesh.NormalMap);
-				mesh.Draw();
+				mesh.Draw(drawPatches);
 			}
 		}
 
