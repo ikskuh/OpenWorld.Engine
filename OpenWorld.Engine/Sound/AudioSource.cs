@@ -10,7 +10,7 @@ namespace OpenWorld.Engine.Sound
 	/// <summary>
 	/// Represents an audio source
 	/// </summary>
-	public class AudioSource : IALResource
+	public sealed class AudioSource : IALResource
 	{
 		int id;
 

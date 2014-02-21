@@ -30,9 +30,6 @@ o Rendering
 			o Cookies [Cubemaps that fake color variance and shadows]
 	o Forward SceneRenderer
 	o TerrainRenderer
-	o CompositionCamera (WIP)
-		o Takes an IViewMatrixProvider and an IProjectionMatrixProvider
-		o Allows easy composition of complex camera effects
 	o Animated models
 		o GPU Bones Animation
 	o Abstract Instancing in SceneRenderer
@@ -59,11 +56,8 @@ o Physics
 		o Multishape
 		o Terrain
 	o Adding soft bodies
-	o Adding character controllers
-	o Adding kinematic bodies
 	o Add raycasting methods
 	o Connect RigidBody with component [so raycast can return the hit Shape component]
-	o Defer physics into update loop while engine is rendering
 o Network
 	o Integrate Lidgren3 (https://code.google.com/p/lidgren-network-gen3/)
 	o Network synchronisation system

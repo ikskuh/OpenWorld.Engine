@@ -13,7 +13,7 @@ namespace OpenWorld.Engine.Sound
 	/// Represents a buffer of raw audio data.
 	/// </summary>
     [AssetExtension(".ogg",".wav")]
-	public class AudioBuffer : Asset, IDisposable, IALResource
+	public sealed class AudioBuffer : Asset, IDisposable, IALResource
     {
         int id;
 
@@ -62,14 +62,14 @@ namespace OpenWorld.Engine.Sound
 		/// <summary>
 		/// Loads the audio buffer.
 		/// </summary>
-        protected override void Load(AssetLoadContext context, Stream stream, string extension)
+        protected override void Load(AssetLoadContext context, Stream stream, string extensionHint)
         {
             AudioReader reader = null;
-            if(extension == ".wav")
+			if (extensionHint == ".wav")
             {
                 reader = new WAVReader(stream);
             }
-            if(extension == ".ogg")
+			if (extensionHint == ".ogg")
             {
                 reader = new OGGReader(stream);
             }
@@ -88,11 +88,12 @@ namespace OpenWorld.Engine.Sound
         public void SetData(AudioData data)
         {
             if (this.id == 0) throw new InvalidOperationException("Buffer was disposed");
-            if (data == null) throw new ArgumentNullException("data is null");
+            if (data == null) throw new ArgumentNullException("data");
 
 			Game.Current.InvokeOpenAL(() =>
 				{
-					AL.BufferData(id, data.Format, data.Buffer, data.Buffer.Length, data.Frequency);
+					var buffer = data.GetBuffer();
+					AL.BufferData(id, data.Format, buffer, buffer.Length, data.Frequency);
 				});
         }
 
@@ -116,11 +117,11 @@ namespace OpenWorld.Engine.Sound
 		/// <summary>
 		/// Creates an existing audio buffer from a native OpenAL buffer id.
 		/// </summary>
-		/// <param name="sndID"></param>
+		/// <param name="soundId"></param>
 		/// <returns></returns>
-        public static AudioBuffer CreateFromNative(int sndID)
+        public static AudioBuffer CreateFromNative(int soundId)
         {
-            return new AudioBuffer(sndID);
+            return new AudioBuffer(soundId);
         }
 
 		/// <summary>

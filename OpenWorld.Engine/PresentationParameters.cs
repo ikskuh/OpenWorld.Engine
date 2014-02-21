@@ -36,5 +36,10 @@ namespace OpenWorld.Engine
 		/// Gets or sets a value that defines if the game uses vsync or not.
 		/// </summary>
 		public bool VSync;
+
+		/// <summary>
+		/// Gets or sets the graphics mode.
+		/// </summary>
+		public OpenTK.Graphics.GraphicsMode GraphicsMode;
 	}
 }

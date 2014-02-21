@@ -60,7 +60,10 @@ namespace OpenWorld.Engine.CodeTest
 
 			SceneNode fesant = new SceneNode();
 			fesant.Components.Add<Renderer>().Model = this.Assets.Load<Model>("felix/fesant");
-			fesant.Transform.SetMatrix(Matrix4.CreateScale(0.125f) * Matrix4.CreateRotationX(-GameMath.ToRadians(90)) * Matrix4.CreateTranslation(0, -10, -4));
+			fesant.Transform.WorldTransform = 
+				Matrix4.CreateScale(0.125f) * 
+				Matrix4.CreateRotationX(-GameMath.ToRadians(90)) * 
+				Matrix4.CreateTranslation(0, -10, -4);
 			fesant.Parent = scene.Root;
 
 			SceneNode light = new SceneNode();

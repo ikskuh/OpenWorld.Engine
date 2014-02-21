@@ -68,7 +68,7 @@ namespace OpenWorld.Engine.UserInterface
 		/// Occurs when a mouse button gets released over the control.
 		/// </summary>
 		public event EventHandler<MouseEventArgs> MouseDown;
-		
+
 		/// <summary>
 		/// Occurs when a mouse button gets pressed over the control.
 		/// </summary>
@@ -308,8 +308,9 @@ namespace OpenWorld.Engine.UserInterface
 			get
 			{
 				Control topContainer = this.Parent;
-				if (this is Gui)
-					return this as Gui;
+				Gui gui = this as Gui;
+				if (gui != null)
+					return gui;
 				if (topContainer == null)
 					return null;
 				while (topContainer.Parent != null) topContainer = topContainer.Parent;
@@ -402,17 +403,21 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnClick(EventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			this.Focus();
 			if (this.Click != null)
 				this.Click(this, e);
 		}
-		
+
 		/// <summary>
 		/// Raises the Enter event.
 		/// </summary>
 		/// <param name="e"></param>
 		protected internal virtual void OnEnter(EventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.Enter != null)
 				this.Enter(this, EventArgs.Empty);
 		}
@@ -423,6 +428,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnLeave(EventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.Leave != null)
 				this.Leave(this, EventArgs.Empty);
 		}
@@ -433,6 +440,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnMouseEnter(MouseEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			this.leftClickBegin = false;
 			this.rightClickBegin = false;
 			if (this.MouseEnter != null)
@@ -445,6 +454,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnMouseLeave(MouseEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			this.leftClickBegin = false;
 			this.rightClickBegin = false;
 			if (this.MouseLeave != null)
@@ -457,6 +468,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnMouseMove(MouseEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.MouseMove != null)
 				this.MouseMove(this, e);
 		}
@@ -467,6 +480,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnMouseHover(MouseEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.MouseHover != null)
 				this.MouseHover(this, e);
 		}
@@ -477,6 +492,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (e.Button == MouseButton.Left)
 				this.leftClickBegin = true;
 			if (e.Button == MouseButton.Right)
@@ -491,6 +508,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnMouseUp(MouseEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.leftClickBegin && e.Button == MouseButton.Left)
 			{
 				this.OnMouseClick(e);
@@ -513,6 +532,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnMouseClick(MouseEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.MouseClick != null)
 				this.MouseClick(this, e);
 		}
@@ -523,6 +544,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnKeyDown(KeyEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.KeyDown != null)
 				this.KeyDown(this, e);
 		}
@@ -533,6 +556,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnKeyUp(KeyEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.KeyUp != null)
 				this.KeyUp(this, e);
 		}
@@ -543,6 +568,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnKeyPress(KeyPressEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.KeyPress != null)
 				this.KeyPress(this, e);
 		}
@@ -553,6 +580,8 @@ namespace OpenWorld.Engine.UserInterface
 		/// <param name="e"></param>
 		protected internal virtual void OnUpdate(UpdateEventArgs e)
 		{
+			if (e == null)
+				throw new ArgumentNullException("e");
 			if (this.Update != null)
 				this.Update(this, e);
 		}

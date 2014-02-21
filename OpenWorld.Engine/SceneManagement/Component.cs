@@ -13,7 +13,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Creates a new component.
 		/// </summary>
-		public Component()
+		protected Component()
 			: base()
 		{
 

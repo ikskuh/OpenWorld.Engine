@@ -12,18 +12,18 @@ namespace OpenWorld.Engine
 	[Serializable]
 	public sealed class AssetNotFoundException : Exception
 	{
-		internal AssetNotFoundException()
+		public AssetNotFoundException()
 			: base("An asset was not found")
 		{
 
 		}
-		internal AssetNotFoundException(string name)
+		public AssetNotFoundException(string name)
 		: this(name, null)
 		{
 
 		}
 
-		internal AssetNotFoundException(string name, Exception inner)
+		public AssetNotFoundException(string name, Exception inner)
 			: base("Asset '" + name + "' not found", inner)
 		{
 

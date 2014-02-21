@@ -11,6 +11,8 @@
 		- File system
 		- Zip file
 		- Web (load assets directly from your server)
+	- Deferred asset loading
+		- Assets get loaded in another thread so the game is not blocking
 - Flexible log system
 	- Can write to custom streams or just the console
 - Wrapping of OpenGL objects
@@ -25,6 +27,7 @@
 - Multithreaded architecture
 	- Co-Routines
 	- Deferred asset loading
+	- Physics updating while rendering
 - Input Manager
 	- Keyboard
 	- Mouse
@@ -35,16 +38,20 @@
 		- Deferred (Rendering with support for lots of lights)
 			- Point Lights
 			- Normal Mapping
+		- Sky System
+			- Single colored sky
 	- Cameras
 		- Scene, Camera and Renderer are separated so they can be combined in various ways
 - Component-based scene nodes
 	- Renderer (Draws a model)
 	- RigidBody (Bullet physics rigid body)
+	- CharacterController (Bullet physics character controller)
 	- BoxShape (Physics collider)
 	- SphereShape (Physics collider)
 	- PolygonShape (Physics collider)
 	- PointLight (Represents a point light)
 	- Scriptable (Lua scripting for nodes)
+	- Sound3D (sound in scene)
 - Simple Materials
 	- Physical properties
 		- Kinetic friction

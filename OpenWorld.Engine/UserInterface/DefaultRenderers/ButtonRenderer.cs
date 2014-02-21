@@ -11,7 +11,7 @@ namespace OpenWorld.Engine.UserInterface.DefaultRenderers
 		protected internal override void Render(Button button, OpenTK.Box2 bounds)
 		{
 			if (button == null)
-				throw new ArgumentNullException("control");
+				throw new ArgumentNullException("button");
 
 			Color backColor = button.BackColor;
 			switch(button.State)

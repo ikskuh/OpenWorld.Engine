@@ -12,6 +12,7 @@ namespace OpenWorld.Engine.Sound
     /// </summary>
     public class AudioData
     {
+		private byte[] buffer;
         /// <summary>
         /// Creates a new instance.
         /// </summary>
@@ -20,7 +21,7 @@ namespace OpenWorld.Engine.Sound
         /// <param name="frequency">The frequency of the audio data</param>
         public AudioData(byte[] data, ALFormat format,int frequency)
         {
-            Buffer = data;
+            this.buffer = data;
             Format = format;
             Frequency = frequency;
         }
@@ -28,7 +29,10 @@ namespace OpenWorld.Engine.Sound
 		/// <summary>
 		/// 
 		/// </summary>
-        public Byte[] Buffer { get; private set; }
+		public byte[] GetBuffer()
+		{
+			return this.buffer;
+		}
         
 		/// <summary>
 		/// 

@@ -9,6 +9,7 @@ namespace OpenWorld.Engine
 	/// Defines a directed graph.
 	/// </summary>
 	/// <typeparam name="TNode">Type of the derived class.</typeparam>
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Di")]
 	public abstract class DiGraph<TNode>
 		where TNode : DiGraph<TNode>
 	{
@@ -120,6 +121,8 @@ namespace OpenWorld.Engine
 			/// <param name="arrayIndex"></param>
 			public void CopyTo(TNode[] array, int arrayIndex)
 			{
+				if (array == null)
+					throw new ArgumentNullException("array");
 				for (int i = 0; i < array.Length; i++)
 					array[arrayIndex + i] = this.list[i];
 			}

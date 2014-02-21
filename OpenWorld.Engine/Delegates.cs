@@ -24,6 +24,7 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets a co-routine result that waits for the next frame.
 		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
 		public static readonly CoRoutineResult Frame = new CoRoutineResult(0);
 
 		// Frame counter

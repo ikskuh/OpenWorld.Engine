@@ -135,6 +135,11 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		protected override void Render(Scene scene, Camera camera)
 		{
+			if (scene == null)
+				throw new ArgumentNullException("scene");
+			if (camera == null)
+				throw new ArgumentNullException("camera");
+
 			int[] viewport = new int[4];
 			GL.GetInteger(GetPName.Viewport, viewport);
 

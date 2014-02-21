@@ -68,7 +68,7 @@ namespace OpenWorld.Engine
 			using (GameWindow window = new GameWindow(
 				presentation.Resolution.Width,
 				presentation.Resolution.Height,
-				GraphicsMode.Default,
+				presentation.GraphicsMode,
 				presentation.Title,
 				presentation.IsFullscreen ? GameWindowFlags.Fullscreen : GameWindowFlags.Default,
 				presentation.DisplayDevice ?? DisplayDevice.Default,
@@ -215,7 +215,7 @@ namespace OpenWorld.Engine
 			}
 
 			this.audioContext.Dispose();
-			this.audioContext = null; 
+			this.audioContext = null;
 
 			Game.currentGame.Value = null;
 		}
@@ -297,7 +297,8 @@ namespace OpenWorld.Engine
 				IsFullscreen = false,
 				Title = this.GetType().Name,
 				DisplayDevice = DisplayDevice.Default,
-				VSync = false
+				VSync = false,
+				GraphicsMode = GraphicsMode.Default
 			};
 		}
 
@@ -472,6 +473,17 @@ namespace OpenWorld.Engine
 		public static Game Current
 		{
 			get { return Game.currentGame.Value; }
+		}
+
+		/// <summary>
+		/// Gets the current game converted to a custom game type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static T GetCurrent<T>()
+			where T : Game
+		{
+			return Game.Current as T;
 		}
 
 		#endregion

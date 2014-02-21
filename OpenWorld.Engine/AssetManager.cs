@@ -38,10 +38,13 @@ namespace OpenWorld.Engine
 		public T Load<T>(string name, bool loadNew)
 			where T : Asset
 		{
+			if (name == null)
+				throw new ArgumentNullException("name");
+
 			string selectedExtension;
 
 			if (!this.IsCaseSensitive)
-				name = name.ToLower();
+				name = name.ToLower(System.Globalization.CultureInfo.InvariantCulture);
 
 			if (!loadNew && this.cache.Contains<T>(name))
 				return this.cache.Get<T>(name);
@@ -122,14 +125,6 @@ namespace OpenWorld.Engine
 				asset.Unload();
 			}
 			this.loadedAssets.Clear();
-		}
-
-		/// <summary>
-		/// Gets the asset cache.
-		/// </summary>
-		private AssetCache Cache
-		{
-			get { return cache; }
 		}
 
 		/// <summary>
