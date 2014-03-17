@@ -91,6 +91,7 @@
     <Compile Include="DiGraph.cs" />
     <Compile Include="FileSystemAssetSource.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="GameUtilities.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="AssetExtensionAttribute.cs" />
