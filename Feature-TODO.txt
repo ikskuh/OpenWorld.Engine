@@ -14,11 +14,6 @@ o Engine
 o OpenGL
 	o Rework FrameBuffer
 	o Use modern GL commands [GL.ProgramUniform, ...]
-	o Provide a wrapper around GL.Clear*
-	o Improve Shaders
-		o Custom shader preprocessor
-			o #import <module>
-			o #shadertype vertex [fragment, ...]
 o Rendering
 	o Deferred SceneRenderer
 		o Spot Lights

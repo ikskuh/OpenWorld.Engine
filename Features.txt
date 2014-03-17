@@ -24,6 +24,9 @@
 		- Object Shaders (with world matrices)
 		- Post Processing Shaders (fixed VertexShader, custom FragmentShader)
 		- Automatic shader uniforms via Properties + Attributes
+		- One file for all shader programs
+			- Share uniforms without redeclaration
+			- Better overview
 - Multithreaded architecture
 	- Co-Routines
 	- Deferred asset loading
