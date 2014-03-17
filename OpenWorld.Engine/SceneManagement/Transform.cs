@@ -56,7 +56,7 @@ namespace OpenWorld.Engine.SceneManagement
 				Matrix4.CreateFromAxisAngle(Vector3.UnitX, GameMath.ToRadians(x)) *
 				Matrix4.CreateFromAxisAngle(Vector3.UnitY, GameMath.ToRadians(y)) *
 				Matrix4.CreateFromAxisAngle(Vector3.UnitZ, GameMath.ToRadians(z));
-			this.localMatrix = this.localMatrix * rot;
+			this.localMatrix = rot * this.localMatrix;
 		}
 
 		/// <summary>

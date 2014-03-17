@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,7 +31,7 @@ namespace OpenWorld.Engine
 		/// <param name="internalFormat">Internal Format</param>
 		/// <param name="pixelFormat">Pixel Format</param>
 		/// <param name="pixelType">Pixel Type</param>
-		public Texture2D(int width, int height, PixelInternalFormat internalFormat, OpenTK.Graphics.OpenGL.PixelFormat pixelFormat, PixelType pixelType)
+		public Texture2D(int width, int height, PixelInternalFormat internalFormat, OpenTK.Graphics.OpenGL4.PixelFormat pixelFormat, PixelType pixelType)
 			: this()
 		{
 			Game.Current.InvokeOpenGL(() =>
@@ -130,7 +130,7 @@ namespace OpenWorld.Engine
 						this.IsSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
 						bmp.Width, bmp.Height,
 						0,
-						OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
+						OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
 						PixelType.UnsignedByte,
 						lockData.Scan0);
 					bmp.UnlockBits(lockData);

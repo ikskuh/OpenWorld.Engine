@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace OpenWorld.Engine
 {
@@ -19,6 +20,8 @@ namespace OpenWorld.Engine
 	{
 		private class DeferredRoutineHandler
 		{
+			public MethodBase CreatingMethod { get; set; }
+
 			public ManualResetEvent WaitHandle { get; set; }
 
 			public DeferredRoutine Routine { get; set; }
@@ -46,6 +49,9 @@ namespace OpenWorld.Engine
 
 		internal event EventHandler<UpdateEventArgs> UpdateNonScene;
 
+		// Action because Dispose is void ()
+		internal event Action Disposing;
+
 		/// <summary>
 		/// Instantiates a new game.
 		/// </summary>
@@ -72,7 +78,7 @@ namespace OpenWorld.Engine
 				presentation.Title,
 				presentation.IsFullscreen ? GameWindowFlags.Fullscreen : GameWindowFlags.Default,
 				presentation.DisplayDevice ?? DisplayDevice.Default,
-				3, 3,
+				4, 1,
 #if DEBUG
 				GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
 #else
@@ -117,7 +123,7 @@ namespace OpenWorld.Engine
 
 				while (this.isRunning)
 				{
-					while (!this.isRendering)
+					do
 					{
 						DeferredRoutineHandler handler = null;
 						if (this.deferredGLRoutines.TryDequeue(out handler))
@@ -126,7 +132,7 @@ namespace OpenWorld.Engine
 							handler.WaitHandle.Set();
 						}
 						Thread.Sleep(0);
-					}
+					} while (!this.isRendering);
 
 					// Process the window, draw everything, then show it.
 					window.ProcessEvents();
@@ -140,6 +146,8 @@ namespace OpenWorld.Engine
 						window.SwapBuffers();
 					}
 					this.isRendering = false;
+
+					//Thread.Sleep(16);
 				}
 
 				// Unload everything in the draw thread.
@@ -155,6 +163,9 @@ namespace OpenWorld.Engine
 
 				this.input = null;
 				this.Size = new System.Drawing.Size();
+
+				if (this.Disposing != null)
+					this.Disposing();
 
 				this.Assets.CleanUp();
 				this.Assets = null;
@@ -373,7 +384,8 @@ namespace OpenWorld.Engine
 				var handler = new DeferredRoutineHandler()
 				{
 					Routine = routine,
-					WaitHandle = new ManualResetEvent(false)
+					WaitHandle = new ManualResetEvent(false),
+					CreatingMethod = new StackTrace().GetFrame(1).GetMethod()
 				};
 				this.deferredALRoutines.Enqueue(handler);
 				handler.WaitHandle.WaitOne();

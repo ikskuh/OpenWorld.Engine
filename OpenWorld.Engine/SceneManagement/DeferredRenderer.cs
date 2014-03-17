@@ -1,8 +1,7 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenWorld.Engine.PostProcessingShaders;
 using OpenWorld.Engine.SceneManagement.Shaders;
-using OpenWorld.Engine.UserInterface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -170,7 +169,6 @@ namespace OpenWorld.Engine.SceneManagement
 
 			this.pipeline.Apply(this.resultBuffer);
 
-			GL.Disable(EnableCap.AlphaTest);
 			GL.Disable(EnableCap.Blend);
 			GL.Disable(EnableCap.DepthTest);
 			GL.Disable(EnableCap.CullFace);

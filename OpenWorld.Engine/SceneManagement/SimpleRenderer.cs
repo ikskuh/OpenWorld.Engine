@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +29,9 @@ namespace OpenWorld.Engine.SceneManagement
 			GL.ClearDepth(1.0f);
 
 			GL.Enable(EnableCap.DepthTest);
-			GL.Enable(EnableCap.AlphaTest);
 			GL.Disable(EnableCap.Blend);
 
 			GL.DepthFunc(DepthFunction.Lequal);
-			GL.AlphaFunc(AlphaFunction.Less, 0.5f);
 
 			GL.Clear(ClearBufferMask.DepthBufferBit);
 
@@ -42,7 +40,6 @@ namespace OpenWorld.Engine.SceneManagement
 			this.Draw(scene, camera, this.SolidRenderJobs);
 
 			GL.Disable(EnableCap.DepthTest);
-			GL.Disable(EnableCap.AlphaTest);
 			GL.Enable(EnableCap.Blend);
 
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);

@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -78,7 +78,7 @@ namespace OpenWorld.Engine
 						PixelInternalFormat.Rgba,
 						bmp.Width, bmp.Width,
 						0,
-						OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
+						OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
 						PixelType.UnsignedByte,
 						lockData.Scan0);
 				});

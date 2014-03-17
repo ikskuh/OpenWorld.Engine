@@ -23,7 +23,6 @@ namespace OpenWorld.Engine.SceneManagement
 		public Scene()
 			: this(SceneCreationFlags.None)
 		{
-
 		}
 
 		/// <summary>
@@ -47,6 +46,8 @@ namespace OpenWorld.Engine.SceneManagement
 				// Register physics handler
 				Game.Current.UpdateNonScene += this.UpdatePhysics;
 			}
+
+			Game.Current.Disposing += this.Dispose;
 		}
 
 		/// <summary>
@@ -108,6 +109,8 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		public void Dispose()
 		{
+			Game.Current.Disposing -= this.Dispose;
+
 			if(this.PhysicsEnabled)
 			{
 				// Unregister physics handler

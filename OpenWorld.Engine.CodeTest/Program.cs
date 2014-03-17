@@ -22,107 +22,42 @@ namespace OpenWorld.Engine.CodeTest
 		}
 
 		Scene scene;
-		SceneNode cameraNode;
-		CompositeCamera camera;
+		PerspectiveLookAtCamera camera;
 		SceneRenderer renderer;
 
 		protected override void OnLoad()
 		{
-			Texture2D.UseSRGB = true;
-
 			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
 			FrameBuffer.ClearColor = Color.SkyBlue;
 
-			this.scene = new Scene(SceneCreationFlags.EnablePhysics);
+			this.camera = new PerspectiveLookAtCamera();
+			this.camera.LookAt(new Vector3(3, 2, 1), new Vector3(0, 0, 0));
 
-			this.cameraNode = new SceneNode();
-			this.cameraNode.Transform.LocalPosition = new Vector3(8.0f, 10.0f, 5.0f);
-			this.cameraNode.Transform.LookAt(new Vector3(0.0f, -2.0f, 0.0f));
-			this.cameraNode.Parent = this.scene.Root;
+			this.renderer = new SimpleRenderer();
 
-			//this.renderer = new DeferredRenderer(400, 480);
-			this.renderer = new SimpleRenderer();// new DeferredRenderer(800, 480);
+			this.scene = new Scene();
 
-			this.camera = new CompositeCamera();
-			this.camera.ProjectionMatrixSource = new Perspective(70.0f);
-			this.camera.ViewMatrixSource = this.cameraNode;
+			var ground = new SceneNode();
+			ground.Components.Add<Renderer>().Model = this.Assets.Load<Model>("testplane");
+			ground.Transform.LocalTransform = Matrix4.CreateRotationX(MathHelper.PiOver2) * Matrix4.CreateScale(5.0f);
+			ground.Parent = this.scene.Root;
 
-			//this.Assets.Load<Model>("rope");
+			var boxShader = this.Assets.Load<ObjectShader>("customShader");
 
-			CreateBox();
-
-			SceneNode demo = new SceneNode();
-			demo.Components.Add<Renderer>().Model = this.Assets.Load<Model>("demoscene");
-			demo.Components.Add<PolygonShape>().Model = this.Assets.Load<Model>("demoscene");
-			demo.Components.Add<RigidBody>();
-			demo.Transform.LocalPosition = new Vector3(0, -11, 0);
-			demo.Parent = scene.Root;
-
-			SceneNode fesant = new SceneNode();
-			fesant.Components.Add<Renderer>().Model = this.Assets.Load<Model>("felix/fesant");
-			fesant.Transform.WorldTransform = 
-				Matrix4.CreateScale(0.125f) * 
-				Matrix4.CreateRotationX(-GameMath.ToRadians(90)) * 
-				Matrix4.CreateTranslation(0, -10, -4);
-			fesant.Parent = scene.Root;
-
-			SceneNode light = new SceneNode();
-			light.Components.Add<PointLight>();
-			light.Transform.LocalPosition = new Vector3(2, 8, 1);
-			light.Parent = scene.Root;
-
-			var soundContainer = new SceneNode();
-			soundContainer.Components.Add<Scriptable>().Script =
-@"function update(self)
-	self.Node.Transform:Rotate(0, 0.4, 0);
-end";
-			soundContainer.Parent = this.cameraNode;
-
-			var soundEmitter = new SceneNode();
-			var soundSource = soundEmitter.Components.Add<Sound3D>();
-			soundSource.Sound = this.Assets.Load<AudioBuffer>("Birdy01");
-			soundSource.AutoPlay = true;
-			soundSource.IsLooped = true;
-			soundEmitter.Components.Add<Renderer>().Model = Model.CreateCube(0.25f);
-			soundEmitter.Transform.LocalPosition = new Vector3(0, 0, 5);
-			soundEmitter.Parent = soundContainer;
-		}
-
-		private IEnumerable<CoRoutineResult> Ticker()
-		{
-			for (int i = 0; i < 10; i++)
+			var box = new SceneNode();
+			box.Components.Add<Renderer>().Model = this.Assets.Load<Model>("crate");
+			box.Transform.LocalPosition = new Vector3(0, 0.5f, 0);
+			box.Material = new Material()
 			{
-				Console.WriteLine("{0}", i);
-				yield return CoRoutineResult.Frame;
-			}
-		}
-
-		private void CreateBox()
-		{
-			SceneNode child = new SceneNode();
-			var renderer = child.Components.Add<Renderer>();
-			renderer.Model = this.Assets.Load<Model>("crate");
-			var light = child.Components.Add<PointLight>();
-			Random rnd = new Random();
-			light.Color = new Color(
-				(float)rnd.NextDouble(),
-				(float)rnd.NextDouble(),
-				(float)rnd.NextDouble());
-			child.Components.Add<SphereShape>();
-			child.Components.Add<RigidBody>().Mass = 1.0f;
-			child.Transform.LocalPosition = new Vector3(0, 5, 0);
-			this.scene.Root.Children.Add(child);
+				IsTranslucent = false,
+				Shader = boxShader,
+			};
+			box.Parent = this.scene.Root;
 		}
 
 		protected override void OnUpdate(GameTime time)
 		{
-			if(this.Input.Keyboard[OpenTK.Input.Key.Space])
-				CreateBox();
-
 			this.scene.Update(time);
-
-			AudioListener.Instance.Position = this.cameraNode.Transform.WorldPosition;
-			AudioListener.Instance.LookAt = this.cameraNode.Transform.Forward;
 		}
 
 		protected override void OnDraw(GameTime time)

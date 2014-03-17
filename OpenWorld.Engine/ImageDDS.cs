@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenWorld.Engine;
 using System.Collections.Generic;
 
@@ -272,7 +272,7 @@ namespace OpenWorld.Engine
 							if (this.IsSRGB)
 								_PixelInternalFormat = PixelInternalFormat.CompressedSrgbAlphaS3tcDxt1Ext;
 							else
-								_PixelInternalFormat = (PixelInternalFormat)ExtTextureCompressionS3tc.CompressedRgbS3tcDxt1Ext;
+								_PixelInternalFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
 							_BytesPerBlock = 8;
 							break;
 						//case eFOURCC.DXT2:
@@ -280,7 +280,7 @@ namespace OpenWorld.Engine
 							if (this.IsSRGB)
 								_PixelInternalFormat = PixelInternalFormat.CompressedSrgbAlphaS3tcDxt3Ext;
 							else
-								_PixelInternalFormat = (PixelInternalFormat)ExtTextureCompressionS3tc.CompressedRgbaS3tcDxt3Ext;
+								_PixelInternalFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
 							_BytesPerBlock = 16;
 							break;
 						//case eFOURCC.DXT4:
@@ -288,7 +288,7 @@ namespace OpenWorld.Engine
 							if (this.IsSRGB)
 								_PixelInternalFormat = PixelInternalFormat.CompressedSrgbAlphaS3tcDxt5Ext;
 							else
-								_PixelInternalFormat = (PixelInternalFormat)ExtTextureCompressionS3tc.CompressedRgbaS3tcDxt5Ext;
+								_PixelInternalFormat = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
 							_BytesPerBlock = 16;
 							break;
 						default:

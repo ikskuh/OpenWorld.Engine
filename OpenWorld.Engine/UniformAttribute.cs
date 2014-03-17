@@ -9,7 +9,7 @@ namespace OpenWorld.Engine
 	/// Defines a shader uniform.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-	sealed class UniformAttribute : Attribute
+	public sealed class UniformAttribute : Attribute
 	{
 		readonly string uniformName;
 

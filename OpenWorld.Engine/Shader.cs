@@ -14,6 +14,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Represents an OpenGL shader program.
 	/// </summary>
+	[AssetExtension(".shader", ".glsl")]
 	public class Shader : Asset, IGLResource
 	{
 		private class AutomaticShaderUniform
@@ -137,9 +138,9 @@ namespace OpenWorld.Engine
 				string infoLog;
 
 				int vertexShader = this.CompileShader(ShaderType.VertexShader, shadercode);
-				int geometryShader = this.CompileShader(ShaderType.GeometryShader, shadercode);
 				int tessControlShader = this.CompileShader(ShaderType.TessControlShader, shadercode);
 				int tessEvaluationShader = this.CompileShader(ShaderType.TessEvaluationShader, shadercode);
+				int geometryShader = this.CompileShader(ShaderType.GeometryShader, shadercode);
 				int fragmentShader = this.CompileShader(ShaderType.FragmentShader, shadercode);
 
 				// Link the program
@@ -150,12 +151,12 @@ namespace OpenWorld.Engine
 				this.programID = GL.CreateProgram();
 				if (vertexShader != -1)
 					GL.AttachShader(this.programID, vertexShader);
-				if (geometryShader != -1)
-					GL.AttachShader(this.programID, geometryShader);
 				if (tessControlShader != -1)
 					GL.AttachShader(this.programID, tessControlShader);
 				if (tessEvaluationShader != -1)
 					GL.AttachShader(this.programID, tessEvaluationShader);
+				if (geometryShader != -1)
+					GL.AttachShader(this.programID, geometryShader);
 				if (fragmentShader != -1)
 					GL.AttachShader(this.programID, fragmentShader);
 				GL.LinkProgram(this.programID);
@@ -190,10 +191,14 @@ namespace OpenWorld.Engine
 
 		private int CompileShader(ShaderType type, string source)
 		{
-			if (!Regex.IsMatch(source, @"\#ifdef\s+__" + type + @"(\n|(\s*\n))"))
+			string shaderName = type.ToString();
+			if (type == ShaderType.GeometryShader)
+				shaderName = "GeometryShader";
+
+			if (!Regex.IsMatch(source, @"\#ifdef\s+__" + shaderName + @"(\n|(\s*\n))"))
 				return -1;
 
-			source = "#define __" + type.ToString() + "\n" + source;
+			source = "#define __" + shaderName + "\n" + source;
 
 			int shader = GL.CreateShader(type);
 			GL.ShaderSource(shader, source);
