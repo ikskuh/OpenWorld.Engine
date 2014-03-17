@@ -93,6 +93,9 @@ namespace OpenWorld.Engine
 					window.Keyboard,
 					window.Mouse,
 					window.Joysticks.ToArray());
+
+				this.Utilities = new GameUtilities(this);
+
 				this.Assets = new AssetManager();
 				this.Size = presentation.Resolution;
 
@@ -474,6 +477,21 @@ namespace OpenWorld.Engine
 		{
 			get { return currentState; }
 		}
+
+		/// <summary>
+		/// Gets the width of the screen.
+		/// </summary>
+		public int Width { get { return this.Size.Width; } }
+
+		/// <summary>
+		/// Gets the height of the screen.
+		/// </summary>
+		public int Height { get { return this.Size.Height; } }
+
+		/// <summary>
+		/// Gets a set of utilities.
+		/// </summary>
+		public GameUtilities Utilities { get; private set; }
 
 		#region Static Part
 

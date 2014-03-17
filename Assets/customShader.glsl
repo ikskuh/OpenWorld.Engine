@@ -24,12 +24,12 @@ layout(triangle_strip, max_vertices=3) out;
  
 void main()
 {
-	for(i = 0; i < gl_VerticesIn; i++)
+	for(int i = 0; i < gl_VerticesIn; i++)
 	{
 		gl_Position = gl_PositionIn[i];
 		EmitVertex();
 	}
-	EmitPrimitive();
+	EndPrimitive();
 }
 #endif
 #ifdef __FragmentShader

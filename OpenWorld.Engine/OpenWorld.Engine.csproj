@@ -50,8 +50,9 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AssimpNet">
-      <HintPath>..\..\..\Libraries\AssimpNet-3.2\Bin\AssimpNet.dll</HintPath>
+    <Reference Include="AssimpNet, Version=3.2.0.0, Culture=neutral, PublicKeyToken=7c35138f0d61254b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\External Libraries\AssimpNet-3.2\Bin\AssimpNet.dll</HintPath>
     </Reference>
     <Reference Include="BulletSharp">
       <HintPath>..\External Libraries\BulletSharp.dll</HintPath>
@@ -91,6 +92,7 @@
     <Compile Include="DiGraph.cs" />
     <Compile Include="FileSystemAssetSource.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="GameUtilities.cs" />
     <Compile Include="Asset.cs" />
     <Compile Include="AssetExtensionAttribute.cs" />
     <Compile Include="AssetLoadContext.cs" />
@@ -192,11 +194,11 @@
     <Compile Include="ZipFileAssetSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\Libraries\AssimpNet-3.2\Bin\Assimp32.dll">
+    <Content Include="..\External Libraries\AssimpNet-3.2\Bin\Assimp32.dll">
       <Link>Assimp32.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\Libraries\AssimpNet-3.2\Bin\Assimp64.dll">
+    <Content Include="..\External Libraries\AssimpNet-3.2\Bin\Assimp64.dll">
       <Link>Assimp64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

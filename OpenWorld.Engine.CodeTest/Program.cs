@@ -2,7 +2,6 @@
 using OpenTK.Graphics.OpenGL;
 using OpenWorld.Engine.SceneManagement;
 using OpenWorld.Engine.Sound;
-using OpenWorld.Engine.UserInterface;
 using System;
 using System.Collections.Generic;
 using System.IO;
