@@ -1,5 +1,4 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL4;
 using OpenWorld.Engine.SceneManagement;
 
 namespace OpenWorld.Engine.Demo
@@ -15,7 +14,7 @@ namespace OpenWorld.Engine.Demo
 		protected override void OnLoad()
 		{
 			// Set up the background color
-			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
+			FrameBuffer.ClearColor = Color.SkyBlue;
 
 			// Add a new asset source to the asset manager. Assets will now be searched in the file system.
 			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
@@ -52,7 +51,7 @@ namespace OpenWorld.Engine.Demo
 		protected override void OnDraw(GameTime time)
 		{
 			// Clear the screen, as usual
-			GL.Clear(ClearBufferMask.ColorBufferBit);
+			FrameBuffer.Clear();
 
 			// Draw our scene with the camera.
 			this.scene.Draw(this.camera, time);

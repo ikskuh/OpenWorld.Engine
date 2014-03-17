@@ -14,54 +14,40 @@
 			<li><a href="#gui">GUI</a></li>
 		</ul>
 		<h2 id="intro">Intrudoction</h2>
-		<p>OpenWorld.Engine is a game engine designed for both game programmers as well as engine programmers written in C#. The engine features high-level features like <a href="scenemgmt">scene management</a> or <a href="#gui">GUI systems</a> but it also allows low level programming close to OpenGL. It provides a rich, well-documented API that allows access to nearly every little part of the engine.</p>
+		<p>OpenWorld.Engine is a game engine designed for both game programmers as well as engine programmers written in C#. The engine features high-level features like <a href="scenemgmt">scene management</a> but it also allows low level programming close to OpenGL. It provides a rich, well-documented API that allows access to nearly every little part of the engine.</p>
 		<h2 id="start">Getting started</h2>
 		<p>So how to start with the engine?</p>
 		<p>First, set up your project with Visual Studio 2013. For the best development conditions  use a console application to get logging information.</p>
 		<p>Second, reference OpenWorld.Engine.dll and OpenTK.dll. This is needed to get the actual engine and the math classes.</p>
 		<p>Third, set up your start file. It should look like this:</p>
-<pre style="border-style: solid; border-width: 1px; padding: 2px;">using OpenTK;
-using System;
+<pre style="border-style: solid; border-width: 1px; padding: 2px;">using System;
 using OpenWorld.Engine;
-using OpenTK.Graphics.OpenGL;
 
-namespace MyGame
+namespace OpenWorld.Engine.Demo
 {
-	// Subclass your game main class from OpenWorld.Engine.Game
-	class SuperduperGame : Game
+	class BasicSetup : Game
 	{
-		static void Main(string[] args)
+		static void Main()
 		{
-			// Create a new engine window.
-			using(Window window = new Window(1024, 768))
-			{
-				// Set our own game. This is the step that loads your game and uses it.
-				window.Game = new SuperduperGame();
-				
-				// Run the game with 60 frames per second.
-				window.Run(60, 60);
-			}
+			BasicSetup setup = new BasicSetup();
+			setup.Run();
 		}
-		
-		// Override OnLoad to set up your game.
+
 		protected override void OnLoad()
 		{
-			// Setting the clear color with OpenGL commands.
 			// You can use OpenGL commands in the engine.
-			GL.ClearColor(0.2f, 0.2f, 0.9f, 1.0f);
+			FrameBuffer.ClearColor = Color.SkyBlue;
 		}
 
-		// Override OnUpdate to update your game every frame.
 		protected override void OnUpdate(GameTime time)
 		{
 			// This method updates the game
 		}
 
-		// Override OnDraw to draw your game.
 		protected override void OnDraw(GameTime time)
 		{
-			// Just clear the screen, back buffer swapping is done by the engine.
-			GL.Clear(ClearBufferMask.ColorBufferBit);
+			// Just clear the screen
+			FrameBuffer.Clear();
 		}
 	}
 }</pre>
@@ -70,13 +56,18 @@ namespace MyGame
 		<p>Components are the things that make your games alive. They render, they apply physics, they even allow simple scripting of SceneNodes, so you don't have to write everything in C#.</p>
 		<p>So here is a code example on how to use the scene management:</p>
 <pre style="border-style: solid; border-width: 1px; padding: 2px;">using OpenTK;
-using OpenTK.Graphics.OpenGL4;
 using OpenWorld.Engine.SceneManagement;
 
-namespace MyGame
+namespace OpenWorld.Engine.Demo
 {
 	class SceneManagementDemo : Game
 	{
+		static void Main()
+		{
+			SceneManagementDemo setup = new SceneManagementDemo();
+			setup.Run();
+		}
+
 		// The scene we use
 		Scene scene;
 
@@ -86,10 +77,10 @@ namespace MyGame
 		protected override void OnLoad()
 		{
 			// Set up the background color
-			GL.ClearColor(0.2f, 0.2f, 1.0f, 1.0f);
+			FrameBuffer.ClearColor = Color.SkyBlue;
 
 			// Add a new asset source to the asset manager. Assets will now be searched in the file system.
-			this.Assets.Sources.Add(new FileSystemAssetSource("./Assets/"));
+			this.Assets.Sources.Add(new FileSystemAssetSource("../../../Assets/"));
 
 			// Create our camera. A perspective camera with 60° field of view.
 			this.camera = new PerspectiveLookAtCamera();
@@ -123,14 +114,14 @@ namespace MyGame
 		protected override void OnDraw(GameTime time)
 		{
 			// Clear the screen, as usual
-			GL.Clear(ClearBufferMask.ColorBufferBit);
+			FrameBuffer.Clear();
 
 			// Draw our scene with the camera.
-			this.camera.Draw(this.scene, time);
+			this.scene.Draw(this.camera, time);
 		}
-
 	}
-}</pre>
+}
+</pre>
 		<p>As you can see, it's fairly easy to set up a flexible scene management system. The only thing you have to do is creation and updating/drawing of the scene, everything with just one line of code.</p>
 		<h3 id="components">Components</h3>
 		<p>Every node can contain a various number of components but only one of each kind. A component adds behaviour to a SceneNode, without components every scene node would do nothing at all just eating some CPU cycles. OpenWorld.Engine has built-in components for the most basic tasks like rendering or scripting. Here is a list of all available components.</p>

@@ -1,9 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using OpenWorld.Engine;
 
 namespace OpenWorld.Engine.Demo
 {
@@ -12,7 +8,7 @@ namespace OpenWorld.Engine.Demo
 		protected override void OnLoad()
 		{
 			// You can use OpenGL commands in the engine.
-			GL.ClearColor(0.2f, 0.2f, 0.9f, 1.0f);
+			FrameBuffer.ClearColor = Color.SkyBlue;
 		}
 
 		protected override void OnUpdate(GameTime time)
@@ -22,8 +18,8 @@ namespace OpenWorld.Engine.Demo
 
 		protected override void OnDraw(GameTime time)
 		{
-			// Just clear the screen, back buffer swapping is done by the engine.
-			GL.Clear(ClearBufferMask.ColorBufferBit);
+			// Just clear the screen
+			FrameBuffer.Clear();
 		}
 	}
 }
