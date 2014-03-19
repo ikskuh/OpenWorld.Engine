@@ -62,6 +62,51 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
+		/// Loads an asset synchronous.
+		/// </summary>
+		/// <typeparam name="T">Type of the asset.</typeparam>
+		/// <param name="name">Name of the asset. Can contain path information.</param>
+		/// <returns>Loaded asset.</returns>
+		public T LoadSync<T>(string name)
+			where T : Asset
+		{
+			return this.LoadSync<T>(name, false);
+		}
+
+		/// <summary>
+		/// Loads an asset synchronous.
+		/// </summary>
+		/// <typeparam name="T">Type of the asset.</typeparam>
+		/// <param name="name">Name of the asset. Can contain path information.</param>
+		/// <param name="loadNew">If true, the asset will be loaded non-cached.</param>
+		/// <returns>Loaded asset.</returns>
+		public T LoadSync<T>(string name, bool loadNew)
+			where T : Asset
+		{
+			if (name == null)
+				throw new ArgumentNullException("name");
+
+			string selectedExtension;
+
+			if (!this.IsCaseSensitive)
+				name = name.ToLower(System.Globalization.CultureInfo.InvariantCulture);
+
+			if (!loadNew && this.cache.Contains<T>(name))
+				return this.cache.Get<T>(name);
+
+			T asset = Asset.LoadSync<T>(
+				new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"),
+				this.OpenAssetStream<T>(name, out selectedExtension),
+				selectedExtension);
+
+			this.loadedAssets.Add(asset);
+
+			if (!loadNew)
+				this.cache.Add<T>(name, asset);
+			return asset;
+		}
+
+		/// <summary>
 		/// Opens a stream for an asset.
 		/// </summary>
 		/// <typeparam name="T">Type of the asset to be loaded.</typeparam>

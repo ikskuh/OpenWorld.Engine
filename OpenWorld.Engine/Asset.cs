@@ -12,6 +12,11 @@ namespace OpenWorld.Engine
 	public abstract class Asset
 	{
 		/// <summary>
+		/// Gets fired when the asset is loaded.
+		/// </summary>
+		public event EventHandler Loaded;
+
+		/// <summary>
 		/// Loads the asset.
 		/// </summary>
 		/// <param name="context">The loading context.</param>
@@ -69,7 +74,33 @@ namespace OpenWorld.Engine
 				a.IsLoaded = true;
 				if (stream != null)
 					stream.Close();
+				if (a.Loaded != null)
+					a.Loaded(a, EventArgs.Empty);
 			});
+			return a;
+		}
+
+		/// <summary>
+		/// Loads a new asset synchronous
+		/// </summary>
+		/// <typeparam name="T">Type of the asset to be loaded</typeparam>
+		/// <param name="context">The load context.</param>
+		/// <param name="stream">The stream that is used for loading the asset</param>
+		/// <param name="extensionHint">The extension of the asset to be loaded.</param>
+		/// <remarks>The asset is not instantly loaded. Wait for Asset.IsLoaded to be true.</remarks>
+		/// <returns>New asset.</returns>
+		public static T LoadSync<T>(AssetLoadContext context, Stream stream, string extensionHint)
+			where T : Asset
+		{
+			T a = Activator.CreateInstance<T>();
+			a.IsLoading = true;
+			a.Load(context, stream, extensionHint);
+			a.IsLoading = false;
+			a.IsLoaded = true;
+			if (stream != null)
+				stream.Close();
+			if (a.Loaded != null)
+				a.Loaded(a, EventArgs.Empty);
 			return a;
 		}
 	}

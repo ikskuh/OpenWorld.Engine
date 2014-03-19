@@ -40,8 +40,6 @@ void main()
 
 #ifdef __FragmentShader
 
-#version 410
-
 #define WITH_NORMALMAP_UNSIGNED
 #define USE_NORMALMAPPING
 

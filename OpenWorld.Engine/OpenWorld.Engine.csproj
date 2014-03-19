@@ -169,6 +169,7 @@
     <Compile Include="SceneManagement\Transform.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="ShaderCompilationException.cs" />
+    <Compile Include="ShaderGenerator.cs" />
     <Compile Include="ShaderLinkingException.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="Sound\AudioBuffer.cs" />
@@ -229,9 +230,7 @@
       <LastGenOutput>LocalizedStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ObjectShaders\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.0.2\lib\native\x86" "$(TargetDir)"</PostBuildEvent>

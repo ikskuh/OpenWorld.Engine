@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -119,7 +118,7 @@ namespace OpenWorld.Engine
 			if (bmp == null)
 				throw new ArgumentNullException("bmp");
 			Rectangle area = new Rectangle(0, 0, bmp.Width, bmp.Height);
-			var lockData = bmp.LockBits(area, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(area, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			Game.Current.InvokeOpenGL(() =>
 				{
 					this.Bind();
@@ -143,6 +142,57 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
+		/// Loads the texture with RGBA8 data.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public void Load(IntPtr source, int width, int height)
+		{
+			Game.Current.InvokeOpenGL(() =>
+			{
+				this.Bind();
+				GL.TexImage2D(
+					this.Target,
+					0,
+					this.IsSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
+					width, height,
+					0,
+					OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
+					PixelType.UnsignedByte,
+					source);
+				this.GenerateMipMaps();
+			});
+
+			this.Width = width;
+			this.Height = height;
+		}
+
+		/// <summary>
+		/// Loads the texture with RGBA8 data.
+		/// </summary>
+		public void Load(byte[] pixels, int width, int height)
+		{
+			Game.Current.InvokeOpenGL(() =>
+			{
+				this.Bind();
+				GL.TexImage2D(
+					this.Target,
+					0,
+					this.IsSRGB ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba,
+					width, height,
+					0,
+					OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
+					PixelType.UnsignedByte,
+					pixels);
+				this.GenerateMipMaps();
+			});
+
+			this.Width = width;
+			this.Height = height;
+		}
+
+		/// <summary>
 		/// Generates mip maps
 		/// </summary>
 		public void GenerateMipMaps()
@@ -151,6 +201,37 @@ namespace OpenWorld.Engine
 				{
 					this.Bind();
 					GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+				});
+		}
+
+		/// <summary>
+		/// Sets the data of this texture.
+		/// </summary>
+		/// <param name="pixels">Contains all Width*Height pixels.</param>
+		/// <param name="format">Format of pixels</param>
+		/// <param name="type">Type of pixels</param>
+		public void SetData(byte[] pixels, PixelFormat format, PixelType type)
+		{
+			Game.Current.InvokeOpenGL(() =>
+				{
+					this.Bind();
+					GL.TexSubImage2D(
+						this.Target,
+						0,
+						0,
+						0,
+						this.Width,
+						this.Height,
+						format, type,
+						pixels);
+
+					GL.GetTexImage(
+						this.Target,
+						0,
+						format,
+						type,
+						pixels);
+					pixels[0] = pixels[0];
 				});
 		}
 

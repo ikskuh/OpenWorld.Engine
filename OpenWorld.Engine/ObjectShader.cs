@@ -41,6 +41,7 @@ in vec2 uv;
 void main()
 {
 	color = texture(textureDiffuse, uv);
+	if(color.a < 0.5f) discard;
 }
 #endif";
 		/// <summary>

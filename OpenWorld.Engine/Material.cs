@@ -16,6 +16,10 @@ namespace OpenWorld.Engine
 		public Material()
 		{
 			this.SpecularPower = 16;
+			this.EmissiveScale = 10.0f;
+			this.IsTranslucent = false;
+			this.Surface = Color.White;
+			this.Emissive = Color.Black;
 		}
 
 		/// <summary>
@@ -32,5 +36,21 @@ namespace OpenWorld.Engine
 		/// Gets or sets the specular power.
 		/// </summary>
 		public float SpecularPower { get; set; }
+
+		/// <summary>
+		/// Gets or sets the emissive scale.
+		/// </summary>
+		/// <remarks>Scales the emissive color for bloom effects.</remarks>
+		public float EmissiveScale { get; set; }
+
+		/// <summary>
+		/// Gets or sets the surface color tinting.
+		/// </summary>
+		public Color Surface { get; set; }
+
+		/// <summary>
+		/// Gets or sets the emissive color tinting.
+		/// </summary>
+		public Color Emissive { get; set; }
 	}
 }

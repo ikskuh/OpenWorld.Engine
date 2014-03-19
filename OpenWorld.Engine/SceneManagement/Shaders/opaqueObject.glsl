@@ -48,6 +48,7 @@ void main()
 	color.rgb += specularColor * texture(textureSpecularLighting, ss).rgb;
 	
 	color.a = diffuseColor.a;
+	//if(color.a < 0.5f) discard;
 }
 
 #endif

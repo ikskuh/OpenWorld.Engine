@@ -15,7 +15,7 @@ namespace OpenWorld.Engine
 	/// Represents an OpenGL shader program.
 	/// </summary>
 	[AssetExtension(".shader", ".glsl")]
-	public class Shader : Asset, IGLResource
+	public partial class Shader : Asset, IGLResource
 	{
 		private class AutomaticShaderUniform
 		{
@@ -134,62 +134,70 @@ namespace OpenWorld.Engine
 		{
 			Game.Current.InvokeOpenGL(() =>
 			{
-				int status;
-				string infoLog;
-
-				int vertexShader = this.CompileShader(ShaderType.VertexShader, shadercode);
-				int tessControlShader = this.CompileShader(ShaderType.TessControlShader, shadercode);
-				int tessEvaluationShader = this.CompileShader(ShaderType.TessEvaluationShader, shadercode);
-				int geometryShader = this.CompileShader(ShaderType.GeometryShader, shadercode);
-				int fragmentShader = this.CompileShader(ShaderType.FragmentShader, shadercode);
-
 				// Link the program
 				if (this.programID != 0)
 				{
 					this.Dispose();
 				}
 				this.programID = GL.CreateProgram();
-				if (vertexShader != -1)
-					GL.AttachShader(this.programID, vertexShader);
-				if (tessControlShader != -1)
-					GL.AttachShader(this.programID, tessControlShader);
-				if (tessEvaluationShader != -1)
-					GL.AttachShader(this.programID, tessEvaluationShader);
-				if (geometryShader != -1)
-					GL.AttachShader(this.programID, geometryShader);
-				if (fragmentShader != -1)
-					GL.AttachShader(this.programID, fragmentShader);
-				GL.LinkProgram(this.programID);
 
-				// Check the program
-				infoLog = GL.GetProgramInfoLog(this.programID);
-				if (!string.IsNullOrWhiteSpace(infoLog))
-				{
-					Log.WriteLine(LocalizedStrings.ShaderLinkerResult);
-					Log.WriteLine(infoLog);
-				}
-
-				GL.GetProgram(this.programID, GetProgramParameterName.LinkStatus, out status);
-
-				if (status == 0)
-					throw new ShaderLinkingException(infoLog);
-
-				this.HasTesselation = (tessControlShader != -1) && (tessEvaluationShader != -1);
-
-				if (vertexShader != -1)
-					GL.DeleteShader(vertexShader);
-				if (geometryShader != -1)
-					GL.DeleteShader(geometryShader);
-				if (tessControlShader != -1)
-					GL.DeleteShader(tessControlShader);
-				if (tessEvaluationShader != -1)
-					GL.DeleteShader(tessEvaluationShader);
-				if (fragmentShader != -1)
-					GL.DeleteShader(fragmentShader);
+				bool hasTesselationStage;
+				CompileAndLinkShader(this.programID, shadercode, out hasTesselationStage);
+				this.HasTesselation = hasTesselationStage;
 			});
 		}
 
-		private int CompileShader(ShaderType type, string source)
+		private static void CompileAndLinkShader(int programID, string shadercode, out bool hasTesselationStage)
+		{
+			int status;
+			string infoLog;
+
+			int vertexShader = CompileShader(ShaderType.VertexShader, shadercode);
+			int tessControlShader = CompileShader(ShaderType.TessControlShader, shadercode);
+			int tessEvaluationShader = CompileShader(ShaderType.TessEvaluationShader, shadercode);
+			int geometryShader = CompileShader(ShaderType.GeometryShader, shadercode);
+			int fragmentShader = CompileShader(ShaderType.FragmentShader, shadercode);
+
+			if (vertexShader != -1)
+				GL.AttachShader(programID, vertexShader);
+			if (tessControlShader != -1)
+				GL.AttachShader(programID, tessControlShader);
+			if (tessEvaluationShader != -1)
+				GL.AttachShader(programID, tessEvaluationShader);
+			if (geometryShader != -1)
+				GL.AttachShader(programID, geometryShader);
+			if (fragmentShader != -1)
+				GL.AttachShader(programID, fragmentShader);
+			GL.LinkProgram(programID);
+
+			// Check the program
+			infoLog = GL.GetProgramInfoLog(programID);
+			if (!string.IsNullOrWhiteSpace(infoLog))
+			{
+				Log.WriteLine(LocalizedStrings.ShaderLinkerResult);
+				Log.WriteLine(infoLog);
+			}
+
+			GL.GetProgram(programID, GetProgramParameterName.LinkStatus, out status);
+
+			if (status == 0)
+				throw new ShaderLinkingException(infoLog);
+
+			hasTesselationStage = (tessControlShader != -1) && (tessEvaluationShader != -1);
+
+			if (vertexShader != -1)
+				GL.DeleteShader(vertexShader);
+			if (geometryShader != -1)
+				GL.DeleteShader(geometryShader);
+			if (tessControlShader != -1)
+				GL.DeleteShader(tessControlShader);
+			if (tessEvaluationShader != -1)
+				GL.DeleteShader(tessEvaluationShader);
+			if (fragmentShader != -1)
+				GL.DeleteShader(fragmentShader);
+		}
+
+		private static int CompileShader(ShaderType type, string source)
 		{
 			string shaderName = type.ToString();
 			if (type == ShaderType.GeometryShader)
