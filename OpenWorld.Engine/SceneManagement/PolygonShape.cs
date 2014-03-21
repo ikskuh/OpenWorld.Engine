@@ -46,6 +46,7 @@ namespace OpenWorld.Engine.SceneManagement
 			var triangleMesh = new TriangleIndexVertexArray(indexList.ToArray(), positions.ToArray());
 
 			this.shape = new BvhTriangleMeshShape(triangleMesh, true, true);
+			this.shape.UserObject = this;
 		}
 
 

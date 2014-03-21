@@ -16,7 +16,7 @@ namespace OpenWorld.Engine.Demo
 			// This method updates the game
 		}
 
-		protected override void OnDraw(GameTime time)
+		protected override void OnDrawPreState(GameTime time)
 		{
 			// Just clear the screen
 			FrameBuffer.Clear();

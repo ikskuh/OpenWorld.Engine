@@ -137,6 +137,7 @@
     <Compile Include="PostProcessingShaders\TonemappingShader.cs" />
     <Compile Include="PostProcessingStage.cs" />
     <Compile Include="PresentationParameters.cs" />
+    <Compile Include="Ray.cs" />
     <Compile Include="RenderBuffer.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="SceneManagement\BoxShape.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="SceneManagement\Component.cs" />
     <Compile Include="SceneManagement\DeferredRenderer.cs" />
     <Compile Include="SceneManagement\PolygonShape.cs" />
+    <Compile Include="SceneManagement\RaycastResult.cs" />
     <Compile Include="SceneManagement\SceneNodeMotionState.cs" />
     <Compile Include="SceneManagement\Shaders\OpaqueObjectShader.cs" />
     <Compile Include="SceneManagement\PointLight.cs" />

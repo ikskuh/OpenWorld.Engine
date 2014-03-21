@@ -32,6 +32,7 @@ namespace OpenWorld.Engine.SceneManagement
 				0.5f * this.Width,
 				0.5f * this.Height,
 				0.5f * this.Length);
+			this.boxShape.UserObject = this;
 		}
 
 

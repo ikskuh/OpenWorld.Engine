@@ -48,7 +48,7 @@ namespace OpenWorld.Engine.Demo
 			this.scene.Update(time);
 		}
 
-		protected override void OnDraw(GameTime time)
+		protected override void OnDrawPreState(GameTime time)
 		{
 			// Clear the screen, as usual
 			FrameBuffer.Clear();

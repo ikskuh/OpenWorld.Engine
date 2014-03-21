@@ -50,6 +50,42 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
+		/// Constructs a ray from a screen position.
+		/// </summary>
+		/// <param name="x">X coordinate</param>
+		/// <param name="y">Y coordinate</param>
+		/// <returns>Constructed ray.</returns>
+		public Ray CreateRay(int x, int y)
+		{
+			var viewport = this.GetViewport();
+
+			float fx = 2.0f * (x - viewport.Left) / viewport.Width - 1.0f;
+			float fy = 1.0f - 2.0f * (y - viewport.Top) / viewport.Height;
+
+			Vector3 from = this.Unproject(new Vector3(fx, fy, 0.0f));
+			Vector3 to = this.Unproject(new Vector3(fx, fy, 1.0f));
+
+			return new Ray(from, to - from);
+		}
+
+		/// <summary>
+		/// Unprojects a vector in screen space coordinates
+		/// </summary>
+		/// <param name="worldCoord">Vector in screen space coordinates</param>
+		/// <returns>Vector in world coordinates</returns>
+		/// <remarks>X: [-1;1], Y: [-1;1], Z: [0;1]</remarks>
+		public Vector3 Unproject(Vector3 worldCoord)
+		{
+			Matrix4 matrix = this.ViewMatrix;
+			matrix = Matrix4.Mult (matrix, this.ProjectionMatrix);
+			matrix = Matrix4.Invert (matrix);
+			Vector3 vector = Vector3.Transform (worldCoord, matrix);
+			float num = worldCoord.X * matrix.M14 + worldCoord.Y * matrix.M24 + worldCoord.Z * matrix.M34 + matrix.M44;
+			vector /= num;
+			return vector;
+		}
+
+		/// <summary>
 		/// Gets the cameras view matrix.
 		/// </summary>
 		public abstract Matrix4 ViewMatrix { get; }

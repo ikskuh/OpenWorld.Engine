@@ -15,7 +15,6 @@ namespace OpenWorld.Engine
 		float aspect = 1.0f;
 		float zNear = 0.1f;
 		float zFar = 10000.0f;
-		Matrix4 projectionMatrix;
 
 		/// <summary>
 		/// Creates a new perspective look-at camera.
@@ -30,12 +29,6 @@ namespace OpenWorld.Engine
 		/// </summary>
 		protected override void OnSetup()
 		{
-			var viewport = this.GetViewport();
-			this.projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(
-				GameMath.ToRadians(this.FieldOfView),
-				this.aspect * viewport.Width / viewport.Height,
-				this.zNear,
-				this.zFar);
 			base.OnSetup();
 		}
 
@@ -44,7 +37,15 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public override OpenTK.Matrix4 ProjectionMatrix
 		{
-			get { return this.projectionMatrix; }
+			get
+			{
+				var viewport = this.GetViewport();
+				return Matrix4.CreatePerspectiveFieldOfView(
+					GameMath.ToRadians(this.FieldOfView),
+					this.aspect * viewport.Width / viewport.Height,
+					this.zNear,
+					this.zFar); ;
+			}
 		}
 
 		/// <summary>

@@ -30,6 +30,7 @@ namespace OpenWorld.Engine.SceneManagement
 			base.OnStart(time);
 
 			this.sphere = new BulletSharp.SphereShape(this.Radius);
+			this.sphere.UserObject = this;
 		}
 
 		/// <summary>

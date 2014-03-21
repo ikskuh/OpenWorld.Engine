@@ -141,10 +141,12 @@ namespace OpenWorld.Engine
 					window.ProcessEvents();
 					if (!window.IsExiting)
 					{
-						this.OnDraw(this.Time);
+						this.OnDrawPreState(this.Time);
 
 						if (this.currentState != null)
 							this.currentState.Draw(this.Time);
+
+						this.OnDrawPostState(this.Time);
 
 						window.SwapBuffers();
 					}
@@ -428,7 +430,12 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets called if the game should draw itself.
 		/// </summary>
-		protected virtual void OnDraw(GameTime time) { }
+		protected virtual void OnDrawPreState(GameTime time) { }
+
+		/// <summary>
+		/// Gets called if the game should draw itself.
+		/// </summary>
+		protected virtual void OnDrawPostState(GameTime time) { }
 
 		/// <summary>
 		/// Gets called if the game should unload its resources.

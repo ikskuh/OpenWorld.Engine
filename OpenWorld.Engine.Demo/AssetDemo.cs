@@ -61,7 +61,7 @@ namespace OpenWorld.Engine.Demo
 			this.shader.World = Matrix4.CreateRotationY(time.TotalTime);
 		}
 
-		protected override void OnDraw(GameTime time)
+		protected override void OnDrawPreState(GameTime time)
 		{
 			// Clear depth and color
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);

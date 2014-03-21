@@ -23,6 +23,7 @@ namespace OpenWorld.Engine.SceneManagement
 		public Scene()
 			: this(SceneCreationFlags.None)
 		{
+			
 		}
 
 		/// <summary>
@@ -56,6 +57,34 @@ namespace OpenWorld.Engine.SceneManagement
 		~Scene()
 		{
 			this.Dispose();
+		}
+
+		/// <summary>
+		/// Casts a ray in the physics world.
+		/// </summary>
+		/// <param name="ray">Ray</param>
+		/// <param name="distance">Distance the ray should travel</param>
+		/// <returns>RaycastResult or null if nothing hit.</returns>
+		public RaycastResult Raycast(Ray ray, float distance)
+		{
+			var from = ray.Origin.ToBullet();
+			var to = (ray.Origin + distance * ray.Direction).ToBullet();
+
+			var callback = new CollisionWorld.ClosestRayResultCallback(from, to);
+			this.world.RayTest(from, to, callback);
+
+			if (!callback.HasHit)
+				return null;
+
+			var result = new RaycastResult();
+
+			result.Position = callback.HitPointWorld.ToOpenTK();
+			result.Normal = callback.HitNormalWorld.ToOpenTK();
+			result.RigidBody = callback.CollisionObject.UserObject as RigidBody;
+			if (result.RigidBody != null)
+				result.Node = result.RigidBody.Node;
+
+			return result;
 		}
 
 		/// <summary>

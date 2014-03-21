@@ -65,6 +65,26 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
+		/// Converts a Bullet vector.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns></returns>
+		public static OpenTK.Vector3 ToOpenTK(this BulletSharp.Vector3 vector)
+		{
+			return new OpenTK.Vector3(vector.X, vector.Y, vector.Z);
+		}
+
+		/// <summary>
+		/// Converts a OpenTK vector.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns></returns>
+		public static BulletSharp.Vector3 ToBullet(this OpenTK.Vector3 vector)
+		{
+			return new BulletSharp.Vector3(vector.X, vector.Y, vector.Z);
+		}
+
+		/// <summary>
 		/// Converts an OpenTK matrix to a Bullet matrix.
 		/// </summary>
 		/// <param name="matrix">The matrix to convert.</param>
@@ -110,6 +130,18 @@ namespace OpenWorld.Engine
 				Row2 = new OpenTK.Vector4(matrix.M31, matrix.M32, matrix.M33, matrix.M34),
 				Row3 = new OpenTK.Vector4(matrix.M41, matrix.M42, matrix.M43, matrix.M44),
 			};
+		}
+
+		/// <summary>
+		/// Converts an object to a given type.
+		/// </summary>
+		/// <typeparam name="T">Conversion type</typeparam>
+		/// <param name="obj">Object to convert.</param>
+		/// <returns>Converted object</returns>
+		public static T As<T>(this object obj)
+			where T : class
+		{
+			return obj as T;
 		}
 	}
 }
