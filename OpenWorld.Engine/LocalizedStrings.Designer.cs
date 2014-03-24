@@ -61,6 +61,15 @@ namespace OpenWorld.Engine {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Loading compressed bitmap file from stream... ähnelt.
+        /// </summary>
+        internal static string LoadingCompressedBitmapFromStream {
+            get {
+                return ResourceManager.GetString("LoadingCompressedBitmapFromStream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Loading uncompressed bitmap file from stream... ähnelt.
         /// </summary>
         internal static string LoadingUncompressedBitmapFromStream {

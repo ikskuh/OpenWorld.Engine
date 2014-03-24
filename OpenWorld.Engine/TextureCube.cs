@@ -11,6 +11,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Defines a cubemap texture
 	/// </summary>
+	[AssetExtension(".png", ".bmp", ".dds")]
 	public sealed class TextureCube : Texture
 	{
 		/// <summary>

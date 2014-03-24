@@ -143,5 +143,25 @@ namespace OpenWorld.Engine
 		{
 			return obj as T;
 		}
+
+		/// <summary>
+		/// Converts degrees to radians.
+		/// </summary>
+		/// <param name="flt"></param>
+		/// <returns></returns>
+		public static float ToRadians(this float flt)
+		{
+			return MathHelper.DegreesToRadians(flt);
+		}
+
+		/// <summary>
+		/// Converts radians to degrees.
+		/// </summary>
+		/// <param name="flt"></param>
+		/// <returns></returns>
+		public static float ToDegrees(this float flt)
+		{
+			return MathHelper.RadiansToDegrees(flt);
+		}
 	}
 }

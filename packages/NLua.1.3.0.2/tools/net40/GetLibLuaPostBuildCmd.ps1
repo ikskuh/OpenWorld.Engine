@@ -10,6 +10,5 @@ $installPath = "./packages/NLua.1.3.0.2/";
 $nativePath = $(Join-Path $installPath "lib\native")
 $nativePath = $(Join-Path $nativePath $arch)
 
-
 $LibLuaPostBuildCmd =  "
 xcopy /s /y `"$nativePath`" `"`$(TargetDir)`""

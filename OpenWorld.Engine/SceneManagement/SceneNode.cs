@@ -74,9 +74,9 @@ namespace OpenWorld.Engine.SceneManagement
 
 		internal void Release()
 		{
-			foreach (var component in this.Components)
+			foreach (var component in this.Components.ToArray())
 				component.Release();
-			foreach (var child in this.Children)
+			foreach (var child in this.Children.ToArray())
 				child.Release();
 		}
 

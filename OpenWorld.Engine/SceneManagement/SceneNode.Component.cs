@@ -43,6 +43,7 @@ namespace OpenWorld.Engine.SceneManagement
 					var component = Activator.CreateInstance<T>();
 					node.components.Add(typeof(T), component);
 					Component.componentNode = null;
+					component.OnAdd();
 					return component;
 				}
 			}
@@ -56,10 +57,14 @@ namespace OpenWorld.Engine.SceneManagement
 				where T : Component
 			{
 				if (node == null)
-					throw new ArgumentNullException("node");
-				if (!node.components.ContainsKey(typeof(T)))
-					throw new InvalidOperationException("Component " + typeof(T).Name + " does not exists in " + node.GetType().Name);
-				node.components.Remove(typeof(T));
+					throw new ArgumentNullException("node"); 
+				lock (Component.lockObject)
+				{
+					if (!node.components.ContainsKey(typeof(T)))
+						throw new InvalidOperationException("Component " + typeof(T).Name + " does not exists in " + node.GetType().Name);
+					node.components[typeof(T)].OnRemove();
+					node.components.Remove(typeof(T));
+				}
 			}
 
 			readonly SceneNode node;
@@ -155,6 +160,16 @@ namespace OpenWorld.Engine.SceneManagement
 			/// </summary>
 			/// <param name="time">Time snapshot</param>
 			protected virtual void OnStop(GameTime time) { }
+
+			/// <summary>
+			/// Notifies the component that it was added to a scene node.
+			/// </summary>
+			protected virtual void OnAdd() { }
+
+			/// <summary>
+			/// Notifies the component that it was removed from a scene node.
+			/// </summary>
+			protected virtual void OnRemove() { }
 
 			/// <summary>
 			/// Calls OnStop, then releases all other non-released resources.

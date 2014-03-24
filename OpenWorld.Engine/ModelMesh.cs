@@ -122,6 +122,14 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
+		/// Updates modified vertex data.
+		/// </summary>
+		public void UpdateVertices()
+		{
+			this.vertexBuffer.SetData(BufferUsageHint.StaticDraw, this.vertices);
+		}
+
+		/// <summary>
 		/// Gets an array that contains all vertices.
 		/// </summary>
 		/// <returns>Vertex array</returns>

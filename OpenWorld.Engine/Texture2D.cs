@@ -97,8 +97,12 @@ namespace OpenWorld.Engine
 		{
 			if (extensionHint == ".dds")
 			{
-				if (LoadDDS(stream) != this.Target)
-					throw new InvalidDataException("Could not load texture: Invalid texture format.");
+				Log.WriteLine(LocalizedStrings.LoadingUncompressedBitmapFromStream);
+				Game.Current.InvokeOpenGL(() =>
+					{
+						if (LoadDDS(stream) != this.Target)
+							throw new InvalidDataException("Could not load texture: Invalid texture format.");
+					});
 			}
 			else
 			{
@@ -136,7 +140,6 @@ namespace OpenWorld.Engine
 
 					this.GenerateMipMaps();
 				});
-
 			this.Width = bmp.Width;
 			this.Height = bmp.Height;
 		}

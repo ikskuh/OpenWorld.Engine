@@ -67,7 +67,7 @@ namespace OpenWorld.Engine.SceneManagement
 			{
 				this.script = value;
 				if (this.lua != null)
-					this.lua.Dispose();
+					this.lua.Dispose(); 
 				this.lua = new Lua();
 				this.lua.DoString(this.script);
 			}

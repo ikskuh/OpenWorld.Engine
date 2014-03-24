@@ -53,9 +53,9 @@ namespace OpenWorld.Engine.SceneManagement
 		public void Rotate(float x, float y, float z)
 		{
 			var rot =
-				Matrix4.CreateFromAxisAngle(Vector3.UnitX, GameMath.ToRadians(x)) *
-				Matrix4.CreateFromAxisAngle(Vector3.UnitY, GameMath.ToRadians(y)) *
-				Matrix4.CreateFromAxisAngle(Vector3.UnitZ, GameMath.ToRadians(z));
+				Matrix4.CreateFromAxisAngle(Vector3.UnitX, x.ToRadians()) *
+				Matrix4.CreateFromAxisAngle(Vector3.UnitY, y.ToRadians()) *
+				Matrix4.CreateFromAxisAngle(Vector3.UnitZ, z.ToRadians());
 			this.localMatrix = rot * this.localMatrix;
 		}
 

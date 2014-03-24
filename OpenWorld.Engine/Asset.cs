@@ -51,7 +51,7 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets a value that indicates wheather the asset is loaded or not.
 		/// </summary>
-		public bool IsLoaded { get; private set; }
+		public bool IsLoaded { get; protected set; }
 
 		/// <summary>
 		/// Loads a new asset.

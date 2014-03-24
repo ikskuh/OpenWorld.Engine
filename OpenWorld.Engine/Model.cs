@@ -49,6 +49,7 @@ namespace OpenWorld.Engine
 					DiffuseTexture = diffuse,
 				}
 			};
+			this.IsLoaded = true;
 		}
 
 		/// <summary>

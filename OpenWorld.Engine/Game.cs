@@ -152,7 +152,7 @@ namespace OpenWorld.Engine
 					}
 					this.isRendering = false;
 
-					//Thread.Sleep(16);
+					Thread.Sleep(16);
 				}
 
 				// Unload everything in the draw thread.
