@@ -11,7 +11,13 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public static class Log
 	{
-		private static LogDelegate FinalWrite = Console.Write;
+		private static LogDelegate FinalWrite = (s) =>
+			{
+				Console.Write(s);
+#if DEBUG
+				System.Diagnostics.Trace.Write(s);
+#endif
+			};
 
 		/// <summary>
 		/// Sets the logging method.
