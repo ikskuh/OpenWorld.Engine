@@ -9,6 +9,7 @@ namespace OpenWorld.Engine.SceneManagement
 	/// <summary>
 	/// Draws a scene.
 	/// </summary>
+	[UniformPrefix("render")]
 	public abstract partial class SceneRenderer
 	{
 		private List<ModelRenderJob> solidRenderJobs = new List<ModelRenderJob>();
@@ -21,6 +22,8 @@ namespace OpenWorld.Engine.SceneManagement
 		protected SceneRenderer()
 		{
 			this.Sky = new ColorSky();
+			this.Matrices = new MatrixUniforms();
+			this.DefaultShader = new ObjectShader();
 		}
 
 		/// <summary>
@@ -44,7 +47,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <param name="model">The model to be drawn.</param>
 		/// <param name="transform"></param>
 		/// <param name="material"></param>
-		public void Draw(Model model, Matrix4 transform, Material material)
+		public void Draw(Model model, Matrix4 transform, BaseMaterial material)
 		{
 			if (model == null)
 				throw new ArgumentNullException("model");
@@ -81,7 +84,6 @@ namespace OpenWorld.Engine.SceneManagement
 
 			this.IsDrawing = false;
 		}
-
 		/// <summary>
 		/// Actually renders the scene.
 		/// <param name="scene">The scene that should be rendered.</param>
@@ -97,7 +99,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Gets or sets the default material the renderer should use if no material is provided.
 		/// </summary>
-		public Material DefaultMaterial { get; set; }
+		public BaseMaterial DefaultMaterial { get; set; }
 
 		/// <summary>
 		/// Gets all solid render jobs.
@@ -127,5 +129,15 @@ namespace OpenWorld.Engine.SceneManagement
 		/// Gets or sets the sky for this renderer.
 		/// </summary>
 		public Sky Sky { get; set; }
+
+		/// <summary>
+		/// Gets the transformation matrices.
+		/// </summary>
+		protected MatrixUniforms Matrices { get; private set; }
+
+		/// <summary>
+		/// Gets or sets the default shader the renderer should use.
+		/// </summary>
+		public Shader DefaultShader { get; set; }
 	}
 }

@@ -11,6 +11,16 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public abstract class Asset
 	{
+		internal string assetName;
+
+		/// <summary>
+		/// Creates an asset.
+		/// </summary>
+		protected Asset()
+		{
+			this.assetName = this.GetType().Name;
+		}
+
 		/// <summary>
 		/// Gets fired when the asset is loaded.
 		/// </summary>
@@ -52,6 +62,11 @@ namespace OpenWorld.Engine
 		/// Gets a value that indicates wheather the asset is loaded or not.
 		/// </summary>
 		public bool IsLoaded { get; protected set; }
+
+		/// <summary>
+		/// Gets the name of the asset.
+		/// </summary>
+		public string AssetName { get { return this.assetName; } }
 
 		/// <summary>
 		/// Loads a new asset.

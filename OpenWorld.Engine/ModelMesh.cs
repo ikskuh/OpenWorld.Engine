@@ -9,6 +9,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Represents a mesh of a 3D model.
 	/// </summary>
+	[UniformPrefix("mesh")]
 	public sealed class ModelMesh : IDisposable
 	{
 		private uint[] indexes;
@@ -18,12 +19,18 @@ namespace OpenWorld.Engine
 		private Buffer vertexBuffer;
 		private Buffer indexBuffer;
 
+		private ModelMesh()
+		{
+
+		}
+
 		/// <summary>
 		/// Instantiates a new model mesh.
 		/// </summary>
 		/// <param name="indexes">The indexes of the mesh.</param>
 		/// <param name="vertices">The vertices of the mesh.</param>
 		public ModelMesh(uint[] indexes, Vertex[] vertices)
+			: this()
 		{
 			if (indexes == null)
 				throw new ArgumentNullException("indexes");
@@ -150,16 +157,19 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets or sets the diffuse texture of the mesh.
 		/// </summary>
+		[Uniform("DiffuseTexture")]
 		public Texture2D DiffuseTexture { get; set; }
 
 		/// <summary>
 		/// Gets or sets the specular texture of the mesh.
 		/// </summary>
+		[Uniform("SpecularTexture", DefaultColor="0;0;0")]
 		public Texture2D SpecularTexture { get; set; }
 
 		/// <summary>
 		/// Gets or sets the normal map of the mesh.
 		/// </summary>
+		[Uniform("NormalMap", DefaultColor = "0.5;0.5;1.0")]
 		public Texture2D NormalMap { get; set; }
 	}
 }

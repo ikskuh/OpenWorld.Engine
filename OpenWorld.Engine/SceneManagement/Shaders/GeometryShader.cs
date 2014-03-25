@@ -12,11 +12,5 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 		{
 			this.Compile(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.geometry.glsl"));
 		}
-
-		[Uniform("textureNormalMap")]
-		public Texture NormalMap { get; set; }
-
-		[Uniform("specularPower")]
-		public float SpecularPower { get; set; }
 	}
 }

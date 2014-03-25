@@ -11,14 +11,12 @@ namespace OpenWorld.Engine.SceneManagement
 	/// </summary>
 	public sealed class SimpleRenderer : SceneRenderer
 	{
-		ObjectShader defaultShader;
-
 		/// <summary>
 		/// Creates a simple renderer.
 		/// </summary>
 		public SimpleRenderer()
 		{
-			this.defaultShader = new ObjectShader();
+
 		}
 
 		/// <summary>
@@ -28,14 +26,21 @@ namespace OpenWorld.Engine.SceneManagement
 		{
 			GL.ClearDepth(1.0f);
 
-			GL.Enable(EnableCap.DepthTest);
-			GL.Disable(EnableCap.Blend);
+			// No depth, we use the depth from the previous pass.
+			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-			GL.DepthFunc(DepthFunction.Lequal);
-
-			GL.Clear(ClearBufferMask.DepthBufferBit);
+			GL.DepthMask(false);
 
 			this.Sky.Draw(this, camera);
+
+			GL.DepthMask(true);
+			
+			GL.Enable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.CullFace);
+			GL.CullFace(CullFaceMode.Back);
+			GL.DepthFunc(DepthFunction.Lequal);
+			GL.Disable(EnableCap.Blend);
 
 			this.Draw(scene, camera, this.SolidRenderJobs);
 
@@ -49,22 +54,19 @@ namespace OpenWorld.Engine.SceneManagement
 
 		private void Draw(Scene scene, Camera camera, IEnumerable<ModelRenderJob> jobs)
 		{
+			this.Matrices.View = camera.ViewMatrix;
+			this.Matrices.Projection = camera.ProjectionMatrix;
+
 			foreach(var job in jobs)
 			{
-				var shader = job.Material.Shader ?? this.defaultShader;
+				this.Matrices.World = job.Transform;
 
-				shader.World = job.Transform;
-				shader.View = camera.ViewMatrix;
-				shader.Projection = camera.ProjectionMatrix;
-				shader.Use();
+				var material = job.Material;
+				var shader = material.Shader ?? this.DefaultShader;
 
-				job.Model.Draw((type, texture) =>
-					{
-						if (type != TextureType.Diffuse)
-							return;
-						shader.DiffuseTexture = texture;
-						shader.Apply();
-					}, shader.HasTesselation);
+				shader.Use(material, this.Matrices, this);
+				
+				job.Model.Draw((mesh) => shader.Update(mesh), shader.HasTesselation);
 			}
 		}
 	}

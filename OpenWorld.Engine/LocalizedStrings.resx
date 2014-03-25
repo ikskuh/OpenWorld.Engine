@@ -124,9 +124,9 @@
     <value>Loading uncompressed bitmap file from stream...</value>
   </data>
   <data name="ShaderCompilerResult" xml:space="preserve">
-    <value>Shader compiler result: </value>
+    <value>Failed to compile {1} for {0}</value>
   </data>
   <data name="ShaderLinkerResult" xml:space="preserve">
-    <value>Shader linker result:</value>
+    <value>Shader linker result for {0}</value>
   </data>
 </root>

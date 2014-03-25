@@ -34,5 +34,36 @@ namespace OpenWorld.Engine
 		/// Gets or sets a value that indicates wheather a uniform matrix should be transposed or not.
 		/// </summary>
 		public bool Transpose { get; set; }
+
+		/// <summary>
+		/// Gets or sets the default color of a texture uniform.
+		/// </summary>
+		public string DefaultColor { get; set; }
+	}
+
+	/// <summary>
+	/// Defines a shader uniform.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	public sealed class UniformPrefixAttribute : Attribute
+	{
+		readonly string prefix;
+
+		/// <summary>
+		/// Defines a new shader uniform.
+		/// </summary>
+		/// <param name="prefix">Name of the uniform</param>
+		public UniformPrefixAttribute(string prefix)
+		{
+			this.prefix = prefix;
+		}
+
+		/// <summary>
+		/// Gets the name of the uniform that should be assigned.
+		/// </summary>
+		public string Prefix
+		{
+			get { return prefix; }
+		}
 	}
 }

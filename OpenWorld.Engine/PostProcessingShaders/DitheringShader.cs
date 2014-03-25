@@ -83,23 +83,15 @@ void main()
 		}
 
 		/// <summary>
-		/// Applies the effect parameters.
-		/// </summary>
-		protected override void OnApply()
-		{
-			base.OnApply();
-
-			this.SetUniform("time", time);
-
-			time += 1.0f;
-			if (time > 100.0f)
-				time -= 100.0f;
-		}
-
-		/// <summary>
 		/// Gets or sets the strength of the dithering.
 		/// </summary>
 		[Uniform("strength")]
-		public float Strength { get;set; }
+		public float Strength { get; set; }
+
+		/// <summary>
+		/// Gets a shader time value.
+		/// </summary>
+		[Uniform("time")]
+		public float Time { get { this.time += 1.0f; if (this.time >= 100.0f) this.time -= 100.0f; return time; } }
 	}
 }

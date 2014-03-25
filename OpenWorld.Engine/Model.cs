@@ -214,30 +214,25 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Draws the model.
 		/// </summary>
-		/// <param name="setTexture">Callback that allows to set shader parameters</param>
-		public void Draw(SetTexture setTexture)
+		/// <param name="meshCallback">Callback that allows to set shader parameters</param>
+		public void Draw(MeshCallbackDelegate meshCallback)
 		{
-			this.Draw(setTexture, false);
+			this.Draw(meshCallback, false);
 		}
 
 		/// <summary>
 		/// Draws the model.
 		/// </summary>
-		/// <param name="setTexture">Callback that allows to set shader parameters</param>
+		/// <param name="meshCallback">Callback that allows to set shader parameters</param>
 		/// <param name="drawPatches">Determines if OpenGL will draw patches or triangles.</param>
-		public void Draw(SetTexture setTexture, bool drawPatches)
+		public void Draw(MeshCallbackDelegate meshCallback, bool drawPatches)
 		{
 			if (this.meshes == null)
 				return;
 			GL.PatchParameter(PatchParameterInt.PatchVertices, 3);
 			foreach (var mesh in this.meshes)
 			{
-				if (setTexture != null)
-					setTexture(TextureType.Diffuse, mesh.DiffuseTexture);
-				if (setTexture != null)
-					setTexture(TextureType.Specular, mesh.SpecularTexture);
-				if (setTexture != null)
-					setTexture(TextureType.NormalMap, mesh.NormalMap);
+				if (meshCallback != null) meshCallback(mesh);
 				mesh.Draw(drawPatches);
 			}
 		}
@@ -253,9 +248,8 @@ namespace OpenWorld.Engine
 	}
 
 	/// <summary>
-	/// Sets a texture with type.
+	/// Informs a caller about meshes before rendering.
 	/// </summary>
-	/// <param name="type">Texture type</param>
-	/// <param name="texture">Texture to set.</param>
-	public delegate void SetTexture(OpenWorld.Engine.TextureType type, OpenWorld.Engine.Texture texture);
+	/// <param name="mesh">The mesh to be rendered</param>
+	public delegate void MeshCallbackDelegate(ModelMesh mesh);
 }

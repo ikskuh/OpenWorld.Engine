@@ -154,6 +154,7 @@
   <ItemGroup>
     <Compile Include="AssetManager.AssetCache.cs" />
     <Compile Include="AssetSource.cs" />
+    <Compile Include="AutoUniforms.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CompositeCamera.cs" />
     <Compile Include="CoRoutineHost.cs" />
@@ -180,8 +181,10 @@
     <Compile Include="IdAttribute.cs" />
     <Compile Include="IGLResource.cs" />
     <Compile Include="ImageDDS.cs" />
+    <Compile Include="BaseMaterial.cs" />
     <Compile Include="IMatrixSource.cs" />
     <Compile Include="InputManager.cs" />
+    <Compile Include="IShaderUniforms.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="LocalizedStrings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -214,6 +217,7 @@
     <Compile Include="SceneManagement\ColorSky.cs" />
     <Compile Include="SceneManagement\Component.cs" />
     <Compile Include="SceneManagement\DeferredRenderer.cs" />
+    <Compile Include="SceneManagement\MatrixUniforms.cs" />
     <Compile Include="SceneManagement\PolygonShape.cs" />
     <Compile Include="SceneManagement\RaycastResult.cs" />
     <Compile Include="SceneManagement\SceneNodeMotionState.cs" />

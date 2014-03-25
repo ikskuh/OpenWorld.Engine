@@ -69,9 +69,9 @@ void main()
 		}
 
 		/// <summary>
-		/// Gets or sets the back buffer.
+		/// Gets or sets the back buffer source for the post processing shader.
 		/// </summary>
 		[Uniform("backBuffer")]
-		public Texture BackBuffer { get; set; }
+		public Texture2D BackBuffer { get; set; }
 	}
 }

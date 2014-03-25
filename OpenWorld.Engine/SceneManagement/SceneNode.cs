@@ -96,7 +96,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// <summary>
 		/// Gets or sets the material of this node.
 		/// </summary>
-		public Material Material { get; set; }
+		public BaseMaterial Material { get; set; }
 
 		/// <summary>
 		/// Gets a value that indicates wheater this nood is a root node or not.

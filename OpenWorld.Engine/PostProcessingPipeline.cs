@@ -81,7 +81,6 @@ namespace OpenWorld.Engine
 
 				ppEffect.Effect.BackBuffer = currentBuffer;
 				ppEffect.Effect.Use();
-
 				
                 GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
@@ -96,7 +95,6 @@ namespace OpenWorld.Engine
 				this.swapShader.BackBuffer = currentBuffer;
 				this.swapShader.Use();
 
-				
                 GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
 				SwapBuffers(ref currentTarget, ref currentBuffer);
@@ -109,7 +107,7 @@ namespace OpenWorld.Engine
 		/// Draws a fullscreen quad with the render pipeline.
 		/// </summary>
 		/// <param name="texture">The texture to be drawn</param>
-		public void DrawQuad(Texture texture)
+		public void DrawQuad(Texture2D texture)
 		{
 			this.vao.Bind();
 

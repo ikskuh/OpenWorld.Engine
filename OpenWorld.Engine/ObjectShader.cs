@@ -14,10 +14,10 @@ namespace OpenWorld.Engine
 	public class ObjectShader : Shader
 	{
 		const string source = @"#version 330
-uniform mat4 World;
-uniform mat4 View;
-uniform mat4 Projection;
-uniform sampler2D textureDiffuse;
+uniform mat4 matWorld;
+uniform mat4 matView;
+uniform mat4 matProjection;
+uniform sampler2D meshDiffuseTexture;
 
 #ifdef __VertexShader
 layout(location = 0) in vec3 vertexPosition;
@@ -28,7 +28,7 @@ out vec2 uv;
 void main()
 {
 	vec4 pos = vec4(vertexPosition, 1);
-	gl_Position = Projection * View * World * pos;
+	gl_Position = matProjection * matView * matWorld * pos;
 	
 	uv = vertexUV;
 }
@@ -40,10 +40,11 @@ in vec2 uv;
 
 void main()
 {
-	color = texture(textureDiffuse, uv);
+	color = texture(meshDiffuseTexture, uv);
 	if(color.a < 0.5f) discard;
 }
 #endif";
+
 		/// <summary>
 		/// Instantiates a new object shader.
 		/// </summary>
@@ -51,32 +52,5 @@ void main()
 		{
 			this.Compile(source);
 		}
-
-		/// <summary>
-		/// Gets or sets the world transformation matrix.
-		/// <remarks>Shader uniform: mat4 World</remarks>
-		/// </summary>
-		[Uniform("World")]
-		public Matrix4 World { get; set; }
-
-		/// <summary>
-		/// Gets or sets the view matrix.
-		/// <remarks>Shader uniform: mat4 View</remarks>
-		/// </summary>
-		[Uniform("View")]
-		public Matrix4 View { get; set; }
-
-		/// <summary>
-		/// Gets or sets the projection matrix.
-		/// <remarks>Shader uniform: mat4 Projection</remarks>
-		/// </summary>
-		[Uniform("Projection")]
-		public Matrix4 Projection { get; set; }
-
-		/// <summary>
-		/// Gets or sets the diffuse texture.
-		/// </summary>
-		[Uniform("textureDiffuse")]
-		public Texture DiffuseTexture { get; set; }
 	}
 }

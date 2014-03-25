@@ -63,6 +63,16 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Instantiates a new Texture2D
 		/// </summary>
+		/// <param name="source">Stream that contains the bitmap data.</param>
+		public Texture2D(Stream source)
+			: this()
+		{
+			this.Load(new Bitmap(source));
+		}
+
+		/// <summary>
+		/// Instantiates a new Texture2D
+		/// </summary>
 		/// <param name="file">Texture file name</param>
 		public Texture2D(string file)
 			: this()

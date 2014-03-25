@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -15,115 +16,28 @@ namespace OpenWorld.Engine
 	/// Represents an OpenGL shader program.
 	/// </summary>
 	[AssetExtension(".shader", ".glsl")]
+	[UniformPrefix("")]
 	public partial class Shader : Asset, IGLResource
 	{
-		private class AutomaticShaderUniform
-		{
-			// Using a closure here to get a maximum of performance
-			public Action Apply;
-		}
-
 		static Shader currentShader = null;
+
+		static ThreadLocal<Texture2D> missingTexture = new ThreadLocal<Texture2D>(
+			() =>
+			{
+				var tex = new Texture2D(Resource.Open("OpenWorld.Engine.Resources.missing.png"));
+				tex.Filter = Filter.Nearest;
+				return tex;
+			});
 
 		int programID;
 		Dictionary<string, int> uniforms = new Dictionary<string, int>();
-
-		private List<AutomaticShaderUniform> automaticUniforms;
 
 		/// <summary>
 		/// Instantiates a new shader.
 		/// </summary>
 		public Shader()
 		{
-			this.InitializeAutomaticUniforms();
-		}
 
-		/// <summary>
-		/// Gets and initializes all automatic uniforms
-		/// </summary>
-		private void InitializeAutomaticUniforms()
-		{
-			this.automaticUniforms = new List<AutomaticShaderUniform>();
-
-			foreach (var property in this.GetType().GetProperties())
-			{
-				if (!property.CanRead)
-					continue;
-				UniformAttribute[] attribs = (UniformAttribute[])property.GetCustomAttributes(typeof(UniformAttribute), false);
-				if (attribs.Length != 1)
-					continue;
-
-				// Create a closure for each uniform.
-				// The closure later can simply and fast assign the uniform values.
-
-				AutomaticShaderUniform uniform = new AutomaticShaderUniform();
-
-				Type propertyType = property.PropertyType;
-				var name = attribs[0].UniformName;
-				if (propertyType == typeof(float))
-				{
-					uniform.Apply = () =>
-					{
-						var value = property.GetValue(this, new object[0]);
-						this.SetUniform(name, (float)value);
-					};
-				}
-				else if (propertyType == typeof(Vector2))
-				{
-					uniform.Apply = () =>
-					{
-						var value = property.GetValue(this, new object[0]);
-						this.SetUniform(name, (Vector2)value);
-					};
-				}
-				else if (propertyType == typeof(Vector3))
-				{
-					uniform.Apply = () =>
-					{
-						var value = property.GetValue(this, new object[0]);
-						this.SetUniform(name, (Vector3)value);
-					};
-				}
-				else if (propertyType == typeof(Vector4))
-				{
-					uniform.Apply = () =>
-					{
-						var value = property.GetValue(this, new object[0]);
-						this.SetUniform(name, (Vector4)value);
-					};
-				}
-				else if (propertyType == typeof(Color))
-				{
-					uniform.Apply = () =>
-					{
-						var value = property.GetValue(this, new object[0]);
-						this.SetUniform(name, (Color)value);
-					};
-				}
-				else if (propertyType == typeof(Matrix4))
-				{
-					uniform.Apply = () =>
-					{
-						var value = property.GetValue(this, new object[0]);
-						this.SetUniform(name, (Matrix4)value, attribs[0].Transpose);
-					};
-				}
-				else if (typeof(Texture).IsAssignableFrom(propertyType))
-				{
-					uniform.Apply = () =>
-					{
-						var value = property.GetValue(this, new object[0]);
-						this.SetTexture(name, (Texture)value, this.TextureCount);
-						this.TextureCount++;
-					};
-				}
-				else
-				{
-					Console.WriteLine("{0} is not supported for automatic uniform assignment.");
-					continue;
-				}
-				this.automaticUniforms.Add(uniform);
-			}
 		}
 
 		/// <summary>
@@ -142,21 +56,21 @@ namespace OpenWorld.Engine
 				this.programID = GL.CreateProgram();
 
 				bool hasTesselationStage;
-				CompileAndLinkShader(this.programID, shadercode, out hasTesselationStage);
+				CompileAndLinkShader(this.programID, shadercode, out hasTesselationStage, this.assetName);
 				this.HasTesselation = hasTesselationStage;
 			});
 		}
 
-		private static void CompileAndLinkShader(int programID, string shadercode, out bool hasTesselationStage)
+		private static void CompileAndLinkShader(int programID, string shadercode, out bool hasTesselationStage, string shaderName = "<dynamic>")
 		{
 			int status;
 			string infoLog;
 
-			int vertexShader = CompileShader(ShaderType.VertexShader, shadercode);
-			int tessControlShader = CompileShader(ShaderType.TessControlShader, shadercode);
-			int tessEvaluationShader = CompileShader(ShaderType.TessEvaluationShader, shadercode);
-			int geometryShader = CompileShader(ShaderType.GeometryShader, shadercode);
-			int fragmentShader = CompileShader(ShaderType.FragmentShader, shadercode);
+			int vertexShader = CompileShader(ShaderType.VertexShader, shadercode, shaderName);
+			int tessControlShader = CompileShader(ShaderType.TessControlShader, shadercode, shaderName);
+			int tessEvaluationShader = CompileShader(ShaderType.TessEvaluationShader, shadercode, shaderName);
+			int geometryShader = CompileShader(ShaderType.GeometryShader, shadercode, shaderName);
+			int fragmentShader = CompileShader(ShaderType.FragmentShader, shadercode, shaderName);
 
 			if (vertexShader != -1)
 				GL.AttachShader(programID, vertexShader);
@@ -174,7 +88,7 @@ namespace OpenWorld.Engine
 			infoLog = GL.GetProgramInfoLog(programID);
 			if (!string.IsNullOrWhiteSpace(infoLog))
 			{
-				Log.WriteLine(LocalizedStrings.ShaderLinkerResult);
+				Log.WriteLine(LocalizedStrings.ShaderLinkerResult, shaderName);
 				Log.WriteLine(infoLog);
 			}
 
@@ -197,16 +111,16 @@ namespace OpenWorld.Engine
 				GL.DeleteShader(fragmentShader);
 		}
 
-		private static int CompileShader(ShaderType type, string source)
+		private static int CompileShader(ShaderType type, string source, string shaderName)
 		{
-			string shaderName = type.ToString();
+			string typeName = type.ToString();
 			if (type == ShaderType.GeometryShader)
-				shaderName = "GeometryShader";
+				typeName = "GeometryShader";
 
-			if (!Regex.IsMatch(source, @"\#ifdef\s+__" + shaderName + @"(\n|(\s*\n))"))
+			if (!Regex.IsMatch(source, @"\#ifdef\s+__" + typeName + @"(\n|(\s*\n))"))
 				return -1;
 
-			source = "#define __" + shaderName + "\n" + source;
+			source = "#define __" + typeName + "\n" + source;
 
 			int shader = GL.CreateShader(type);
 			GL.ShaderSource(shader, source);
@@ -216,7 +130,7 @@ namespace OpenWorld.Engine
 			string infoLog = GL.GetShaderInfoLog(shader);
 			if (!string.IsNullOrWhiteSpace(infoLog))
 			{
-				Log.WriteLine(LocalizedStrings.ShaderCompilerResult + " " + type);
+				Log.WriteLine(LocalizedStrings.ShaderCompilerResult, shaderName, type);
 				Log.WriteLine(infoLog);
 			}
 
@@ -239,11 +153,13 @@ namespace OpenWorld.Engine
 			GL.UseProgram(this.programID);
 		}
 
+		int textureCount = 0;
+
 		/// <summary>
 		/// Uses the shader
 		/// <remarks>Binds the shader and sets the uniforms</remarks>
 		/// </summary>
-		public void Use()
+		public void Use(params object[] uniformSources)
 		{
 #if !DEBUG
 			if (this.programID == 0)
@@ -251,22 +167,32 @@ namespace OpenWorld.Engine
 #endif
 			this.Bind();
 			Shader.currentShader = this;
+			this.textureCount = 0;
 
-			this.Apply();
+			this.Update(this);
+			for (int i = 0; i < uniformSources.Length; i++)
+			{
+				if (uniformSources[i] == null) continue;
+				this.Update(uniformSources[i]);
+			}
 		}
 
 		/// <summary>
-		/// Applies the uniforms.
+		/// Sets the uniforms in this shader.
 		/// </summary>
-		public void Apply()
+		/// <param name="uniform">The uniforms to set.</param>
+		public void Update(IShaderUniforms uniform)
 		{
-			// Load all properties with a Uniform-Attribute
-			this.TextureCount = 0; // Reset the texture count.
+			uniform.SetUniforms(this, ref this.textureCount);
+		}
 
-			foreach (var uniform in this.automaticUniforms)
-				uniform.Apply();
-
-			this.OnApply();
+		/// <summary>
+		/// Sets the uniforms in this shader.
+		/// </summary>
+		/// <param name="uniformSource">The uniforms to set.</param>
+		public void Update(object uniformSource)
+		{
+			this.Update(AutoUniforms.Get(uniformSource));
 		}
 
 		/// <summary>
@@ -292,11 +218,7 @@ namespace OpenWorld.Engine
 			{
 				var location = GL.GetUniformLocation(this.programID, name);
 				if (location < 0)
-#if DEBUG
-					Log.WriteLine("Uniform {0} not found!", name);
-#else
-					throw new UniformNotFoundException(name);
-#endif
+					Log.WriteLine("{0}: Uniform {1} not found!", this.assetName, name);
 				this.uniforms.Add(name, location);
 			}
 			return this.uniforms[name];
@@ -472,8 +394,8 @@ namespace OpenWorld.Engine
 			GL.ActiveTexture(TextureUnit.Texture0 + slot);
 			if (texture != null)
 				texture.Bind();
-			//else
-			// TODO: Bind blank white texture
+			else
+				missingTexture.Value.Bind();
 		}
 
 		/// <summary>
@@ -500,14 +422,6 @@ namespace OpenWorld.Engine
 				}
 				this.uniforms.Clear();
 			}
-		}
-
-		/// <summary>
-		/// Applies the shader variables
-		/// </summary>
-		protected virtual void OnApply()
-		{
-
 		}
 
 		/// <summary>

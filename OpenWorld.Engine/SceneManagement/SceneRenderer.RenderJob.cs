@@ -13,7 +13,7 @@ namespace OpenWorld.Engine.SceneManagement
 		/// </summary>
 		protected class ModelRenderJob
 		{
-			internal ModelRenderJob(Matrix4 transform, Model model, Material material)
+			internal ModelRenderJob(Matrix4 transform, Model model, BaseMaterial material)
 			{
 				if (model == null)
 					throw new ArgumentNullException("model");
@@ -38,7 +38,7 @@ namespace OpenWorld.Engine.SceneManagement
 			/// <summary>
 			/// Gets the material.
 			/// </summary>
-			public Material Material { get; private set; }
+			public BaseMaterial Material { get; private set; }
 		}
 
 		/// <summary>

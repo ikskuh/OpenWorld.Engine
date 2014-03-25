@@ -1,11 +1,11 @@
 #version 410
 
-uniform mat4 World;
-uniform mat4 View;
-uniform mat4 Projection;
+uniform mat4 matWorld;
+uniform mat4 matView;
+uniform mat4 matProjection;
 
-uniform sampler2D textureNormalMap;
-uniform float specularPower;
+uniform sampler2D meshNormalMap;
+uniform float mtlSpecularPower;
 
 #ifdef __VertexShader
 
@@ -24,11 +24,11 @@ out vec2 uv;
 void main()
 {
 	vec4 pos = vec4(vertexPosition, 1);
-	gl_Position = Projection * View * World * pos;
+	gl_Position = matProjection * matView * matWorld * pos;
 	
-	position = (World * pos).xyz;
+	position = (matWorld * pos).xyz;
 
-	mat3 mv3x3 = mat3(World);
+	mat3 mv3x3 = mat3(matWorld);
 	normal = normalize(mv3x3 * vertexNormal);
 	tangent = normalize(mv3x3 * vertexTangent);
 	bitangent = normalize(mv3x3 * vertexBiTangent);
@@ -56,9 +56,10 @@ void main()
 {
 	positionOut = vec4(position, 1);
 
-	vec3 bump = normalize(2.0f * texture(textureNormalMap, uv).xyz - 1.0f);
+	vec3 bump = normalize(2.0f * texture(meshNormalMap, uv).xyz - 1.0f);
     normalOut.xyz = mat3(tangent, bitangent, normal) * bump;
-	normalOut.w = specularPower;
+	normalOut.w = mtlSpecularPower;
+	normalOut.xyz = normal;
 }
 
 #endif

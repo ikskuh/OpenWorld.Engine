@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenWorld.Engine
@@ -53,7 +54,7 @@ namespace OpenWorld.Engine
 				new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"),
 				this.OpenAssetStream<T>(name, out selectedExtension), 
 				selectedExtension);
-
+			asset.assetName = name;
 			this.loadedAssets.Add(asset);
 
 			if(!loadNew)
@@ -83,26 +84,8 @@ namespace OpenWorld.Engine
 		public T LoadSync<T>(string name, bool loadNew)
 			where T : Asset
 		{
-			if (name == null)
-				throw new ArgumentNullException("name");
-
-			string selectedExtension;
-
-			if (!this.IsCaseSensitive)
-				name = name.ToLower(System.Globalization.CultureInfo.InvariantCulture);
-
-			if (!loadNew && this.cache.Contains<T>(name))
-				return this.cache.Get<T>(name);
-
-			T asset = Asset.LoadSync<T>(
-				new AssetLoadContext(this, name, Path.GetDirectoryName(name) + "/"),
-				this.OpenAssetStream<T>(name, out selectedExtension),
-				selectedExtension);
-
-			this.loadedAssets.Add(asset);
-
-			if (!loadNew)
-				this.cache.Add<T>(name, asset);
+			var asset = this.Load<T>(name, loadNew);
+			while (!asset.IsLoaded) Thread.Sleep(0);
 			return asset;
 		}
 

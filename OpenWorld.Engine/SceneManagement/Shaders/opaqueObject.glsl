@@ -1,13 +1,13 @@
 #version 410
 
-uniform mat4 World;
-uniform mat4 View;
-uniform mat4 Projection;
+uniform mat4 matWorld;
+uniform mat4 matView;
+uniform mat4 matProjection;
 
-uniform sampler2D textureDiffuseColor;
-uniform sampler2D textureSpecularColor;
-uniform sampler2D textureDiffuseLighting;
-uniform sampler2D textureSpecularLighting;
+uniform sampler2D meshDiffuseTexture;
+uniform sampler2D meshSpecularTexture;
+uniform sampler2D renderDiffuseLightBuffer;
+uniform sampler2D renderSpecularLightBuffer;
 
 #ifdef __VertexShader
 
@@ -22,9 +22,9 @@ layout(location = 2) out vec3 normal;
 void main()
 {
 	vec4 pos = vec4(vertexPosition, 1);
-	gl_Position = ssuv = Projection * View * World * pos;
+	gl_Position = ssuv = matProjection * matView * matWorld * pos;
 
-	normal = (World * vec4(vertexNormal, 0)).xyz; 
+	normal = (matWorld * vec4(vertexNormal, 0)).xyz; 
 	uv = vertexUV;
 }
 
@@ -39,13 +39,13 @@ layout(location = 0) out vec4 color;
 
 void main()
 {
-	vec4 diffuseColor = texture(textureDiffuseColor, uv);
-	vec3 specularColor = texture(textureSpecularColor, uv).rgb;
+	vec4 diffuseColor = texture(meshDiffuseTexture, uv);
+	vec3 specularColor = texture(meshSpecularTexture, uv).rgb;
 
 	vec2 ss = 0.5f + 0.5f * ssuv.xy / ssuv.w;
 
-	color.rgb = diffuseColor.rgb * texture(textureDiffuseLighting, ss).rgb;
-	color.rgb += specularColor * texture(textureSpecularLighting, ss).rgb;
+	color.rgb = diffuseColor.rgb * texture(renderDiffuseLightBuffer, ss).rgb;
+	color.rgb += specularColor * texture(renderSpecularLightBuffer, ss).rgb;
 	
 	color.a = diffuseColor.a;
 	//if(color.a < 0.5f) discard;

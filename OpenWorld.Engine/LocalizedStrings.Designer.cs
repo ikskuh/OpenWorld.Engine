@@ -79,7 +79,7 @@ namespace OpenWorld.Engine {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Shader compiler result:  ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to compile {1} for {0} ähnelt.
         /// </summary>
         internal static string ShaderCompilerResult {
             get {
@@ -88,7 +88,7 @@ namespace OpenWorld.Engine {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Shader linker result: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shader linker result for {0} ähnelt.
         /// </summary>
         internal static string ShaderLinkerResult {
             get {

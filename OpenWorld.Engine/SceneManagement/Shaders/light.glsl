@@ -1,18 +1,18 @@
 #version 410
 
-uniform mat4 World;
-uniform mat4 View;
-uniform mat4 Projection;
+uniform mat4 matWorld;
+uniform mat4 matView;
+uniform mat4 matProjection;
 
-uniform float Radius;
-uniform vec4 Color;
-uniform vec3 LightCenter;
-uniform vec3 LightDirection;
+uniform float lightRadius;
+uniform vec4 lightColor;
+uniform vec3 lightPosition;
+uniform vec3 lightLightDirection;
 
-uniform vec3 ViewPosition;
+uniform vec3 lightViewPosition;
 
-uniform sampler2D texturePosition;
-uniform sampler2D textureNormal;
+uniform sampler2D renderPositionBuffer;
+uniform sampler2D renderNormalBuffer;
 
 #ifdef __VertexShader
 
@@ -23,7 +23,7 @@ layout(location = 2) in vec2 vertexUV;
 void main()
 {
 	vec4 pos = vec4(vertexPosition, 1);
-	gl_Position = Projection * View * World * pos;
+	gl_Position = matProjection * matView * matWorld * pos;
 }
 
 #endif
@@ -37,25 +37,25 @@ layout(location = 1) out vec4 specular;
 
 void main()
 {
-	vec3 pos = texelFetch(texturePosition, ivec2(gl_FragCoord), 0).xyz;
-	vec4 normal = texelFetch(textureNormal, ivec2(gl_FragCoord), 0);
+	vec3 pos = texelFetch(renderPositionBuffer, ivec2(gl_FragCoord), 0).xyz;
+	vec4 normal = texelFetch(renderNormalBuffer, ivec2(gl_FragCoord), 0);
 	normal.xyz = normalize(normal.xyz);
-	vec3 distance = pos - LightCenter;
+	vec3 distance = pos - lightPosition;
 	vec3 dir = normalize(distance);
 
-	float falloff = max(0.0f, 1.0f - length(distance) / Radius);
+	float falloff = max(0.0f, 1.0f - length(distance) / lightRadius);
 
 	float diffuseStrength = clamp(dot(dir, -normal.xyz), 0.0f, 1.0f);
 
 	diffuse = 
-		Color *
+		lightColor *
 		diffuseStrength * 
 		falloff;
 
 	if(diffuseStrength >= 0) {
 		specular = 
-			Color *
-			pow(clamp(dot(reflect(dir, normalize(pos - ViewPosition)), -normal.xyz), 0.0f, 1.0f), normal.w) * 
+			lightColor *
+			pow(clamp(dot(reflect(dir, normalize(pos - lightViewPosition)), -normal.xyz), 0.0f, 1.0f), normal.w) * 
 			falloff;
 	} else {
 		specular = vec4(0);

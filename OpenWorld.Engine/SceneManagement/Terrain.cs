@@ -132,7 +132,7 @@ namespace OpenWorld.Engine.SceneManagement
 					if (y < size)
 						dz -= vertices[(y+1) * (size + 1) + x].Position;
 
-					vertices[x * (size + 1) + x].Normal = Vector3.Cross(dz, dx).Normalized();
+					vertices[y * (size + 1) + x].Normal = Vector3.Cross(dz, dx).Normalized();
 				}
 			}
 			this.model.GetMeshes()[0].UpdateVertices();

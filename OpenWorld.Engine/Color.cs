@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -339,5 +340,29 @@ namespace OpenWorld.Engine
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Tries to parse a color from a string.
+		/// </summary>
+		/// <param name="text">Text that contains the text.</param>
+		/// <param name="color">Parsed result or black.</param>
+		/// <returns>False if failed.</returns>
+		public static bool TryParse(string text, out Color color)
+		{
+			color = Color.Black;
+			if (string.IsNullOrWhiteSpace(text)) return false;
+			string[] parts = text.Split(';');
+			if (parts.Length != 3 && parts.Length != 4) return false;
+
+			color.r = float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
+			color.g = float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
+			color.b = float.Parse(parts[2].Trim(), CultureInfo.InvariantCulture);
+			if (parts.Length == 4)
+				color.a = float.Parse(parts[3].Trim(), CultureInfo.InvariantCulture);
+			else
+				color.a = 1.0f;
+
+			return true;
+		}
 	}
 }
