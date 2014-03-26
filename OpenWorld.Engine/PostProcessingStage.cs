@@ -43,10 +43,16 @@ namespace OpenWorld.Engine
 		/// Gets or sets the post processing effect.
 		/// </summary>
 		public PostProcessingShader Effect { get; set; }
-
+		
 		/// <summary>
 		/// Gets or sets a value indicating whether the post processing stage is used or not.
 		/// </summary>
 		public bool Enabled { get; set; }
+
+		/// <summary>
+		/// Gets or sets the target texture. The stage will render it's result in this texture.
+		/// </summary>
+		/// <remarks>If null, the final texture will be used.</remarks>
+		public Texture2D TargetTexture { get; set; }
 	}
 }

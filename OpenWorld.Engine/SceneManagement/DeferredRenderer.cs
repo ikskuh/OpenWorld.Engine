@@ -58,10 +58,6 @@ namespace OpenWorld.Engine.SceneManagement
 
 		private Texture2D resultBuffer;
 
-		private Texture2D blackTexture;
-		private Texture2D missingTexture;
-		private Texture2D flatNormalMap;
-
 		private PostProcessingPipeline pipeline;
 		private TonemappingShader tonemappingShader;
 		private GammaCorrectionShader gammaCorrectionShader;
@@ -104,27 +100,10 @@ namespace OpenWorld.Engine.SceneManagement
 			this.SpecularLightBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
 			this.resultBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
 
-			using (var stream = Resource.Open("OpenWorld.Engine.Resources.flatNormals.png"))
-			{
-				bool srgb = Texture2D.UseSRGB;
-				Texture2D.UseSRGB = false;
-				this.flatNormalMap = new Texture2D(new System.Drawing.Bitmap(stream));
-				Texture2D.UseSRGB = srgb;
-			}
-			using (var stream = Resource.Open("OpenWorld.Engine.Resources.black.png"))
-			{
-				this.blackTexture = new Texture2D(new System.Drawing.Bitmap(stream));
-			}
-			using (var stream = Resource.Open("OpenWorld.Engine.Resources.missing.png"))
-			{
-				this.missingTexture = new Texture2D(new System.Drawing.Bitmap(stream));
-			}
 			// Create 3d shaders
 			this.geometryShader = new GeometryShader();
 
 			this.pointLightShader = new PointLightShader();
-			this.pointLightShader.PositionBuffer = this.PositionBuffer;
-			this.pointLightShader.NormalBuffer = this.NormalBuffer;
 
 			// Create post processing shaders
 			this.gammaCorrectionShader = new GammaCorrectionShader();
@@ -172,10 +151,8 @@ namespace OpenWorld.Engine.SceneManagement
 			if (camera == null)
 				throw new ArgumentNullException("camera");
 
-			int[] viewport = new int[4];
-			GL.GetInteger(GetPName.Viewport, viewport);
-
-			GL.Viewport(0, 0, this.Width, this.Height);
+			Viewport.Push();
+			Viewport.Area = new Box2i(0, 0, this.Width, this.Height);
 
 			GL.Enable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.TextureCubeMap);
@@ -195,10 +172,17 @@ namespace OpenWorld.Engine.SceneManagement
 			var sunView = camera.ViewMatrix;
 			sunView.M41 = 0; sunView.M42 = 0; sunView.M43 = 0;
 
-			//Vector3 sunPosition =  this.sky.GetSunDirection() * 1000.0f;
-			//var projPos = Vector4.Transform(new Vector4(sunPosition, 1), sunView * camera.ProjectionMatrix);
-			//this.lightScatteringShader.LightPosition = new Vector2(0.5f, 0.5f) + 0.5f * (projPos.Xy * (1.0f / projPos.W));
-			//this.lightScattering.Enabled = Math.Abs(this.lightScatteringShader.LightPosition.X) < 2.0f && Math.Abs(this.lightScatteringShader.LightPosition.Y) < 2.0f && projPos.Z > 0.0f;
+			if (this.Sky != null)
+			{
+				Vector3 sunPosition = this.Sky.GetSunDirection() * 1000.0f;
+				var projPos = Vector4.Transform(new Vector4(sunPosition, 1), sunView * camera.ProjectionMatrix);
+				this.lightScatteringShader.LightPosition = new Vector2(0.5f, 0.5f) + 0.5f * (projPos.Xy * (1.0f / projPos.W));
+				this.lightScattering.Enabled = false;// Math.Abs(this.lightScatteringShader.LightPosition.X) < 2.0f && Math.Abs(this.lightScatteringShader.LightPosition.Y) < 2.0f && projPos.Z > 0.0f;
+			}
+			else
+			{
+				this.lightScattering.Enabled = false;
+			}
 
 			this.pipeline.Apply(this.resultBuffer);
 
@@ -208,7 +192,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 			FrameBuffer.Unbind();
 
-			GL.Viewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+			Viewport.Pop();
 
 			if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number1])
 			{
@@ -251,9 +235,7 @@ namespace OpenWorld.Engine.SceneManagement
 			{
 				this.Matrices.World = job.Transform;
 
-				var material = job.Material;
-
-				geometryShader.Use(material, this.Matrices, this);
+				geometryShader.Use(job.Material, this.Matrices, this);
 
 				job.Model.Draw((mesh) => geometryShader.Update(mesh), geometryShader.HasTesselation);
 			}
@@ -270,11 +252,26 @@ namespace OpenWorld.Engine.SceneManagement
 			GL.DepthFunc(DepthFunction.Lequal);
 
 
+			this.frameBuffer.SetTextures(this.DiffuseLightBuffer);
+			this.frameBuffer.Use();
+
+			// Clear first frame buffer (diffuse)
+			GL.ClearColor(0.15f, 0.15f, 0.15f, 1.0f);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+
+			this.frameBuffer.SetTextures(this.SpecularLightBuffer);
+			this.frameBuffer.Use();
+
+			// Clear second frame buffer (specular)
+			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+
 			this.frameBuffer.SetTextures(this.DiffuseLightBuffer, this.SpecularLightBuffer);
 			this.frameBuffer.Use();
 
-			GL.ClearColor(0.15f, 0.15f, 0.15f, 1.0f);
-			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			// Clear depth
+			GL.DepthMask(true);
+			GL.Clear(ClearBufferMask.DepthBufferBit);
 			GL.DepthMask(false);
 
 			//this.LightCount = 0;
@@ -322,6 +319,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.DepthMask(true);
 			GL.Enable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.CullFace);
 			GL.Disable(EnableCap.Blend);
 			GL.CullFace(CullFaceMode.Back);
 			GL.DepthFunc(DepthFunction.Lequal);
@@ -331,10 +329,9 @@ namespace OpenWorld.Engine.SceneManagement
 			{
 				this.Matrices.World = job.Transform;
 
-				var material = job.Material;
-				var shader = material.Shader ?? this.DefaultShader;
+				var shader = job.Material.Shader ?? this.DefaultShader;
 
-				shader.Use(material, this.Matrices, this);
+				shader.Use(job.Material, this.Matrices, this);
 
 				job.Model.Draw((mesh) => shader.Update(mesh), shader.HasTesselation);
 

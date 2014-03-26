@@ -163,13 +163,19 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets or sets the specular texture of the mesh.
 		/// </summary>
-		[Uniform("SpecularTexture", DefaultColor="0;0;0")]
+		[Uniform("SpecularTexture", DefaultColor = "1;1;1")]
 		public Texture2D SpecularTexture { get; set; }
+
+		/// <summary>
+		/// Gets or sets the specular texture of the mesh.
+		/// </summary>
+		[Uniform("EmissiveTexture", DefaultColor = "0;0;0")]
+		public Texture2D EmissiveTexture { get; set; }
 
 		/// <summary>
 		/// Gets or sets the normal map of the mesh.
 		/// </summary>
-		[Uniform("NormalMap", DefaultColor = "0.5;0.5;1.0")]
+		[Uniform("NormalMap", DefaultColor = "0.5;0.5;1.0", SRGB = SRGBType.No)]
 		public Texture2D NormalMap { get; set; }
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace OpenWorld.Engine
 {
@@ -52,10 +53,10 @@ namespace OpenWorld.Engine
 		/// <returns>IShaderUniforms for that object.</returns>
 		public static IShaderUniforms Get(object source)
 		{
-			if(source == null) return null;
+			if (source == null) return null;
 
 			AutoUniforms uniforms;
-			lock(cache)
+			lock (cache)
 			{
 				var type = source.GetType();
 				if (!cache.ContainsKey(type))
@@ -160,16 +161,17 @@ namespace OpenWorld.Engine
 				}
 				else if (typeof(Texture).IsAssignableFrom(propertyType))
 				{
-					Texture2D defaultTexture = null;
-					Color defaultColor;
-					if (Color.TryParse(attribs[0].DefaultColor, out defaultColor))
+					ThreadLocal<Texture2D> defaultTexture = new ThreadLocal<Texture2D>(() =>
 					{
+						Color defaultColor;
+						if (!Color.TryParse(attribs[0].DefaultColor, out defaultColor))
+							return null;
 						System.Drawing.Color color = System.Drawing.Color.FromArgb(
 							MathHelper.Clamp((int)(255.0f * defaultColor.A), 0, 255),
 							MathHelper.Clamp((int)(255.0f * defaultColor.R), 0, 255),
 							MathHelper.Clamp((int)(255.0f * defaultColor.G), 0, 255),
 							MathHelper.Clamp((int)(255.0f * defaultColor.B), 0, 255));
-						System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(4, 4);
+						System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(16, 16);
 						for (int x = 0; x < bmp.Width; x++)
 						{
 							for (int y = 0; y < bmp.Height; y++)
@@ -177,14 +179,19 @@ namespace OpenWorld.Engine
 								bmp.SetPixel(x, y, color);
 							}
 						}
-
-						defaultTexture = new Texture2D(bmp);
-					}
+						Texture2D tex;
+						if (attribs[0].SRGB != SRGBType.Default)
+							tex = new Texture2D(attribs[0].SRGB == SRGBType.Yes);
+						else
+							tex = new Texture2D();
+						tex.Load(bmp);
+						return tex;
+					});
 
 					uniform.Apply = (shader, target, textures) =>
 					{
 						var value = property.GetValue(target, new object[0]);
-						shader.SetTexture(name, (Texture)value ?? defaultTexture, textures);
+						shader.SetTexture(name, (Texture)value ?? defaultTexture.Value, textures);
 						return textures + 1;
 					};
 				}

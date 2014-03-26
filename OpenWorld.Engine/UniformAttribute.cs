@@ -39,6 +39,32 @@ namespace OpenWorld.Engine
 		/// Gets or sets the default color of a texture uniform.
 		/// </summary>
 		public string DefaultColor { get; set; }
+
+		/// <summary>
+		/// Gets or sets wheather the default texture is in sRGB space or not.
+		/// </summary>
+		public SRGBType SRGB { get; set; }
+	}
+
+	/// <summary>
+	/// Enumeration for different SRGB types.
+	/// </summary>
+	public enum SRGBType
+	{
+		/// <summary>
+		/// Uses Texture.UseSRGB
+		/// </summary>
+		Default = 0,
+
+		/// <summary>
+		/// Texture is sRGB
+		/// </summary>
+		Yes,
+
+		/// <summary>
+		/// Texture is linear.
+		/// </summary>
+		No
 	}
 
 	/// <summary>

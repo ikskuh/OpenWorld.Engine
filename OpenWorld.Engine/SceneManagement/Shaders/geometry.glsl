@@ -59,7 +59,7 @@ void main()
 	vec3 bump = normalize(2.0f * texture(meshNormalMap, uv).xyz - 1.0f);
     normalOut.xyz = mat3(tangent, bitangent, normal) * bump;
 	normalOut.w = mtlSpecularPower;
-	normalOut.xyz = normal;
+	//normalOut.xyz = normal;
 }
 
 #endif

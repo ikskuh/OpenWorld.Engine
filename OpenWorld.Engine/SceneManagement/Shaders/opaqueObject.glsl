@@ -6,8 +6,15 @@ uniform mat4 matProjection;
 
 uniform sampler2D meshDiffuseTexture;
 uniform sampler2D meshSpecularTexture;
+uniform sampler2D meshEmissiveTexture;
+
 uniform sampler2D renderDiffuseLightBuffer;
 uniform sampler2D renderSpecularLightBuffer;
+
+uniform vec4 mtlDiffuse;
+uniform vec4 mtlSpecular;
+uniform vec4 mtlEmissive;
+uniform float mtlEmissiveScale;
 
 #ifdef __VertexShader
 
@@ -41,12 +48,15 @@ void main()
 {
 	vec4 diffuseColor = texture(meshDiffuseTexture, uv);
 	vec3 specularColor = texture(meshSpecularTexture, uv).rgb;
+	vec3 emissiveColor = texture(meshEmissiveTexture, uv).rgb;
 
 	vec2 ss = 0.5f + 0.5f * ssuv.xy / ssuv.w;
 
-	color.rgb = diffuseColor.rgb * texture(renderDiffuseLightBuffer, ss).rgb;
-	color.rgb += specularColor * texture(renderSpecularLightBuffer, ss).rgb;
+	color.rgb = mtlDiffuse.rgb * diffuseColor.rgb * textureLod(renderDiffuseLightBuffer, ss, 0.0f).rgb;
+	color.rgb += mtlSpecular.rgb * specularColor * textureLod(renderSpecularLightBuffer, ss, 0.0f).rgb;
 	
+	color.rgb += emissiveColor * mtlEmissiveScale * mtlEmissive.rgb;
+
 	color.a = diffuseColor.a;
 	//if(color.a < 0.5f) discard;
 }

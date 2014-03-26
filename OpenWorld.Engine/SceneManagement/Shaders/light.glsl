@@ -52,13 +52,13 @@ void main()
 		diffuseStrength * 
 		falloff;
 
-	if(diffuseStrength >= 0) {
+	if(diffuseStrength > 0) {
 		specular = 
 			lightColor *
-			pow(clamp(dot(reflect(dir, normalize(pos - lightViewPosition)), -normal.xyz), 0.0f, 1.0f), normal.w) * 
+			pow(clamp(-dot(reflect(dir, normalize(pos - lightViewPosition)), normal.xyz), 0.0f, 1.0f), normal.w) * 
 			falloff;
 	} else {
-		specular = vec4(0);
+		specular = vec4(0.0f);
 	}
 }
 

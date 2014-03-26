@@ -341,7 +341,7 @@ namespace OpenWorld.Engine
 				this.Use();
 
 			int location = this.GetUniformLocation(name);
-			GL.Uniform3(location, value);
+			GL.Uniform3(location, ref value);
 		}
 
 

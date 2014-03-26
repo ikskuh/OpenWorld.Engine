@@ -23,17 +23,15 @@ namespace OpenWorld.Engine
 		protected Texture(TextureTarget target)
 		{
 			this.isSRGB = Texture.UseSRGB;
-			Game.Current.InvokeOpenGL(() =>
-					{
-						this.target = target;
-						this.id = GL.GenTexture();
 
-						this.WrapS = TextureWrapMode.Repeat;
-						this.WrapT = TextureWrapMode.Repeat;
-						this.WrapR = TextureWrapMode.Repeat;
+			this.target = target;
+			Game.Current.InvokeOpenGL(() => { this.id = GL.GenTexture(); });
 
-						this.Filter = Filter.Nearest;
-					});
+			this.WrapS = TextureWrapMode.Repeat;
+			this.WrapT = TextureWrapMode.Repeat;
+			this.WrapR = TextureWrapMode.Repeat;
+
+			this.Filter = Filter.Nearest;
 		}
 
 		/// <summary>
@@ -203,6 +201,7 @@ namespace OpenWorld.Engine
 		public bool IsSRGB
 		{
 			get { return isSRGB; }
+			protected set { this.isSRGB = value; }
 		}
 	}
 }

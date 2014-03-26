@@ -28,25 +28,25 @@ namespace OpenWorld.Engine
 		{
 			Game.Current.InvokeOpenGL(() =>
 			   {
-				   this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
-				   this.vertexBuffer.SetData<float>(BufferUsageHint.StaticDraw, new[]
-				{
-					-1.0f, -1.0f,
-					-1.0f, 1.0f,
-					1.0f, -1.0f,
-					1.0f, 1.0f
-				});
+					this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
+					this.vertexBuffer.SetData<float>(BufferUsageHint.StaticDraw, new[]
+					{
+						-1.0f, -1.0f,
+						-1.0f, 1.0f,
+						1.0f, -1.0f,
+						1.0f, 1.0f
+					});
 
-				   this.vao = new VertexArray();
-				   this.vao.Bind();
-				   this.vertexBuffer.Bind();
+					this.vao = new VertexArray();
+					this.vao.Bind();
+					this.vertexBuffer.Bind();
 
-				   GL.EnableVertexAttribArray(0);
-				   GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 0, 0);
+					GL.EnableVertexAttribArray(0);
+					GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 0, 0);
 
-				   VertexArray.Unbind();
+					VertexArray.Unbind();
 
-				   this.frameBuffer = new FrameBuffer();
+					this.frameBuffer = new FrameBuffer();
 			   });
 
 			this.swapBuffer = new Texture2D(width, height, PixelInternalFormat.Rgb16f, PixelFormat.Rgba, PixelType.Float);
@@ -81,8 +81,10 @@ namespace OpenWorld.Engine
 
 				ppEffect.Effect.BackBuffer = currentBuffer;
 				ppEffect.Effect.Use();
+
 				
-                GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+
+				GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
 				SwapBuffers(ref currentTarget, ref currentBuffer);
 			}
@@ -95,7 +97,7 @@ namespace OpenWorld.Engine
 				this.swapShader.BackBuffer = currentBuffer;
 				this.swapShader.Use();
 
-                GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+				GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
 				SwapBuffers(ref currentTarget, ref currentBuffer);
 			}

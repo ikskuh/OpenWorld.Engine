@@ -155,6 +155,7 @@
     <Compile Include="AssetManager.AssetCache.cs" />
     <Compile Include="AssetSource.cs" />
     <Compile Include="AutoUniforms.cs" />
+    <Compile Include="Box2i.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CompositeCamera.cs" />
     <Compile Include="CoRoutineHost.cs" />
@@ -265,6 +266,7 @@
     <Compile Include="UniformNotFoundException.cs" />
     <Compile Include="Vertex.cs" />
     <Compile Include="VertexArray.cs" />
+    <Compile Include="Viewport.cs" />
     <Compile Include="WebAssetSource.cs" />
     <Compile Include="WebColors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

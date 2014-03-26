@@ -23,6 +23,16 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
+		/// Instantiates a new Texture2D.
+		/// </summary>
+		/// <param name="isSRGB">Is this texture in sRGB color space?</param>
+		public Texture2D(bool isSRGB)
+			: this()
+		{
+			this.IsSRGB = isSRGB;
+		}
+
+		/// <summary>
 		/// Instantiates a new Texture2D
 		/// </summary>
 		/// <param name="width">Width of the texture</param>
