@@ -265,6 +265,20 @@ namespace OpenWorld.Engine
 			GL.Uniform1(location, value);
 		}
 
+		/// <summary>
+		/// Sets a bool uniform.
+		/// </summary>
+		/// <param name="name">Name of the uniform</param>
+		/// <param name="value">Value of the uniform</param>
+		public void SetUniform(string name, bool value)
+		{
+			if (Shader.currentShader != this)
+				this.Use();
+
+			int location = this.GetUniformLocation(name);
+			GL.Uniform1(location, value ? -1 : 0);
+		}
+
 
 		/// <summary>
 		/// Sets a ivec uniform.

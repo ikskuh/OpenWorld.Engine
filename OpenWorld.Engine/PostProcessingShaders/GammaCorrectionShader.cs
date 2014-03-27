@@ -12,11 +12,10 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	{
 		static readonly string shaderSource =
 @"uniform float gamma;
-out vec4 color;
 void main()
 {
-	color = texture(backBuffer, uv);
-	color.rgb = pow(color.rgb, vec3(1.0f) / gamma); // Gamma correction
+	fragment = texture(inputTexture, uv);
+	fragment.rgb = pow(fragment.rgb, vec3(1.0f) / gamma); // Gamma correction
 }";
 
 		/// <summary>

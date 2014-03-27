@@ -43,7 +43,7 @@ void main()
 	vec3 distance = pos - lightPosition;
 	vec3 dir = normalize(distance);
 
-	float falloff = max(0.0f, 1.0f - length(distance) / lightRadius);
+	float falloff = clamp(1.0f - length(distance) / lightRadius, 0.0f, 1.0f);
 
 	float diffuseStrength = clamp(dot(dir, -normal.xyz), 0.0f, 1.0f);
 

@@ -11,14 +11,20 @@ namespace OpenWorld.Engine.PostProcessingShaders
 	public sealed class TonemappingShader : PostProcessingShader
 	{
 		static readonly string shaderSource =
-@"layout(location = 0) out vec4 result;
-uniform float hdrExposure;
+@"uniform float hdrExposure;
 void main()
 {
-	result = texture(backBuffer, uv);
+	fragment = texture(inputTexture, uv);
 
 	//Adjust color from HDR
-	result.rgb = 1.0 - exp(result.rgb * -hdrExposure);	
+	//fragment.rgb = 1.0 - exp(fragment.rgb * -hdrExposure);	
+
+	float wp = 5.0f;
+	
+	vec3 tonemap = fragment.rgb;
+	tonemap = ((((tonemap) * (0.193f * (tonemap) + 0.070f * 0.196f) + 0.330f * 0.007f) / ((tonemap) * (0.193f * (tonemap) + 0.196f)+ 0.330 * 0.111f)) - 0.007f / 0.111f); 
+	tonemap /= (((wp*(0.193*wp+0.070*0.196) + 0.330f * 0.007f) / (wp * (0.193f * wp + 0.196f) + 0.330f * 0.111f)) - 0.007f / 0.111f); 
+	fragment.rgb = tonemap;
 }";
 
 		/// <summary>

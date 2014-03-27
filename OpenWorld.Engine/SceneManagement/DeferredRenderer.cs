@@ -63,15 +63,18 @@ namespace OpenWorld.Engine.SceneManagement
 		private Texture2D sceneBuffer;
 		private RenderBuffer depthBuffer;
 
-		private PostProcessingPipeline pipeline;
+		private BlurShader blurShader;
+		private CombineShader bloomCombineShader;
+		private HighPassShader highPassShader;
+
 		private TonemappingShader tonemappingShader;
 		private GammaCorrectionShader gammaCorrectionShader;
 		private LightScatteringShader lightScatteringShader;
 		private DitheringShader ditheringShader;
-		private PostProcessingStage lightScattering;
-		private PostProcessingStage tonemapping;
-		private PostProcessingStage gammaCorrection;
-		private PostProcessingStage dithering;
+
+		private PostProcessingStage preBloomStages;
+		private PostProcessingStage bloomStages;
+		private PostProcessingStage postBloomStages;
 
 		private GeometryShader geometryShader;
 		private PointLightShader pointLightShader;
@@ -99,11 +102,11 @@ namespace OpenWorld.Engine.SceneManagement
 			this.Height = height;
 
 			// Create graphics buffer
-			this.PositionBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
-			this.NormalBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
-			this.DiffuseLightBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
-			this.SpecularLightBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
-			this.sceneBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
+			this.PositionBuffer = CreateTexture(width, height);
+			this.NormalBuffer = CreateTexture(width, height);
+			this.DiffuseLightBuffer = CreateTexture(width, height);
+			this.SpecularLightBuffer = CreateTexture(width, height);
+			this.sceneBuffer = CreateTexture(width, height);
 
 			// Create 3d shaders
 			this.geometryShader = new GeometryShader();
@@ -122,18 +125,49 @@ namespace OpenWorld.Engine.SceneManagement
 			this.tonemappingShader = new TonemappingShader();
 			this.tonemappingShader.HdrExposure = 0.8f;
 
-			// Create post processing stages
-			this.lightScattering = new PostProcessingStage(this.lightScatteringShader);
-			this.tonemapping = new PostProcessingStage(this.tonemappingShader);
-			this.gammaCorrection = new PostProcessingStage(this.gammaCorrectionShader);
-			this.dithering = new PostProcessingStage(this.ditheringShader);
+			this.blurShader = new BlurShader();
+			this.blurShader.BlurStrength = new Vector2(0.04f, 0.02f);
 
-			// Create post processing pipeline
-			this.pipeline = new PostProcessingPipeline(width, height);
-			this.pipeline.Stages.Add(this.lightScattering);
-			this.pipeline.Stages.Add(this.tonemapping);
-			this.pipeline.Stages.Add(this.gammaCorrection);
-			this.pipeline.Stages.Add(this.dithering);
+			this.bloomCombineShader = new CombineShader();
+
+			this.highPassShader = new HighPassShader();
+			this.highPassShader.BloomThreshold = 0.95f;
+
+			// Create post processing stages
+
+			this.preBloomStages = new PostProcessingStage(this.lightScatteringShader)
+			{
+				TargetTexture = CreateTexture(width, height),
+				Stage = new PostProcessingStage(this.gammaCorrectionShader)
+				{
+					TargetTexture = CreateTexture(width, height)
+				}
+			};
+
+			this.bloomStages = new PostProcessingStage(this.highPassShader)
+			{
+				TargetTexture = CreateTexture(width / 2, height / 2),
+				Stage = new PostProcessingStage(this.blurShader)
+				{
+					TargetTexture = CreateTexture(width, height),
+					Stage = new PostProcessingStage(this.bloomCombineShader)
+					{
+						TargetTexture = CreateTexture(width, height),
+					}
+				}
+			};
+
+			this.postBloomStages = new PostProcessingStage(this.tonemappingShader)
+			{
+				TargetTexture = CreateTexture(width, height),
+				Stage = new PostProcessingStage(this.ditheringShader)
+				{
+					TargetTexture = CreateTexture(width, height),
+				}
+			};
+
+			//this.tonemapping = new PostProcessingStage(this.tonemappingShader);
+			//this.tonemapping.TargetTexture = CreateTexture(width, height);
 
 			this.depthBuffer = new RenderBuffer(width, height);
 
@@ -144,6 +178,15 @@ namespace OpenWorld.Engine.SceneManagement
 			this.frameBufferScene = new FrameBuffer(this.depthBuffer, this.sceneBuffer);
 
 			this.DefaultShader = new OpaqueObjectShader();
+		}
+
+		private static Texture2D CreateTexture(int width, int height)
+		{
+			var tex = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
+			tex.WrapR = TextureWrapMode.ClampToBorder;
+			tex.WrapS = TextureWrapMode.ClampToBorder;
+			tex.WrapT = TextureWrapMode.ClampToBorder;
+			return tex;
 		}
 
 		/// <summary>
@@ -163,13 +206,8 @@ namespace OpenWorld.Engine.SceneManagement
 			Viewport.Push();
 			Viewport.Area = new Box2i(0, 0, this.Width, this.Height);
 
-			GL.Enable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.TextureCubeMap);
 			GL.Enable(EnableCap.TextureCubeMapSeamless);
-			GL.DepthFunc(DepthFunction.Lequal);
-			GL.Enable(EnableCap.CullFace);
-			GL.ClearDepth(1.0f);
-			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 			//RenderLightMaps(ref camera, ref projection, out shadowMatrix, args);
 
@@ -181,20 +219,10 @@ namespace OpenWorld.Engine.SceneManagement
 			var sunView = camera.ViewMatrix;
 			sunView.M41 = 0; sunView.M42 = 0; sunView.M43 = 0;
 
-			if (this.Sky != null)
-			{
-				Vector3 sunPosition = this.Sky.GetSunDirection() * 1000.0f;
-				var projPos = Vector4.Transform(new Vector4(sunPosition, 1), sunView * camera.ProjectionMatrix);
-				this.lightScatteringShader.LightPosition = new Vector2(0.5f, 0.5f) + 0.5f * (projPos.Xy * (1.0f / projPos.W));
-				this.lightScattering.Enabled = false;// Math.Abs(this.lightScatteringShader.LightPosition.X) < 2.0f && Math.Abs(this.lightScatteringShader.LightPosition.Y) < 2.0f && projPos.Z > 0.0f;
-			}
-			else
-			{
-				this.lightScattering.Enabled = false;
-			}
-			FrameBuffer.Current = null;
-
-			this.pipeline.Apply(this.sceneBuffer);
+			Vector3 sunPosition = this.Sky.GetSunDirection() * 1000.0f;
+			var projPos = Vector4.Transform(new Vector4(sunPosition, 1), sunView * camera.ProjectionMatrix);
+			this.lightScatteringShader.LightPosition = new Vector2(0.5f, 0.5f) + 0.5f * (projPos.Xy * (1.0f / projPos.W));
+			//this.lightScattering.Enabled = false;// Math.Abs(this.lightScatteringShader.LightPosition.X) < 2.0f && Math.Abs(this.lightScatteringShader.LightPosition.Y) < 2.0f && projPos.Z > 0.0f;
 
 			FrameBuffer.Current = renderTarget;
 
@@ -202,28 +230,54 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.Disable(EnableCap.Blend);
 			GL.Disable(EnableCap.DepthTest);
-			GL.Disable(EnableCap.CullFace);
+			GL.Enable(EnableCap.CullFace);
 
-			if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number1])
+			var target = new Box2(0, 0, Game.Current.Width, Game.Current.Height);
+			Texture2D result = this.preBloomStages.Render(this.sceneBuffer);
+
+			this.bloomCombineShader.OriginalMap = result;
+
+			result = this.bloomStages.Render(result);
+
+			result = this.postBloomStages.Render(result);
+
+
+			if (!Game.Current.Input.Keyboard[OpenTK.Input.Key.ShiftLeft])
 			{
-				this.pipeline.DrawQuad(this.NormalBuffer);
-			}
-			else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number2])
-			{
-				this.pipeline.DrawQuad(this.DiffuseLightBuffer);
-			}
-			else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number3])
-			{
-				this.pipeline.DrawQuad(this.SpecularLightBuffer);
-			}
-			else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number4])
-			{
-				this.pipeline.DrawQuad(this.PositionBuffer);
+				if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number1])
+				{
+					result = this.NormalBuffer;
+				}
+				else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number2])
+				{
+					result = this.DiffuseLightBuffer;
+				}
+				else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number3])
+				{
+					result = this.SpecularLightBuffer;
+				}
+				else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number4])
+				{
+					result = this.PositionBuffer;
+				}
 			}
 			else
 			{
-				this.pipeline.DrawQuad(this.sceneBuffer);
+				if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number1])
+				{
+					result = this.preBloomStages.FinalTexture;
+				}
+				else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number2])
+				{
+					result = this.bloomStages.FinalTexture;
+				}
+				else if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number3])
+				{
+					result = this.postBloomStages.FinalTexture;
+				}
 			}
+
+			Game.Current.Utilities.Draw(target, result, true);
 		}
 
 		private void RenderGeometry(Camera camera)
@@ -233,9 +287,10 @@ namespace OpenWorld.Engine.SceneManagement
 			this.Matrices.View = camera.ViewMatrix;
 			this.Matrices.Projection = camera.ProjectionMatrix;
 
-			GL.CullFace(CullFaceMode.Back);
 			GL.Disable(EnableCap.Blend);
 			GL.Enable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.CullFace);
+			GL.CullFace(CullFaceMode.Back);
 			GL.DepthFunc(DepthFunction.Less);
 
 			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -262,6 +317,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
+			GL.Enable(EnableCap.CullFace);
 			GL.CullFace(CullFaceMode.Front);
 			GL.Enable(EnableCap.DepthTest);
 			GL.DepthFunc(DepthFunction.Gequal);
@@ -269,7 +325,7 @@ namespace OpenWorld.Engine.SceneManagement
 			FrameBuffer.Current = this.frameBufferClearDiffuse;
 
 			// Clear first frame buffer (diffuse)
-			GL.ClearColor(0.15f, 0.15f, 0.15f, 1.0f);
+			GL.ClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
 			FrameBuffer.Current = this.frameBufferClearSpecular;
@@ -327,7 +383,7 @@ namespace OpenWorld.Engine.SceneManagement
 			GL.DepthMask(false);
 
 			this.Sky.Draw(this, camera);
-			
+
 			GL.Enable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.CullFace);
 			GL.Disable(EnableCap.Blend);

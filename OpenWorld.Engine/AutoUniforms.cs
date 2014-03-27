@@ -159,6 +159,15 @@ namespace OpenWorld.Engine
 						return textures;
 					};
 				}
+				else if (propertyType == typeof(bool))
+				{
+					uniform.Apply = (shader, target, textures) =>
+					{
+						var value = property.GetValue(target, new object[0]);
+						shader.SetUniform(name, (bool)value);
+						return textures;
+					};
+				}
 				else if (typeof(Texture).IsAssignableFrom(propertyType))
 				{
 					ThreadLocal<Texture2D> defaultTexture = new ThreadLocal<Texture2D>(() =>

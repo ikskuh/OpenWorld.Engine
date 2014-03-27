@@ -204,10 +204,12 @@
     <Compile Include="OpenGL.cs" />
     <Compile Include="Perspective.cs" />
     <Compile Include="PerspectiveLookAtCamera.cs" />
-    <Compile Include="PostProcessingPipeline.cs" />
     <Compile Include="PostProcessingShader.cs" />
+    <Compile Include="PostProcessingShaders\CombineShader.cs" />
+    <Compile Include="PostProcessingShaders\BlurShader.cs" />
     <Compile Include="PostProcessingShaders\DitheringShader.cs" />
     <Compile Include="PostProcessingShaders\GammaCorrectionShader.cs" />
+    <Compile Include="PostProcessingShaders\HighPassShader.cs" />
     <Compile Include="PostProcessingShaders\LightScatteringShader.cs" />
     <Compile Include="PostProcessingShaders\TonemappingShader.cs" />
     <Compile Include="PostProcessingStage.cs" />

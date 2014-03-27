@@ -21,33 +21,31 @@ uniform sampler2D occlusionBuffer;
 
 const int NUM_SAMPLES = 150;
 
-out vec4 color;
-
 void main()
 {	
  	vec2 deltaTextCoord = vec2(uv - lightPositionOnScreen.xy);
  	deltaTextCoord *= 1.0 /  float(NUM_SAMPLES) * density;
  	float illuminationDecay = 1.0;
 
-	vec3 source = texture(backBuffer, uv).rgb;
+	vec3 source = texture(inputTexture, uv).rgb;
 	
 	vec2 texCoord = uv;
-	color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	fragment = vec4(0.0f, 0.0f, 0.0f, 1.0f);
  	for(int i=0; i < NUM_SAMPLES ; i++)
   	{
     	texCoord -= deltaTextCoord;
-    	vec3 smpl = texture(backBuffer, texCoord).rgb - 4.0f;
+    	vec3 smpl = texture(inputTexture, texCoord).rgb - 4.0f;
 		vec3 normal = texture(occlusionBuffer, texCoord).rgb;
 		if(length(normal) > 0.05f)
 			smpl = vec3(0.0f);
     	smpl *= illuminationDecay * weight;
-    	color.rgb += smpl;
+    	fragment.rgb += smpl;
     	illuminationDecay *= decay;
  	}
- 	color.rgb *= exposure;
+ 	fragment.rgb *= exposure;
 
 	// Fake additive blending
-	color.rgb = source + max(vec3(0.0f), color.rgb);
+	fragment.rgb = source + max(vec3(0.0f), fragment.rgb);
 }";
 
 		/// <summary>

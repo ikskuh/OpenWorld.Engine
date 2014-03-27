@@ -45,7 +45,7 @@ namespace OpenWorld.Engine
 
 					VertexArray.Unbind();
 
-					this.quadShader = new PostProcessingShader("layout(location = 0) out vec4 result; void main() { result = texture(backBuffer, vec2(uv.x, 1.0f - uv.y)); }");
+					this.quadShader = new PostProcessingShader("void main() { fragment = texture(inputTexture, vec2(uv.x, uv.y)); }");
 				});
 		}
 
@@ -55,7 +55,8 @@ namespace OpenWorld.Engine
 		/// </summary>
 		/// <param name="box2">Area to be drawn in.</param>
 		/// <param name="texture2D">Texture to be drawn.</param>
-		public void Draw(Box2 box2, Texture2D texture2D)
+		/// <param name="invertY">Should the texture be drawn inverted on the y-axis?</param>
+		public void Draw(Box2 box2, Texture2D texture2D, bool invertY = false)
 		{
 			GL.Disable(EnableCap.DepthTest);
 			GL.Disable(EnableCap.CullFace);
@@ -64,8 +65,9 @@ namespace OpenWorld.Engine
 
 			this.vao.Bind();
 
-			this.quadShader.BackBuffer = texture2D;
+			this.quadShader.InvertY = invertY;
 			this.quadShader.Use();
+			this.quadShader.SetTexture("inputTexture", texture2D, 0);
 
 			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
