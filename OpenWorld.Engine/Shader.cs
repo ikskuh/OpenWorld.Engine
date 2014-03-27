@@ -46,7 +46,7 @@ namespace OpenWorld.Engine
 		/// <param name="shadercode">Shader source code</param>
 		public void Compile(string shadercode)
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 			{
 				// Link the program
 				if (this.programID != 0)
@@ -430,7 +430,7 @@ namespace OpenWorld.Engine
 		protected override void Load(AssetLoadContext context, System.IO.Stream stream, string extensionHint)
 		{
 			StreamReader reader = new StreamReader(stream, Encoding.ASCII);
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.Compile(reader.ReadToEnd());
 				});

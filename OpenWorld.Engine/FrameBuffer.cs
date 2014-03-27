@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenWorld.Engine
@@ -12,17 +13,63 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public sealed class FrameBuffer : IGLResource
 	{
-		int id;
-		Texture[] textures = null;
+		static ThreadLocal<FrameBuffer> current = new ThreadLocal<FrameBuffer>(() => null);
 
-		// TODO: Restructure frame buffer usage, so Use is no longer needed, just Bind.
+		/// <summary>
+		/// Gets or sets the current frame buffer.
+		/// </summary>
+		public static FrameBuffer Current
+		{
+			get
+			{
+				if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
+				return current.Value;
+			}
+			set
+			{
+				if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
+				current.Value = value;
+				if (value != null)
+					GL.BindFramebuffer(FramebufferTarget.Framebuffer, value.id);
+				else
+					GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+			}
+		}
+
+		int id;
+		RenderBuffer depthBuffer;
+		Texture[] textures = null;
 
 		/// <summary>
 		/// Instantiates a new frame buffer.
 		/// </summary>
 		public FrameBuffer()
 		{
-			GL.GenFramebuffers(1, out this.id);
+			OpenGL.Invoke(() =>
+				{
+					GL.GenFramebuffers(1, out this.id);
+				});
+		}
+
+		/// <summary>
+		/// Creates a new frame buffer and sets the textures.
+		/// </summary>
+		/// <param name="textures"></param>
+		public FrameBuffer(params Texture2D[] textures)
+			: this()
+		{
+			this.SetTextures(textures);
+		}
+
+		/// <summary>
+		/// Creates a new frame buffer and sets the textures.
+		/// </summary>
+		/// <param name="depthBuffer"></param>
+		/// <param name="textures"></param>
+		public FrameBuffer(RenderBuffer depthBuffer, params Texture2D[] textures)
+			: this()
+		{
+			this.SetTextures(depthBuffer, textures);
 		}
 
 		/// <summary>
@@ -30,57 +77,63 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Bind()
 		{
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, this.id);
+			FrameBuffer.Current = this;
 		}
 
 		/// <summary>
-		/// Binds the frame buffer and sets all the parameters.
+		/// Sets the render targets with no depth buffer
 		/// </summary>
-		public void Use()
+		/// <param name="textureList">Array of textures that should be used as a render target.</param>
+		public void SetTextures(params Texture2D[] textureList)
 		{
-			this.Bind();
-
-			// Setup depth buffer
-			int depthBufferID = 0;
-			if (this.DepthBuffer != null)
-				depthBufferID = this.DepthBuffer.Id;
-			GL.FramebufferRenderbuffer(
-				FramebufferTarget.Framebuffer,
-				FramebufferAttachment.DepthAttachment,
-				RenderbufferTarget.Renderbuffer,
-				depthBufferID);
-
-			if (this.textures != null)
-			{
-				DrawBuffersEnum[] drawBuffers = new DrawBuffersEnum[this.textures.Length];
-				for (int i = 0; i < this.textures.Length; i++)
-				{
-					GL.FramebufferTexture(
-						FramebufferTarget.Framebuffer,
-						FramebufferAttachment.ColorAttachment0 + i,
-						this.textures[i].Id, 0);
-					drawBuffers[i] = DrawBuffersEnum.ColorAttachment0 + i;
-				}
-
-				GL.DrawBuffers(drawBuffers.Length, drawBuffers);
-			}
-			else
-			{
-				GL.DrawBuffers(0, new DrawBuffersEnum[0]);
-			}
-
-			FramebufferErrorCode error;
-			if ((error = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer)) != FramebufferErrorCode.FramebufferComplete)
-				throw new InvalidOperationException("Failed to bind FrameBuffer: " + error);
+			this.SetTextures(null, textureList);
 		}
 
 		/// <summary>
 		/// Sets the render targets.
 		/// </summary>
+		/// <param name="depthBuffer">Depth buffer for this frame buffer</param>
 		/// <param name="textureList">Array of textures that should be used as a render target.</param>
-		public void SetTextures(params Texture2D[] textureList)
+		public void SetTextures(RenderBuffer depthBuffer, params Texture2D[] textureList)
 		{
+			this.depthBuffer = depthBuffer;
 			this.textures = textureList;
+			OpenGL.Invoke(() =>
+				{
+					// Setup depth buffer
+					GL.BindFramebuffer(FramebufferTarget.Framebuffer, this.id);
+					int depthBufferID = 0;
+					if (this.depthBuffer != null)
+						depthBufferID = this.depthBuffer.Id;
+					GL.FramebufferRenderbuffer(
+						FramebufferTarget.Framebuffer,
+						FramebufferAttachment.DepthAttachment,
+						RenderbufferTarget.Renderbuffer,
+						depthBufferID);
+
+					if (this.textures != null)
+					{
+						DrawBuffersEnum[] drawBuffers = new DrawBuffersEnum[this.textures.Length];
+						for (int i = 0; i < this.textures.Length; i++)
+						{
+							GL.FramebufferTexture(
+								FramebufferTarget.Framebuffer,
+								FramebufferAttachment.ColorAttachment0 + i,
+								this.textures[i].Id, 0);
+							drawBuffers[i] = DrawBuffersEnum.ColorAttachment0 + i;
+						}
+
+						GL.DrawBuffers(drawBuffers.Length, drawBuffers);
+					}
+					else
+					{
+						GL.DrawBuffers(0, new DrawBuffersEnum[0]);
+					}
+
+					FramebufferErrorCode error;
+					if ((error = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer)) != FramebufferErrorCode.FramebufferComplete)
+						throw new InvalidOperationException("Failed to bind FrameBuffer: " + error);
+				});
 		}
 
 		/// <summary>
@@ -94,22 +147,9 @@ namespace OpenWorld.Engine
 		}
 
 		/// <summary>
-		/// Gets or sets the depth buffer.
-		/// </summary>
-		public RenderBuffer DepthBuffer { get; set; }
-
-		/// <summary>
 		/// Gets the OpenGL resource id.
 		/// </summary>
 		public int Id { get { return this.id; } }
-
-		/// <summary>
-		/// Unbinds the current frame buffer.
-		/// </summary>
-		public static void Unbind()
-		{
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-		}
 
 		static Color clearColor = Color.Black;
 		static float clearDepth = 1.0f;

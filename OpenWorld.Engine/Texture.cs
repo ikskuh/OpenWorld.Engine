@@ -25,7 +25,7 @@ namespace OpenWorld.Engine
 			this.isSRGB = Texture.UseSRGB;
 
 			this.target = target;
-			Game.Current.InvokeOpenGL(() => { this.id = GL.GenTexture(); });
+			OpenGL.Invoke(() => { this.id = GL.GenTexture(); });
 
 			this.WrapS = TextureWrapMode.Repeat;
 			this.WrapT = TextureWrapMode.Repeat;
@@ -69,7 +69,7 @@ namespace OpenWorld.Engine
 			{
 				if (this.id != 0)
 				{
-					Game.Current.InvokeOpenGL(() =>
+					OpenGL.Invoke(() =>
 					   {
 						   GL.DeleteTexture(this.id);
 					   });
@@ -103,7 +103,7 @@ namespace OpenWorld.Engine
 			set
 			{
 				this.wrapS = value;
-				Game.Current.InvokeOpenGL(() =>
+				OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.TexParameter(this.Target, TextureParameterName.TextureWrapS, (int)this.wrapS);
@@ -123,7 +123,7 @@ namespace OpenWorld.Engine
 			set
 			{
 				this.wrapT = value;
-				Game.Current.InvokeOpenGL(() =>
+				OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.TexParameter(this.Target, TextureParameterName.TextureWrapT, (int)this.wrapS);
@@ -143,7 +143,7 @@ namespace OpenWorld.Engine
 			set
 			{
 				this.wrapR = value;
-				Game.Current.InvokeOpenGL(() =>
+				OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.TexParameter(this.Target, TextureParameterName.TextureWrapR, (int)this.wrapS);
@@ -181,7 +181,7 @@ namespace OpenWorld.Engine
 					default:
 						throw new ArgumentException("Filter is not valid.", "filter");
 				}
-				Game.Current.InvokeOpenGL(() =>
+				OpenGL.Invoke(() =>
 					{
 						this.Bind();
 						GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, mag);

@@ -182,7 +182,7 @@ namespace OpenWorld.Engine
 						vertices[k] = vertex;
 					}
 
-					Game.Current.InvokeOpenGL(() =>
+					OpenGL.Invoke(() =>
 						{
 							ModelMesh modelMesh = new ModelMesh(indices, vertices);
 							modelMesh.DiffuseTexture = diffuseTexture;

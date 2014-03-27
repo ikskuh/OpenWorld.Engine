@@ -19,7 +19,10 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public RenderBuffer()
 		{
-			GL.GenRenderbuffers(1, out this.id);
+			OpenGL.Invoke(() =>
+				{
+					GL.GenRenderbuffers(1, out this.id);
+				});
 		}
 
 		/// <summary>
@@ -48,8 +51,12 @@ namespace OpenWorld.Engine
 		/// <param name="height">Height of the buffer.</param>
 		public void SetSize(int width, int height)
 		{
-			this.Bind();
-			GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, width, height);
+			OpenGL.Invoke(() =>
+				{
+					this.Bind();
+					GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, width, height);
+					RenderBuffer.Unbind();
+				});
 			this.Width = width;
 			this.Height = height;
 		}
@@ -67,7 +74,7 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets the width of the render buffer.
 		/// </summary>
-		public int Width {get; private set; }
+		public int Width { get; private set; }
 
 		/// <summary>
 		/// Gets the height of the render buffer.

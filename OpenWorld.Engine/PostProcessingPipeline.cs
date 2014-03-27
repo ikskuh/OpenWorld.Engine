@@ -26,7 +26,7 @@ namespace OpenWorld.Engine
 		/// <param name="height">Screen height></param>
 		public PostProcessingPipeline(int width, int height)
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 			   {
 					this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
 					this.vertexBuffer.SetData<float>(BufferUsageHint.StaticDraw, new[]
@@ -77,7 +77,7 @@ namespace OpenWorld.Engine
 				if (ppEffect.Effect == null)
 					continue;
 				this.frameBuffer.SetTextures(currentTarget);
-				this.frameBuffer.Use();
+				this.frameBuffer.Bind();
 
 				ppEffect.Effect.BackBuffer = currentBuffer;
 				ppEffect.Effect.Use();
@@ -92,7 +92,7 @@ namespace OpenWorld.Engine
 			if (currentTarget == backBuffer)
 			{
 				this.frameBuffer.SetTextures(currentTarget);
-				this.frameBuffer.Use();
+				this.frameBuffer.Bind();
 
 				this.swapShader.BackBuffer = currentBuffer;
 				this.swapShader.Use();
@@ -101,7 +101,7 @@ namespace OpenWorld.Engine
 
 				SwapBuffers(ref currentTarget, ref currentBuffer);
 			}
-			FrameBuffer.Unbind();
+			FrameBuffer.Current = null;
 			VertexArray.Unbind();
 		}
 
@@ -141,7 +141,7 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Dispose()
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 			   {
 				   if (this.vertexBuffer != null)
 					   this.vertexBuffer.Dispose();

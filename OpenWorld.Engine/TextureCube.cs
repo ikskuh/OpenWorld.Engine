@@ -44,7 +44,7 @@ namespace OpenWorld.Engine
 				LoadSide(bmp, 4, TextureTarget.TextureCubeMapNegativeY);
 				LoadSide(bmp, 5, TextureTarget.TextureCubeMapNegativeZ);
 			}
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.TexParameter(this.Target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -70,7 +70,7 @@ namespace OpenWorld.Engine
 			}
 			*/
 			var lockData = bmp.LockBits(area, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.TexImage2D(

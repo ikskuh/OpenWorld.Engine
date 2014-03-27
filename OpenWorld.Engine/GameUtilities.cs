@@ -25,7 +25,7 @@ namespace OpenWorld.Engine
 
 		private void Initialize()
 		{
-			game.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
 					this.vertexBuffer.SetData<float>(BufferUsageHint.StaticDraw, new[]

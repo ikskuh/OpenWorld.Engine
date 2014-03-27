@@ -43,7 +43,7 @@ namespace OpenWorld.Engine
 		public Texture2D(int width, int height, PixelInternalFormat internalFormat, OpenTK.Graphics.OpenGL4.PixelFormat pixelFormat, PixelType pixelType)
 			: this()
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.TexImage2D(
@@ -118,7 +118,7 @@ namespace OpenWorld.Engine
 			if (extensionHint == ".dds")
 			{
 				Log.WriteLine(LocalizedStrings.LoadingUncompressedBitmapFromStream);
-				Game.Current.InvokeOpenGL(() =>
+				OpenGL.Invoke(() =>
 					{
 						if (LoadDDS(stream) != this.Target)
 							throw new InvalidDataException("Could not load texture: Invalid texture format.");
@@ -143,7 +143,7 @@ namespace OpenWorld.Engine
 				throw new ArgumentNullException("bmp");
 			Rectangle area = new Rectangle(0, 0, bmp.Width, bmp.Height);
 			var lockData = bmp.LockBits(area, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.Bind();
 
@@ -172,7 +172,7 @@ namespace OpenWorld.Engine
 		/// <param name="height"></param>
 		public void Load(IntPtr source, int width, int height)
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 			{
 				this.Bind();
 				GL.TexImage2D(
@@ -196,7 +196,7 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Load(byte[] pixels, int width, int height)
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 			{
 				this.Bind();
 				GL.TexImage2D(
@@ -220,7 +220,7 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void GenerateMipMaps()
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
@@ -235,7 +235,7 @@ namespace OpenWorld.Engine
 		/// <param name="type">Type of pixels</param>
 		public void SetData(byte[] pixels, PixelFormat format, PixelType type)
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 				{
 					this.Bind();
 					GL.TexSubImage2D(

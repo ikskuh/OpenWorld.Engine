@@ -20,6 +20,7 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public static void Push()
 		{
+			if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
 			current.Value.stack.Push(current.Value.viewport);
 		}
 
@@ -28,6 +29,7 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public static void Pop()
 		{
+			if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
 			if (current.Value.stack.Count > 0)
 				Viewport.Area = current.Value.stack.Pop();
 			else
@@ -41,10 +43,12 @@ namespace OpenWorld.Engine
 		{
 			get
 			{
+				if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
 				return current.Value.viewport;
 			}
 			set
 			{
+				if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
 				current.Value.viewport = value;
 				GL.Viewport(
 					current.Value.viewport.Top,

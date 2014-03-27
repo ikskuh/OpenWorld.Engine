@@ -40,7 +40,7 @@ namespace OpenWorld.Engine
 			this.indexes = indexes;
 			this.vertices = vertices;
 
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 			{
 				this.vertexArray = new VertexArray();
 				this.vertexBuffer = new Buffer(BufferTarget.ArrayBuffer);
@@ -113,7 +113,7 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public void Dispose()
 		{
-			Game.Current.InvokeOpenGL(() =>
+			OpenGL.Invoke(() =>
 			   {
 				   if (this.vertexBuffer != null)
 					   this.vertexBuffer.Dispose();

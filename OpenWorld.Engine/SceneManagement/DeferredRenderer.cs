@@ -30,7 +30,11 @@ namespace OpenWorld.Engine.SceneManagement
 			public Color Color { get; set; }
 		}
 
-		private FrameBuffer frameBuffer;
+		private FrameBuffer frameBufferGeometry;
+		private FrameBuffer frameBufferClearDiffuse;
+		private FrameBuffer frameBufferClearSpecular;
+		private FrameBuffer frameBufferLights;
+		private FrameBuffer frameBufferScene;
 
 		/// <summary>
 		/// Gets the texture that contains world positions.
@@ -56,7 +60,8 @@ namespace OpenWorld.Engine.SceneManagement
 		[Uniform("SpecularLightBuffer")]
 		public Texture2D SpecularLightBuffer { get; private set; }
 
-		private Texture2D resultBuffer;
+		private Texture2D sceneBuffer;
+		private RenderBuffer depthBuffer;
 
 		private PostProcessingPipeline pipeline;
 		private TonemappingShader tonemappingShader;
@@ -98,7 +103,7 @@ namespace OpenWorld.Engine.SceneManagement
 			this.NormalBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
 			this.DiffuseLightBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
 			this.SpecularLightBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
-			this.resultBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
+			this.sceneBuffer = new Texture2D(width, height, PixelInternalFormat.Rgba16f, PixelFormat.Rgba, PixelType.Float);
 
 			// Create 3d shaders
 			this.geometryShader = new GeometryShader();
@@ -130,11 +135,13 @@ namespace OpenWorld.Engine.SceneManagement
 			this.pipeline.Stages.Add(this.gammaCorrection);
 			this.pipeline.Stages.Add(this.dithering);
 
-			Game.Current.InvokeOpenGL(() =>
-			{
-				this.frameBuffer = new FrameBuffer();
-				this.frameBuffer.DepthBuffer = new RenderBuffer(width, height);
-			});
+			this.depthBuffer = new RenderBuffer(width, height);
+
+			this.frameBufferGeometry = new FrameBuffer(this.depthBuffer, this.PositionBuffer, this.NormalBuffer);
+			this.frameBufferClearDiffuse = new FrameBuffer(this.DiffuseLightBuffer);
+			this.frameBufferClearSpecular = new FrameBuffer(this.SpecularLightBuffer);
+			this.frameBufferLights = new FrameBuffer(this.depthBuffer, this.DiffuseLightBuffer, this.SpecularLightBuffer);
+			this.frameBufferScene = new FrameBuffer(this.depthBuffer, this.sceneBuffer);
 
 			this.DefaultShader = new OpaqueObjectShader();
 		}
@@ -150,6 +157,8 @@ namespace OpenWorld.Engine.SceneManagement
 				throw new ArgumentNullException("scene");
 			if (camera == null)
 				throw new ArgumentNullException("camera");
+
+			var renderTarget = FrameBuffer.Current;
 
 			Viewport.Push();
 			Viewport.Area = new Box2i(0, 0, this.Width, this.Height);
@@ -183,16 +192,17 @@ namespace OpenWorld.Engine.SceneManagement
 			{
 				this.lightScattering.Enabled = false;
 			}
+			FrameBuffer.Current = null;
 
-			this.pipeline.Apply(this.resultBuffer);
+			this.pipeline.Apply(this.sceneBuffer);
+
+			FrameBuffer.Current = renderTarget;
+
+			Viewport.Pop();
 
 			GL.Disable(EnableCap.Blend);
 			GL.Disable(EnableCap.DepthTest);
 			GL.Disable(EnableCap.CullFace);
-
-			FrameBuffer.Unbind();
-
-			Viewport.Pop();
 
 			if (Game.Current.Input.Keyboard[OpenTK.Input.Key.Number1])
 			{
@@ -212,22 +222,24 @@ namespace OpenWorld.Engine.SceneManagement
 			}
 			else
 			{
-				this.pipeline.DrawQuad(this.resultBuffer);
+				this.pipeline.DrawQuad(this.sceneBuffer);
 			}
 		}
 
 		private void RenderGeometry(Camera camera)
 		{
+			FrameBuffer.Current = this.frameBufferGeometry;
+
 			this.Matrices.View = camera.ViewMatrix;
 			this.Matrices.Projection = camera.ProjectionMatrix;
 
 			GL.CullFace(CullFaceMode.Back);
 			GL.Disable(EnableCap.Blend);
+			GL.Enable(EnableCap.DepthTest);
 			GL.DepthFunc(DepthFunction.Less);
 
-			this.frameBuffer.SetTextures(this.PositionBuffer, this.NormalBuffer);
-			this.frameBuffer.Use();
-
+			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			GL.ClearDepth(1.0f);
 			GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
 
 			this.geometryShader.Use();
@@ -239,6 +251,8 @@ namespace OpenWorld.Engine.SceneManagement
 
 				job.Model.Draw((mesh) => geometryShader.Update(mesh), geometryShader.HasTesselation);
 			}
+
+			FrameBuffer.Current = null;
 		}
 
 		private void RenderLights(Camera camera)
@@ -249,29 +263,26 @@ namespace OpenWorld.Engine.SceneManagement
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
 			GL.CullFace(CullFaceMode.Front);
-			GL.DepthFunc(DepthFunction.Lequal);
+			GL.Enable(EnableCap.DepthTest);
+			GL.DepthFunc(DepthFunction.Gequal);
 
-
-			this.frameBuffer.SetTextures(this.DiffuseLightBuffer);
-			this.frameBuffer.Use();
+			FrameBuffer.Current = this.frameBufferClearDiffuse;
 
 			// Clear first frame buffer (diffuse)
 			GL.ClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
-			this.frameBuffer.SetTextures(this.SpecularLightBuffer);
-			this.frameBuffer.Use();
+			FrameBuffer.Current = this.frameBufferClearSpecular;
 
 			// Clear second frame buffer (specular)
 			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
-			this.frameBuffer.SetTextures(this.DiffuseLightBuffer, this.SpecularLightBuffer);
-			this.frameBuffer.Use();
+			FrameBuffer.Current = this.frameBufferLights;
 
 			// Clear depth
-			GL.DepthMask(true);
-			GL.Clear(ClearBufferMask.DepthBufferBit);
+			//GL.DepthMask(true);
+			//GL.Clear(ClearBufferMask.DepthBufferBit);
 			GL.DepthMask(false);
 
 			//this.LightCount = 0;
@@ -298,6 +309,7 @@ namespace OpenWorld.Engine.SceneManagement
 			//this.ui.Draw(new RectangleF(-1, -1, 2, 2), this.normalBuffer, this.sunLightShader);
 
 			GL.DepthMask(true);
+			FrameBuffer.Current = null;
 		}
 
 		private void RenderOpaque(Camera camera)
@@ -305,19 +317,17 @@ namespace OpenWorld.Engine.SceneManagement
 			this.Matrices.View = camera.ViewMatrix;
 			this.Matrices.Projection = camera.ProjectionMatrix;
 
-			// Unbind framebuffer -> draw on screen
-			this.frameBuffer.SetTextures(this.resultBuffer);
-			this.frameBuffer.Use();
+			FrameBuffer.Current = this.frameBufferScene;
 
 			// No depth, we use the depth from the previous pass.
 			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
 
+			// Don't write z, just compare
 			GL.DepthMask(false);
 
 			this.Sky.Draw(this, camera);
-
-			GL.DepthMask(true);
+			
 			GL.Enable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.CullFace);
 			GL.Disable(EnableCap.Blend);
@@ -337,6 +347,9 @@ namespace OpenWorld.Engine.SceneManagement
 
 				//this.OpaqueCount += 1;
 			}
+
+			GL.DepthMask(true);
+			FrameBuffer.Current = null;
 		}
 
 		/// <summary>

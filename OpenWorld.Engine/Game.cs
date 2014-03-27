@@ -80,7 +80,7 @@ namespace OpenWorld.Engine
 				presentation.DisplayDevice ?? DisplayDevice.Default,
 				4, 1,
 #if DEBUG
-				GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
+ GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug))
 #else
 				GraphicsContextFlags.Default | GraphicsContextFlags.ForwardCompatible))	
 #endif
@@ -222,7 +222,7 @@ namespace OpenWorld.Engine
 					continue;
 				handler.Routine();
 				var error = OpenTK.Audio.OpenAL.AL.GetError();
-				if(error != OpenTK.Audio.OpenAL.ALError.NoError)
+				if (error != OpenTK.Audio.OpenAL.ALError.NoError)
 				{
 					System.Diagnostics.Debug.WriteLine("AL Error: " + error);
 					System.Diagnostics.Debugger.Break();
@@ -256,7 +256,7 @@ namespace OpenWorld.Engine
 				// Step all co-routines
 				this.coRoutineHost.Step();
 
-				if(this.nextState != this.currentState)
+				if (this.nextState != this.currentState)
 				{
 					if (this.currentState != null)
 					{
@@ -351,7 +351,7 @@ namespace OpenWorld.Engine
 				Routine = routine,
 				WaitHandle = new ManualResetEvent(false)
 			};
-			if(openGL)
+			if (openGL)
 				this.deferredGLRoutines.Enqueue(handler);
 			else
 				this.deferredRoutines.Enqueue(handler);
@@ -363,6 +363,7 @@ namespace OpenWorld.Engine
 		/// </summary>
 		/// <remarks>Useful for mapping OpenGL resources from another thread.</remarks>
 		/// <param name="routine">The routine to be deferred.</param>
+		[Obsolete("This function is obsolete, use OpenGL.Invoke instead.", false)]
 		public void InvokeOpenGL(DeferredRoutine routine)
 		{
 			if (routine == null)
@@ -521,6 +522,55 @@ namespace OpenWorld.Engine
 			where T : Game
 		{
 			return Game.Current as T;
+		}
+
+		/// <summary>
+		/// Gets the current engine thread type.
+		/// </summary>
+		public static EngineThreadType ThreadType
+		{
+			get
+			{
+				if (Game.Current == null)
+					return EngineThreadType.None;
+				var current = System.Threading.Thread.CurrentThread;
+
+				if (current == Game.Current.drawThread)
+					return EngineThreadType.Render;
+				if (current == Game.Current.updateThread)
+					return EngineThreadType.Update;
+				for (int i = 0; i < Game.Current.deferralThreads.Length; i++)
+				{
+					if (current == Game.Current.deferralThreads[i])
+						return EngineThreadType.Deferral;
+				}
+				return EngineThreadType.None;
+			}
+		}
+
+		/// <summary>
+		/// Checks if the current thread is the given engine thread.
+		/// </summary>
+		/// <param name="type">Engine thread type.</param>
+		/// <returns>True if current thread is engine thread.</returns>
+		public static bool IsThread(EngineThreadType type)
+		{
+			if (Game.Current == null)
+				return type == EngineThreadType.None;
+			var current = System.Threading.Thread.CurrentThread;
+			if (current == Game.Current.drawThread && type == EngineThreadType.Render)
+				return true;
+			if (current == Game.Current.updateThread && type == EngineThreadType.Update)
+				return true;
+			if (type == EngineThreadType.Deferral)
+			{
+				for (int i = 0; i < Game.Current.deferralThreads.Length; i++)
+				{
+					if (current == Game.Current.deferralThreads[i])
+						return true;
+				}
+			}
+			return false;
 		}
 
 		#endregion

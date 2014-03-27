@@ -161,6 +161,7 @@
     <Compile Include="CoRoutineHost.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="DiGraph.cs" />
+    <Compile Include="EngineThreadType.cs" />
     <Compile Include="FileSystemAssetSource.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GameUtilities.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Model.Cube.cs" />
     <Compile Include="ModelMesh.cs" />
     <Compile Include="ObjectShader.cs" />
+    <Compile Include="OpenGL.cs" />
     <Compile Include="Perspective.cs" />
     <Compile Include="PerspectiveLookAtCamera.cs" />
     <Compile Include="PostProcessingPipeline.cs" />
