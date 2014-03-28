@@ -53,7 +53,7 @@ layout(location = 0) out vec4 fragment;";
 		public PostProcessingShader()
 			: base()
 		{
-			this.Compile(BuildSource(defaultFragmentShader));
+			this.Load(BuildSource(defaultFragmentShader));
 		}
 
 		/// <summary>
@@ -63,7 +63,7 @@ layout(location = 0) out vec4 fragment;";
 		public PostProcessingShader(string fragmentShader)
 			: base()
 		{
-			this.Compile(BuildSource(fragmentShader));
+			this.Load(BuildSource(fragmentShader));
 		}
 
 		private static string BuildSource(string fragment)

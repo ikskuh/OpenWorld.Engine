@@ -76,7 +76,7 @@ namespace OpenWorld.Engine.SceneManagement
 		private PostProcessingStage bloomStages;
 		private PostProcessingStage postBloomStages;
 
-		private GeometryShader geometryShader;
+		private ShaderFragment geometryPixelShader;
 		private PointLightShader pointLightShader;
 		private Model lightCube;
 
@@ -109,7 +109,8 @@ namespace OpenWorld.Engine.SceneManagement
 			this.sceneBuffer = CreateTexture(width, height);
 
 			// Create 3d shaders
-			this.geometryShader = new GeometryShader();
+			this.geometryPixelShader = new ShaderFragment(ShaderType.FragmentShader);
+			// TODO: Compile fragment shader into geom shader.
 
 			this.pointLightShader = new PointLightShader();
 
@@ -234,13 +235,11 @@ namespace OpenWorld.Engine.SceneManagement
 
 			var target = new Box2(0, 0, Game.Current.Width, Game.Current.Height);
 			Texture2D result = this.preBloomStages.Render(this.sceneBuffer);
-
+			
+			// After prebloom, set shader variable
 			this.bloomCombineShader.OriginalMap = result;
-
 			result = this.bloomStages.Render(result);
-
 			result = this.postBloomStages.Render(result);
-
 
 			if (!Game.Current.Input.Keyboard[OpenTK.Input.Key.ShiftLeft])
 			{
@@ -297,14 +296,17 @@ namespace OpenWorld.Engine.SceneManagement
 			GL.ClearDepth(1.0f);
 			GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
 
-			this.geometryShader.Use();
 			foreach (var job in this.SolidRenderJobs)
 			{
 				this.Matrices.World = job.Transform;
 
-				geometryShader.Use(job.Material, this.Matrices, this);
+				var shader = job.Material.Shader ?? this.DefaultShader;
 
-				job.Model.Draw((mesh) => geometryShader.Update(mesh), geometryShader.HasTesselation);
+				CompiledShader cs = shader.Select("DeferredRenderer", this.geometryPixelShader);
+				cs.Bind();
+				cs.BindUniforms(job.Material, this.Matrices, this);
+
+				job.Model.Draw((mesh) => cs.BindUniform(mesh), cs.HasTesselation);
 			}
 
 			FrameBuffer.Current = null;
@@ -346,6 +348,10 @@ namespace OpenWorld.Engine.SceneManagement
 			var lights = new LightUniforms();
 			lights.ViewPosition = Matrix4.Invert(camera.ViewMatrix).Row3.Xyz;
 
+			var cs = pointLightShader.Select();
+			cs.Bind();
+			cs.BindUniform(this);
+
 			foreach (var job in this.LightRenderJobs)
 			{
 				lights.Position = job.Position;
@@ -353,10 +359,7 @@ namespace OpenWorld.Engine.SceneManagement
 				lights.Color = job.Color;
 				this.Matrices.World = Matrix4.CreateScale(2.0f * job.Radius) * Matrix4.CreateTranslation(job.Position);
 
-				// Set uniforms
-
-				pointLightShader.Use(lights, this.Matrices, this);
-
+				cs.BindUniforms(lights, this.Matrices);
 				this.lightCube.Draw();
 			}
 
@@ -397,9 +400,11 @@ namespace OpenWorld.Engine.SceneManagement
 
 				var shader = job.Material.Shader ?? this.DefaultShader;
 
-				shader.Use(job.Material, this.Matrices, this);
+				CompiledShader cs = shader.Select("DeferredRenderer");
+				cs.Bind();
+				cs.BindUniforms(job.Material, this.Matrices, this);
 
-				job.Model.Draw((mesh) => shader.Update(mesh), shader.HasTesselation);
+				job.Model.Draw((mesh) => cs.BindUniform(mesh), cs.HasTesselation);
 
 				//this.OpaqueCount += 1;
 			}

@@ -9,7 +9,7 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 	{
 		public OpaqueObjectShader()
 		{
-			this.Compile(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.opaqueObject.glsl"));
+			this.Load(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.opaqueObject.glsl"));
 		}
 	}
 }

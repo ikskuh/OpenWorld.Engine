@@ -66,8 +66,10 @@ namespace OpenWorld.Engine
 			this.vao.Bind();
 
 			this.quadShader.InvertY = invertY;
-			this.quadShader.Use();
-			this.quadShader.SetTexture("inputTexture", texture2D, 0);
+			var cs = this.quadShader.Select();
+
+			cs.Bind();
+			cs["inputTexture"].SetValue(texture2D);
 
 			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 

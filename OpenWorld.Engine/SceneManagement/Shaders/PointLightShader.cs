@@ -10,7 +10,7 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 	{
 		public PointLightShader()
 		{
-			this.Compile(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.light.glsl"));
+			this.Load(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.light.glsl"));
 		}
 	}
 }

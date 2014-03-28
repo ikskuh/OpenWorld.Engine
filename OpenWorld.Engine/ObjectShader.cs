@@ -50,7 +50,7 @@ void main()
 		/// </summary>
 		public ObjectShader()
 		{
-			this.Compile(source);
+			this.Load(source);
 		}
 	}
 }

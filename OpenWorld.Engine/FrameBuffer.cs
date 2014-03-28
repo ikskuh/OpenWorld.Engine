@@ -22,12 +22,12 @@ namespace OpenWorld.Engine
 		{
 			get
 			{
-				if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
+				OpenGL.ValidateThread();
 				return current.Value;
 			}
 			set
 			{
-				if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be used outside the engine draw thread.");
+				OpenGL.ValidateThread();
 				current.Value = value;
 				if (value != null)
 					GL.BindFramebuffer(FramebufferTarget.Framebuffer, value.id);

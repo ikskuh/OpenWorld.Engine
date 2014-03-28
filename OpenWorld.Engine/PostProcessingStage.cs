@@ -81,7 +81,7 @@ namespace OpenWorld.Engine
 		/// <returns>TargetTexture of the last linked post processing stage.</returns>
 		public Texture2D Render(Texture2D sourceTexture)
 		{
-			if (!Game.IsThread(EngineThreadType.Render)) throw new InvalidOperationException("Can't be invoked outside of render thread.");
+			OpenGL.ValidateThread();
 			GL.Disable(EnableCap.Blend);
 			GL.Disable(EnableCap.DepthTest);
 			GL.Disable(EnableCap.CullFace);
@@ -104,7 +104,10 @@ namespace OpenWorld.Engine
 				this.tools.Value.frameBuffer.Bind();
 
 				stage.Effect.InvertY = true;
-				stage.Effect.Use(stage);
+
+				var cs = stage.Effect.Select();
+				cs.Bind();
+				cs.BindUniform(stage);
 
 				GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
@@ -145,6 +148,9 @@ namespace OpenWorld.Engine
 		/// <remarks>Stage builds a linked list that is called in Render.</remarks>
 		public PostProcessingStage Stage { get; set; }
 
+		/// <summary>
+		/// Gets the final target texture of this stage chain.
+		/// </summary>
 		public Texture2D FinalTexture
 		{
 			get

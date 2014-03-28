@@ -10,7 +10,7 @@ namespace OpenWorld.Engine.SceneManagement.Shaders
 	{
 		public GeometryShader()
 		{
-			this.Compile(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.geometry.glsl"));
+			this.Load(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.geometry.glsl"));
 		}
 	}
 }

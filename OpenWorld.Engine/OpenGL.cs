@@ -21,5 +21,16 @@ namespace OpenWorld.Engine
 			Game.Current.InvokeOpenGL(routine);
 #pragma warning restore 618
 		}
+
+		/// <summary>
+		/// Validates the current thread for OpenGL usability.
+		/// </summary>
+		public static void ValidateThread()
+		{
+			if (Game.IsThread(EngineThreadType.Render))
+				return;
+			else
+				throw new InvalidOperationException("OpenGL validation failed: Function was called in the wrong thread.");
+		}
 	}
 }

@@ -79,7 +79,16 @@ namespace OpenWorld.Engine {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to compile {1} for {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to compile {0} ähnelt.
+        /// </summary>
+        internal static string ShaderCompilerFailedResult {
+            get {
+                return ResourceManager.GetString("ShaderCompilerFailedResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shader compiler output for {0} ähnelt.
         /// </summary>
         internal static string ShaderCompilerResult {
             get {

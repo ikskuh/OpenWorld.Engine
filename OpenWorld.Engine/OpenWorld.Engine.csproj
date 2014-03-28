@@ -154,7 +154,7 @@
   <ItemGroup>
     <Compile Include="AssetManager.AssetCache.cs" />
     <Compile Include="AssetSource.cs" />
-    <Compile Include="AutoUniforms.cs" />
+    <Compile Include="ShaderSystem\AutoUniforms.cs" />
     <Compile Include="Box2i.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CompositeCamera.cs" />
@@ -183,10 +183,9 @@
     <Compile Include="IdAttribute.cs" />
     <Compile Include="IGLResource.cs" />
     <Compile Include="ImageDDS.cs" />
-    <Compile Include="BaseMaterial.cs" />
+    <Compile Include="ShaderSystem\BaseMaterial.cs" />
     <Compile Include="IMatrixSource.cs" />
     <Compile Include="InputManager.cs" />
-    <Compile Include="IShaderUniforms.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="LocalizedStrings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -248,10 +247,12 @@
     <Compile Include="SceneManagement\SphereShape.cs" />
     <Compile Include="SceneManagement\Terrain.cs" />
     <Compile Include="SceneManagement\Transform.cs" />
-    <Compile Include="Shader.cs" />
-    <Compile Include="ShaderCompilationException.cs" />
-    <Compile Include="ShaderGenerator.cs" />
-    <Compile Include="ShaderLinkingException.cs" />
+    <Compile Include="ShaderSystem\CompiledShader.cs" />
+    <Compile Include="ShaderSystem\Shader.cs" />
+    <Compile Include="ShaderSystem\ShaderCompilationException.cs" />
+    <Compile Include="ShaderSystem\ShaderFragment.cs" />
+    <Compile Include="ShaderSystem\ShaderLinkingException.cs" />
+    <Compile Include="ShaderSystem\Uniform.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="Sound\AudioBuffer.cs" />
     <Compile Include="Sound\AudioListener.cs" />
