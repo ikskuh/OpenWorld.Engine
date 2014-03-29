@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OpenWorld.Engine
+namespace OpenWorld.Engine.ShaderSystem
 {
 	/// <summary>
 	/// 
@@ -38,7 +38,7 @@ namespace OpenWorld.Engine
 		/// <param name="value"></param>
 		public void SetValue(bool value)
 		{
-			ValidateType(ActiveUniformType.Float);
+			ValidateType(ActiveUniformType.Int);
 			GL.ProgramUniform1(this.shader.Id, this.Location, value ? -1 : 0);
 		}
 
@@ -136,7 +136,7 @@ namespace OpenWorld.Engine
 				value.M31, value.M32, value.M33, value.M34,
 				value.M41, value.M42, value.M43, value.M44
 			};
-			GL.ProgramUniformMatrix4(this.shader.Id, this.Location, array.Length, transpose, array);
+			GL.ProgramUniformMatrix4(this.shader.Id, this.Location, 1, transpose, array);
 		}
 
 		/// <summary>
@@ -149,14 +149,15 @@ namespace OpenWorld.Engine
 				throw new InvalidOperationException("Trying to set a sampler value into a non-sampler uniform.");
 			
 			int slot = this.shader.GetTextureSlot(this);
-			this.SetValue(slot);
+
+			// Don't use SetValue here: Will fail because of invalid type.
+			GL.ProgramUniform1(this.shader.Id, this.Location, slot);
 
 			GL.ActiveTexture(TextureUnit.Texture0 + slot);
 			if (value != null)
 				value.Bind();
 			else
-				// missingTexture.Value.Bind();
-				throw new NotImplementedException();
+				Resource.Engine.MissingTexture.Bind();
 		}
 
 		#endregion

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace OpenWorld.Engine
+namespace OpenWorld.Engine.ShaderSystem
 {
 	/// <summary>
 	/// An exception that is thrown when a shader linking error occurs.

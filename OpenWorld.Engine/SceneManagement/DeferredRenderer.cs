@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenWorld.Engine.PostProcessingShaders;
 using OpenWorld.Engine.SceneManagement.Shaders;
+using OpenWorld.Engine.ShaderSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,7 +111,32 @@ namespace OpenWorld.Engine.SceneManagement
 
 			// Create 3d shaders
 			this.geometryPixelShader = new ShaderFragment(ShaderType.FragmentShader);
-			// TODO: Compile fragment shader into geom shader.
+			this.geometryPixelShader.Compile(
+@"#version 410 core
+uniform sampler2D meshNormalMap;
+uniform sampler2D meshDiffuseTexture;
+uniform float mtlSpecularPower;
+
+in vec3 position;
+in vec3 normal;
+in vec3 tangent;
+in vec3 bitangent;
+in vec2 uv;
+
+layout(location = 0) out vec4 positionOut;
+layout(location = 1) out vec4 normalOut;
+
+void main()
+{
+	if(texture(meshDiffuseTexture, uv).a < 0.5f) discard;	
+
+	positionOut = vec4(position, 1);
+
+	vec3 bump = normalize(2.0f * texture(meshNormalMap, uv).xyz - 1.0f);
+	normalOut.xyz = mat3(tangent, bitangent, normal) * bump;
+	normalOut.w = mtlSpecularPower;
+	//normalOut.xyz = normal;
+}");
 
 			this.pointLightShader = new PointLightShader();
 
@@ -178,7 +204,7 @@ namespace OpenWorld.Engine.SceneManagement
 			this.frameBufferLights = new FrameBuffer(this.depthBuffer, this.DiffuseLightBuffer, this.SpecularLightBuffer);
 			this.frameBufferScene = new FrameBuffer(this.depthBuffer, this.sceneBuffer);
 
-			this.DefaultShader = new OpaqueObjectShader();
+			this.DefaultShader = new ObjectShader();
 		}
 
 		private static Texture2D CreateTexture(int width, int height)
@@ -234,8 +260,9 @@ namespace OpenWorld.Engine.SceneManagement
 			GL.Enable(EnableCap.CullFace);
 
 			var target = new Box2(0, 0, Game.Current.Width, Game.Current.Height);
-			Texture2D result = this.preBloomStages.Render(this.sceneBuffer);
+			Texture2D result = this.sceneBuffer;
 			
+			result = this.preBloomStages.Render(result);
 			// After prebloom, set shader variable
 			this.bloomCombineShader.OriginalMap = result;
 			result = this.bloomStages.Render(result);

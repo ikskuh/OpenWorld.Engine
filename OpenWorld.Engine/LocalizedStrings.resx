@@ -123,13 +123,16 @@
   <data name="LoadingUncompressedBitmapFromStream" xml:space="preserve">
     <value>Loading uncompressed bitmap file from stream...</value>
   </data>
-  <data name="ShaderCompilerFailedResult" xml:space="preserve">
+  <data name="ShaderCompilerFailed" xml:space="preserve">
     <value>Failed to compile {0}</value>
   </data>
   <data name="ShaderCompilerResult" xml:space="preserve">
     <value>Shader compiler output for {0}</value>
   </data>
+  <data name="ShaderLinkerFailed" xml:space="preserve">
+    <value>Shader linker failed:</value>
+  </data>
   <data name="ShaderLinkerResult" xml:space="preserve">
-    <value>Shader linker result for {0}</value>
+    <value>Shader linker output:</value>
   </data>
 </root>

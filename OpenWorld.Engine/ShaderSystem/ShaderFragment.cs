@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OpenWorld.Engine
+namespace OpenWorld.Engine.ShaderSystem
 {
 	/// <summary>
 	/// Defines an OpenGL shader object.
@@ -41,28 +41,31 @@ namespace OpenWorld.Engine
 		/// <param name="sources">Source code parts to compile.</param>
 		public void Compile(params string[] sources)
 		{
-			GL.ShaderSource(this.id, sources.Length, sources, (int[])null);
-			GL.CompileShader(this.id);
+			OpenGL.Invoke(() =>
+				{
+					GL.ShaderSource(this.id, sources.Length, sources, (int[])null);
+					GL.CompileShader(this.id);
 
-			int status;
-			string infoLog = GL.GetShaderInfoLog(this.id);
-			GL.GetShader(this.id, ShaderParameter.CompileStatus, out status);
-			if(status != 0)
-			{
-				Log.WriteLine(LocalizedStrings.ShaderCompilerFailedResult, this.type);
-				if (!string.IsNullOrWhiteSpace(infoLog))
-				{
-					Log.WriteLine(infoLog);
-				}
-			}
-			else
-			{
-				if (!string.IsNullOrWhiteSpace(infoLog))
-				{
-					Log.WriteLine(LocalizedStrings.ShaderCompilerResult, this.type);
-					Log.WriteLine(infoLog);
-				}
-			}
+					int status;
+					string infoLog = GL.GetShaderInfoLog(this.id);
+					GL.GetShader(this.id, ShaderParameter.CompileStatus, out status);
+					if (status == 0)
+					{
+						Log.WriteLine(LocalizedStrings.ShaderCompilerFailed, this.type);
+						if (!string.IsNullOrWhiteSpace(infoLog))
+						{
+							Log.WriteLine(infoLog);
+						}
+					}
+					else
+					{
+						if (!string.IsNullOrWhiteSpace(infoLog))
+						{
+							Log.WriteLine(LocalizedStrings.ShaderCompilerResult, this.type);
+							Log.WriteLine(infoLog);
+						}
+					}
+				});
 		}
 
 		/// <summary>

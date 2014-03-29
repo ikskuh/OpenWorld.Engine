@@ -1,10 +1,11 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenWorld.Engine.ShaderSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OpenWorld.Engine
+namespace OpenWorld.Engine.ShaderSystem
 {
 	/// <summary>
 	/// Provides a compiled OpenGL shader program.
@@ -57,6 +58,8 @@ namespace OpenWorld.Engine
 		{
 			OpenGL.ValidateThread();
 			GL.UseProgram(this.id);
+			if(this.Shader.Variables != null)
+				this.BindUniform(this.Shader.Variables);
 		}
 
 		/// <summary>

@@ -4,14 +4,41 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 
 namespace OpenWorld.Engine
 {
 	/// <summary>
 	/// Provides methods for loading embedded resources.
 	/// </summary>
-	public static class Resource
+	public class Resource 
 	{
+		static Resource engine;
+
+		/// <summary>
+		/// Gets the engine resources.
+		/// </summary>
+		public static Resource Engine
+		{
+			get
+			{
+				if (engine == null)
+					engine = new Resource();
+				return engine;
+			}
+		}
+
+		private Resource()
+		{
+			this.MissingTexture = new Texture2D(Resource.Open("OpenWorld.Engine.Resources.missing.png"));
+			this.MissingTexture.Filter = Filter.Nearest;
+		}
+		
+		/// <summary>
+		/// Gets the texture that is assigned if something is missing.
+		/// </summary>
+		public Texture2D MissingTexture { get; private set; }
+
 		/// <summary>
 		/// Opens a resource stream for an embedded resource in the current assembly.
 		/// </summary>

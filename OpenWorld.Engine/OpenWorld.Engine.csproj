@@ -225,7 +225,6 @@
     <Compile Include="SceneManagement\PolygonShape.cs" />
     <Compile Include="SceneManagement\RaycastResult.cs" />
     <Compile Include="SceneManagement\SceneNodeMotionState.cs" />
-    <Compile Include="SceneManagement\Shaders\OpaqueObjectShader.cs" />
     <Compile Include="SceneManagement\PointLight.cs" />
     <Compile Include="SceneManagement\Renderer.cs" />
     <Compile Include="SceneManagement\RequiredComponentAttribute.cs" />
@@ -238,7 +237,6 @@
     <Compile Include="SceneManagement\SceneRenderer.cs" />
     <Compile Include="SceneManagement\SceneRenderer.RenderJob.cs" />
     <Compile Include="SceneManagement\Scriptable.cs" />
-    <Compile Include="SceneManagement\Shaders\GeometryShader.cs" />
     <Compile Include="SceneManagement\Shaders\PointLightShader.cs" />
     <Compile Include="SceneManagement\Shape.cs" />
     <Compile Include="SceneManagement\SimpleRenderer.cs" />
@@ -248,7 +246,9 @@
     <Compile Include="SceneManagement\Terrain.cs" />
     <Compile Include="SceneManagement\Transform.cs" />
     <Compile Include="ShaderSystem\CompiledShader.cs" />
+    <Compile Include="ShaderSystem\InvalidShaderException.cs" />
     <Compile Include="ShaderSystem\Shader.cs" />
+    <Compile Include="ShaderSystem\ShaderCache.cs" />
     <Compile Include="ShaderSystem\ShaderCompilationException.cs" />
     <Compile Include="ShaderSystem\ShaderFragment.cs" />
     <Compile Include="ShaderSystem\ShaderLinkingException.cs" />
@@ -296,9 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="SceneManagement\Shaders\geometry.glsl" />
     <EmbeddedResource Include="SceneManagement\Shaders\light.glsl" />
-    <EmbeddedResource Include="SceneManagement\Shaders\opaqueObject.glsl" />
     <None Include="SharpFont.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

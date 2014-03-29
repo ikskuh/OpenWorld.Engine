@@ -81,9 +81,9 @@ namespace OpenWorld.Engine {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to compile {0} ähnelt.
         /// </summary>
-        internal static string ShaderCompilerFailedResult {
+        internal static string ShaderCompilerFailed {
             get {
-                return ResourceManager.GetString("ShaderCompilerFailedResult", resourceCulture);
+                return ResourceManager.GetString("ShaderCompilerFailed", resourceCulture);
             }
         }
         
@@ -97,7 +97,16 @@ namespace OpenWorld.Engine {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Shader linker result for {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shader linker failed: ähnelt.
+        /// </summary>
+        internal static string ShaderLinkerFailed {
+            get {
+                return ResourceManager.GetString("ShaderLinkerFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shader linker output: ähnelt.
         /// </summary>
         internal static string ShaderLinkerResult {
             get {

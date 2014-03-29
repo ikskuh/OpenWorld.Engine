@@ -11,41 +11,55 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public class PostProcessingShader : Shader
 	{
+		private class PPShaderTag
+		{
+			public string ppshader { get; set; }
+		}
+
 		// If const is used and a newer version of the DLL is provided, this string won't change.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1802:UseLiteralsWhereAppropriate")]
-		private static readonly string shaderStart =
-@"#version 330
-#ifdef __VertexShader
-layout(location = 0) in vec2 vertexPosition;
-uniform int invertY;
-out vec2 uv;
+		private static readonly string source =
+@"shader.version = ""330""
 
-void main()
+default = 
+[[
+	void main()
+	{
+		fragment = texture(inputTexture, uv);
+	}
+]]
+
+shader:add
 {
-	gl_Position = vec4(vertexPosition.xy, 0.0f, 1.0f);
-	if(invertY != 0)
-		uv = 0.5f + 0.5f * vertexPosition.xy;
-	else
-		uv = vec2(0, 1) + vec2(1, -1) * (0.5f + 0.5f * vertexPosition.xy);
+	type = ""vertex"",
+	source = 
+[[
+	layout(location = 0) in vec2 vertexPosition;
+	uniform int invertY;
+	out vec2 uv;
+
+	void main()
+	{
+		gl_Position = vec4(vertexPosition.xy, 0.0f, 1.0f);
+		if(invertY != 0)
+			uv = 0.5f + 0.5f * vertexPosition.xy;
+		else
+			uv = vec2(0, 1) + vec2(1, -1) * (0.5f + 0.5f * vertexPosition.xy);
+	}
+]]
 }
-#endif
-#ifdef __FragmentShader
-in vec2 uv;
-uniform sampler2D inputTexture;
-layout(location = 0) out vec4 fragment;";
 
-
-		// If const is used and a newer version of the DLL is provided, this string won't change.
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1802:UseLiteralsWhereAppropriate")]
-		private static readonly string shaderEnd = "#endif";
-
-		// If const is used and a newer version of the DLL is provided, this string won't change.
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1802:UseLiteralsWhereAppropriate")]
-		private static readonly string defaultFragmentShader =
-@"void main()
+shader:add
 {
-	fragment = texture(inputTexture, uv);
-}";
+	type = ""fragment"",
+	source = 
+[[
+	in vec2 uv;
+	uniform sampler2D inputTexture;
+	layout(location = 0) out vec4 fragment;
+]] .. tag.ppshader or default
+}
+";
 
 		/// <summary>
 		/// Instantiates a new post processing shader.
@@ -53,7 +67,7 @@ layout(location = 0) out vec4 fragment;";
 		public PostProcessingShader()
 			: base()
 		{
-			this.Load(BuildSource(defaultFragmentShader));
+			this.Load(source);
 		}
 
 		/// <summary>
@@ -63,12 +77,7 @@ layout(location = 0) out vec4 fragment;";
 		public PostProcessingShader(string fragmentShader)
 			: base()
 		{
-			this.Load(BuildSource(fragmentShader));
-		}
-
-		private static string BuildSource(string fragment)
-		{
-			return shaderStart + "\n" + fragment + "\n" + shaderEnd;
+			this.Load(source, new PPShaderTag() { ppshader = fragmentShader });
 		}
 
 		/// <summary>
