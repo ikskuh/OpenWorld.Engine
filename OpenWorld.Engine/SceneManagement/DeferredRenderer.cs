@@ -15,22 +15,6 @@ namespace OpenWorld.Engine.SceneManagement
 	/// </summary>
 	public sealed class DeferredRenderer : SceneRenderer
 	{
-		[UniformPrefix("light")]
-		class LightUniforms
-		{
-			[Uniform("ViewPosition")]
-			public Vector3 ViewPosition { get; set; }
-
-			[Uniform("Position")]
-			public Vector3 Position { get; set; }
-
-			[Uniform("Radius")]
-			public float Radius { get; set; }
-
-			[Uniform("Color")]
-			public Color Color { get; set; }
-		}
-
 		private FrameBuffer frameBufferGeometry;
 		private FrameBuffer frameBufferClearDiffuse;
 		private FrameBuffer frameBufferClearSpecular;
@@ -78,7 +62,7 @@ namespace OpenWorld.Engine.SceneManagement
 		private PostProcessingStage postBloomStages;
 
 		private ShaderFragment geometryPixelShader;
-		private PointLightShader pointLightShader;
+		private LightShader lightShader;
 		private Model lightCube;
 
 		/// <summary>
@@ -138,7 +122,7 @@ void main()
 	//normalOut.xyz = normal;
 }");
 
-			this.pointLightShader = new PointLightShader();
+			this.lightShader = new LightShader();
 
 			// Create post processing shaders
 			this.gammaCorrectionShader = new GammaCorrectionShader();
@@ -150,10 +134,11 @@ void main()
 			this.ditheringShader = new DitheringShader();
 
 			this.tonemappingShader = new TonemappingShader();
-			this.tonemappingShader.HdrExposure = 0.8f;
+			this.tonemappingShader.HdrExposure = 1.25f;
+			this.tonemappingShader.WhitePoint = 5.0f;
 
 			this.blurShader = new BlurShader();
-			this.blurShader.BlurStrength = new Vector2(0.04f, 0.02f);
+			this.blurShader.BlurStrength = new Vector2(0.04f, 0.04f);
 
 			this.bloomCombineShader = new CombineShader();
 
@@ -261,7 +246,7 @@ void main()
 
 			var target = new Box2(0, 0, Game.Current.Width, Game.Current.Height);
 			Texture2D result = this.sceneBuffer;
-			
+
 			result = this.preBloomStages.Render(result);
 			// After prebloom, set shader variable
 			this.bloomCombineShader.OriginalMap = result;
@@ -341,14 +326,11 @@ void main()
 
 		private void RenderLights(Camera camera)
 		{
-			this.Matrices.View = camera.ViewMatrix;
-			this.Matrices.Projection = camera.ProjectionMatrix;
-
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
 			GL.Enable(EnableCap.CullFace);
 			GL.CullFace(CullFaceMode.Front);
-			GL.Enable(EnableCap.DepthTest);
+			GL.Disable(EnableCap.DepthTest);
 			GL.DepthFunc(DepthFunction.Gequal);
 
 			FrameBuffer.Current = this.frameBufferClearDiffuse;
@@ -365,34 +347,59 @@ void main()
 
 			FrameBuffer.Current = this.frameBufferLights;
 
-			// Clear depth
-			//GL.DepthMask(true);
-			//GL.Clear(ClearBufferMask.DepthBufferBit);
 			GL.DepthMask(false);
 
 			//this.LightCount = 0;
 
-			var lights = new LightUniforms();
-			lights.ViewPosition = Matrix4.Invert(camera.ViewMatrix).Row3.Xyz;
+			var viewPos = Matrix4.Invert(camera.ViewMatrix).Row3.Xyz;
 
-			var cs = pointLightShader.Select();
-			cs.Bind();
-			cs.BindUniform(this);
-
-			foreach (var job in this.LightRenderJobs)
+			var sun = new DirectionalLight()
 			{
-				lights.Position = job.Position;
-				lights.Radius = job.Radius;
-				lights.Color = job.Color;
-				this.Matrices.World = Matrix4.CreateScale(2.0f * job.Radius) * Matrix4.CreateTranslation(job.Position);
+				Color = Color.White,
+				Direction = -this.Sky.GetSunDirection(),
+				Intensity = 1.0f,
+			};
+			sun.Intensity = (float)Math.Pow(1.0f - Math.Max(0.0f, Vector3.Dot(Vector3.UnitY, sun.Direction)), 4.0f);
 
-				cs.BindUniforms(lights, this.Matrices);
+			foreach (var job in this.LightRenderJobs.Concat(new[] { new LightRenderJob(Vector3.Zero, sun) }))
+			{
+				string @class = "PointLight";
+				switch (job.Light.Type)
+				{
+					case LightType.Point:
+						@class = "PointLight";
+
+						this.Matrices.View = camera.ViewMatrix;
+						this.Matrices.Projection = camera.ProjectionMatrix;
+						this.Matrices.World = Matrix4.CreateScale(8.0f * job.Light.Intensity) * Matrix4.CreateTranslation(job.Position);
+						break;
+					case LightType.Spot:
+						@class = "SpotLight";
+
+						this.Matrices.View = camera.ViewMatrix;
+						this.Matrices.Projection = camera.ProjectionMatrix;
+						this.Matrices.World = Matrix4.CreateScale(2.0f * job.Light.Intensity) * Matrix4.CreateTranslation(job.Position);
+						break;
+					case LightType.Directional:
+						@class = "DirectionalLight";
+
+						// Draw cube as fullscreen quad
+						this.Matrices.View = Matrix4.Identity;
+						this.Matrices.Projection = Matrix4.Identity;
+						this.Matrices.World = Matrix4.CreateScale(2.0f, 2.0f, 0.0f);
+						break;
+				}
+
+				var cs = lightShader.Select(@class);
+				cs.Bind();
+				cs.BindUniforms(this, job, job.Light, this.Matrices);
+
+				// Bind view position manual.
+				if (cs["lightViewPosition"] != null)
+					cs["lightViewPosition"].SetValue(viewPos);
+
 				this.lightCube.Draw();
 			}
-
-			//this.sunLightShader.LightDirection = this.sky.GetSunDirection();
-			//this.sunLightShader.ShadowMatrix = shadowMatrix;
-			//this.ui.Draw(new RectangleF(-1, -1, 2, 2), this.normalBuffer, this.sunLightShader);
 
 			GL.DepthMask(true);
 			FrameBuffer.Current = null;

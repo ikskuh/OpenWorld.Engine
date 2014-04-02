@@ -154,6 +154,7 @@
   <ItemGroup>
     <Compile Include="AssetManager.AssetCache.cs" />
     <Compile Include="AssetSource.cs" />
+    <Compile Include="SceneManagement\LightType.cs" />
     <Compile Include="ShaderSystem\AutoUniforms.cs" />
     <Compile Include="Box2i.cs" />
     <Compile Include="Camera.cs" />
@@ -225,7 +226,7 @@
     <Compile Include="SceneManagement\PolygonShape.cs" />
     <Compile Include="SceneManagement\RaycastResult.cs" />
     <Compile Include="SceneManagement\SceneNodeMotionState.cs" />
-    <Compile Include="SceneManagement\PointLight.cs" />
+    <Compile Include="SceneManagement\Lights.cs" />
     <Compile Include="SceneManagement\Renderer.cs" />
     <Compile Include="SceneManagement\RequiredComponentAttribute.cs" />
     <Compile Include="SceneManagement\SceneNode.Component.cs" />

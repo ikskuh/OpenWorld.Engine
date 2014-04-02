@@ -15,8 +15,8 @@ namespace OpenWorld.Engine
 		/// </summary>
 		public Material()
 		{
-			this.EmissiveScale = 10.0f;
-			this.SpecularPower = 16.0f;
+			this.EmissiveScale = 50.0f;
+			this.SpecularPower = 32.0f;
 			this.IsTranslucent = false;
 			this.Diffuse = Color.White;
 			this.Specular = Color.Black;

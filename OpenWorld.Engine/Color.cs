@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace OpenWorld.Engine
 {
@@ -14,7 +15,7 @@ namespace OpenWorld.Engine
 	/// </summary>
 	[Serializable]
 	[StructLayout(LayoutKind.Sequential)]
-	public partial struct Color : IEquatable<Color>
+	public partial struct Color : IEquatable<Color>, IXmlSerializable
 	{
 		private float r;
 		private float g;
@@ -364,5 +365,33 @@ namespace OpenWorld.Engine
 
 			return true;
 		}
+
+		#region IXmlSerializable
+
+		System.Xml.Schema.XmlSchema IXmlSerializable.GetSchema()
+		{
+			return null;
+		}
+
+		void IXmlSerializable.ReadXml(System.Xml.XmlReader reader)
+		{
+			string value = reader.ReadString();
+			Color.TryParse(value, out this);
+		}
+
+		void IXmlSerializable.WriteXml(System.Xml.XmlWriter writer)
+		{
+			string result = string.Format(
+				CultureInfo.InvariantCulture, 
+				"{0};{1};{2};{3}",
+				this.R,
+				this.G,
+				this.B,
+				this.A);
+
+			writer.WriteString(result);
+		}
+
+		#endregion
 	}
 }

@@ -6,9 +6,9 @@ using System.Text;
 
 namespace OpenWorld.Engine.SceneManagement.Shaders
 {
-	class PointLightShader : ObjectShader
+	sealed class LightShader : ObjectShader
 	{
-		public PointLightShader()
+		public LightShader()
 		{
 			this.Load(Resource.GetString("OpenWorld.Engine.SceneManagement.Shaders.light.glsl"));
 		}

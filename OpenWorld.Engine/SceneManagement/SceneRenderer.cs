@@ -63,11 +63,10 @@ namespace OpenWorld.Engine.SceneManagement
 		/// Renders a point light.
 		/// </summary>
 		/// <param name="position">Position of the light.</param>
-		/// <param name="radius">Radius of the light.</param>
-		/// <param name="color">Color of the light.</param>
-		public void PointLight(Vector3 position, float radius, Color color)
+		/// <param name="light">Light definition</param>
+		public void Light(Vector3 position, Light light)
 		{
-			this.lightRenderJobs.Add(new LightRenderJob(position, radius, color));
+			this.lightRenderJobs.Add(new LightRenderJob(position, light));
 		}
 
 		/// <summary>
