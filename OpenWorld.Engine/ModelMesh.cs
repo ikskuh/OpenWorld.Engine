@@ -169,7 +169,7 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets or sets the specular texture of the mesh.
 		/// </summary>
-		[Uniform("EmissiveTexture", DefaultColor = "0;0;0")]
+		[Uniform("EmissiveTexture", DefaultColor = "1;1;1")]
 		public Texture2D EmissiveTexture { get; set; }
 
 		/// <summary>

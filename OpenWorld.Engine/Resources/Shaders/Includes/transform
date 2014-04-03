@@ -1,0 +1,3 @@
+﻿uniform mat4 matWorld;
+uniform mat4 matView;
+uniform mat4 matProjection;

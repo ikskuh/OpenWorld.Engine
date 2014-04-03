@@ -1,0 +1,3 @@
+﻿uniform sampler2D meshDiffuseTexture;
+uniform sampler2D meshSpecularTexture;
+uniform sampler2D meshEmissiveTexture;

@@ -158,14 +158,18 @@ void main()
 
 			this.bloomStages = new PostProcessingStage(this.highPassShader)
 			{
-				TargetTexture = CreateTexture(width / 2, height / 2),
+				TargetTexture = CreateTexture(width, height),
 				Stage = new PostProcessingStage(this.blurShader)
 				{
-					TargetTexture = CreateTexture(width, height),
-					Stage = new PostProcessingStage(this.bloomCombineShader)
-					{
-						TargetTexture = CreateTexture(width, height),
-					}
+					TargetTexture = CreateTexture(width / 2, height / 2),
+					Stage = new PostProcessingStage(this.blurShader)
+						{
+							TargetTexture = CreateTexture(width / 2, height / 2),
+							Stage = new PostProcessingStage(this.bloomCombineShader)
+							{
+								TargetTexture = CreateTexture(width, height),
+							}
+						}
 				}
 			};
 
@@ -316,7 +320,7 @@ void main()
 
 				CompiledShader cs = shader.Select("DeferredRenderer", this.geometryPixelShader);
 				cs.Bind();
-				cs.BindUniforms(job.Material, this.Matrices, this);
+				cs.BindUniforms(Game.Current.Time, job.Material, this.Matrices, this);
 
 				job.Model.Draw((mesh) => cs.BindUniform(mesh), cs.HasTesselation);
 			}
@@ -392,7 +396,7 @@ void main()
 
 				var cs = lightShader.Select(@class);
 				cs.Bind();
-				cs.BindUniforms(this, job, job.Light, this.Matrices);
+				cs.BindUniforms(Game.Current.Time, this, job, job.Light, this.Matrices);
 
 				// Bind view position manual.
 				if (cs["lightViewPosition"] != null)
@@ -436,7 +440,7 @@ void main()
 
 				CompiledShader cs = shader.Select("DeferredRenderer");
 				cs.Bind();
-				cs.BindUniforms(job.Material, this.Matrices, this);
+				cs.BindUniforms(Game.Current.Time, job.Material, this.Matrices, this);
 
 				job.Model.Draw((mesh) => cs.BindUniform(mesh), cs.HasTesselation);
 

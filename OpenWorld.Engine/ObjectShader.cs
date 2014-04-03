@@ -13,78 +13,14 @@ namespace OpenWorld.Engine
 	/// </summary>
 	public class ObjectShader : Shader
 	{
-		const string source = @"shader:add
-{
-	type = ""global"",
-	source = 
-[[
-	// Transformation matrices
-	uniform mat4 matWorld;
-	uniform mat4 matView;
-	uniform mat4 matProjection;
+		const string source = @"
+shader:include(""transform"")
+shader:include(""mesh"")
+shader:include(""deferred"")
+shader:include(""material"")
 
-	// Mesh textures
-	uniform sampler2D meshDiffuseTexture;
-	uniform sampler2D meshSpecularTexture;
-	uniform sampler2D meshEmissiveTexture;
-
-	// Deferred renderer uniforms
-	uniform sampler2D renderDiffuseLightBuffer;
-	uniform sampler2D renderSpecularLightBuffer;
-
-	// Material Values
-	uniform vec4 mtlDiffuse;
-	uniform vec4 mtlSpecular;
-	uniform vec4 mtlEmissive;
-	uniform float mtlEmissiveScale;
-]]
-}
-
-shader:add
-{
-	type = ""vertex"",
-	input = ""mesh"",
-	source = 
-[[
-	out vec3 position;
-	out vec3 normal;
-	out vec3 tangent;
-	out vec3 bitangent;
-	out vec2 uv;
-	out vec4 screenSpaceUV;
-
-	void main()
-	{
-		vec4 pos = vec4(vertexPosition, 1);
-		gl_Position = matProjection * matView * matWorld * pos;
-
-		position = (matWorld * pos).xyz;
-
-		mat3 mv3x3 = mat3(matWorld);
-		normal = normalize(mv3x3 * vertexNormal);
-		tangent = normalize(mv3x3 * vertexTangent);
-		bitangent = normalize(mv3x3 * vertexBiTangent);
-
-		uv = vertexUV;
-		screenSpaceUV = gl_Position;
-	}
-]]
-}
-
-shader:add
-{
-	type = ""fragment"",
-	source = 
-[[
-	layout(location = 0) out vec4 color;
-	in vec2 uv;
-	void main()
-	{
-		color = texture(meshDiffuseTexture, uv);
-		if(color.a < 0.5f) discard;
-	}
-]]
-}
+shader:addDefault(""vertex"")
+shader:addDefault(""fragment"")
 
 shader:add
 {

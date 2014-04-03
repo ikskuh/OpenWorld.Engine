@@ -1,0 +1,4 @@
+﻿uniform vec4 mtlDiffuse;
+uniform vec4 mtlSpecular;
+uniform vec4 mtlEmissive;
+uniform float mtlEmissiveScale;

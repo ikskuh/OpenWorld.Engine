@@ -9,6 +9,7 @@ namespace OpenWorld.Engine
 	/// <summary>
 	/// Represents a game timing.
 	/// </summary>
+	[UniformPrefix("time")]
 	public sealed class GameTime
 	{
 		/// <summary>
@@ -25,11 +26,13 @@ namespace OpenWorld.Engine
 		/// <summary>
 		/// Gets the time in seconds that passed since the start of the game.
 		/// </summary>
+		[Uniform("Total")]
 		public float TotalTime { get; private set; }
 
 		/// <summary>
 		/// Gets the time in seconds that passed since the last frame.
 		/// </summary>
+		[Uniform("Delta")]
 		public float DeltaTime { get; private set; }
 	}
 }

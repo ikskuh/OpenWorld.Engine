@@ -22,13 +22,15 @@ const float gaussFilter[gaussRadius] = float[gaussRadius](
 void main()
 {
 	fragment.rgb = vec3(0.0, 0.0, 0.0);
+	vec3 i = texture2D(inputTexture, uv).rgb;
+	float strength = 1.0f;
 	for (int x = 0; x < gaussRadius; ++x)
 	{
 		for (int y = 0; y < gaussRadius; ++y)
 		{
 			vec2 uvx = uv;
-			uvx.x += blurStrength.x * (float(x) / float(gaussRadius) - 0.5f);
-			uvx.y += blurStrength.y * (float(y) / float(gaussRadius) - 0.5f);
+			uvx.x += strength * blurStrength.x * (float(x) / float(gaussRadius) - 0.5f);
+			uvx.y += strength * blurStrength.y * (float(y) / float(gaussRadius) - 0.5f);
 			fragment.rgb += gaussFilter[x] * gaussFilter[y] * texture2D(inputTexture, uvx).rgb;
 		}
 	}

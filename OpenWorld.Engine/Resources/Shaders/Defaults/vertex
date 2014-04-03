@@ -1,0 +1,22 @@
+﻿out vec3 position;
+out vec3 normal;
+out vec3 tangent;
+out vec3 bitangent;
+out vec2 uv;
+out vec4 screenSpaceUV;
+
+void main()
+{
+	vec4 pos = vec4(vertexPosition, 1);
+	gl_Position = matProjection * matView * matWorld * pos;
+
+	position = (matWorld * pos).xyz;
+
+	mat3 mv3x3 = mat3(matWorld);
+	normal = normalize(mv3x3 * vertexNormal);
+	tangent = normalize(mv3x3 * vertexTangent);
+	bitangent = normalize(mv3x3 * vertexBiTangent);
+
+	uv = vertexUV;
+	screenSpaceUV = gl_Position;
+}

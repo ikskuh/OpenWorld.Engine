@@ -20,7 +20,7 @@ namespace OpenWorld.Engine
 			this.IsTranslucent = false;
 			this.Diffuse = Color.White;
 			this.Specular = Color.Black;
-			this.Emissive = Color.White;
+			this.Emissive = Color.Black;
 		}
 
 		/// <summary>

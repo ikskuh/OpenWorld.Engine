@@ -46,6 +46,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>OpenWorld.Engine</RootNamespace>
+    <ProjectGuid>{13EC0AEF-DDEE-4E4F-92F7-E77319806440}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AssimpNet, Version=3.2.0.0, Culture=neutral, PublicKeyToken=7c35138f0d61254b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -181,6 +191,7 @@
     <Compile Include="ShaderSystem\ShaderCache.cs" />
     <Compile Include="ShaderSystem\ShaderCompilationException.cs" />
     <Compile Include="ShaderSystem\ShaderFragment.cs" />
+    <Compile Include="ShaderSystem\ShaderIncludeFile.cs" />
     <Compile Include="ShaderSystem\ShaderLinkingException.cs" />
     <Compile Include="ShaderSystem\Uniform.cs" />
     <Compile Include="Singleton.cs" />
@@ -227,6 +238,13 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="SceneManagement\Shaders\light.glsl" />
+    <EmbeddedResource Include="Resources\Shaders\Defaults\vertex" />
+    <EmbeddedResource Include="Resources\Shaders\Defaults\fragment" />
+    <EmbeddedResource Include="Resources\Shaders\Includes\deferred" />
+    <EmbeddedResource Include="Resources\Shaders\Includes\mesh" />
+    <EmbeddedResource Include="Resources\Shaders\Includes\material" />
+    <EmbeddedResource Include="Resources\Shaders\Includes\transform" />
+    <EmbeddedResource Include="Resources\Shaders\Includes\time" />
     <None Include="SharpFont.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -240,8 +258,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.0.2\lib\native\x86" "$(TargetDir)"
-xcopy /s /y "D:\OpenWorld\Game\packages\NLua.1.3.0.2\lib\native\x86\*.*" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.0.2\lib\native\x86" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

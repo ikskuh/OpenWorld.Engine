@@ -53,21 +53,70 @@ namespace OpenWorld.Engine
 				}
 				shader.parts.Add(sp);
 			}
+
+			public void addDefault(string name)
+			{
+				var sp = new ShaderPart();
+				switch (name)
+				{
+					case "vertex":
+						this.include("transform");
+						sp.type = "vertex";
+						sp.source = Resource.GetString("OpenWorld.Engine.Resources.Shaders.Defaults.vertex");
+						sp.properties["input"] = "mesh";
+						break;
+					case "fragment":
+						this.include("mesh");
+						sp.type = "vertex";
+						sp.source = Resource.GetString("OpenWorld.Engine.Resources.Shaders.Defaults.fragment");
+						break;
+					default:
+						throw new InvalidOperationException("Failed to add default shader: " + name + " is not a valid default shader!");
+				}
+				shader.parts.Add(sp);
+			}
+
+			public void include(string name)
+			{
+				if (shader.includes.ContainsKey(name))
+					return;
+
+				string content;
+				try
+				{
+					content = Resource.GetString("OpenWorld.Engine.Resources.Shaders.Includes."+ name);
+				}
+				catch
+				{
+					try
+					{
+						content = Game.Current.Assets.LoadSync<ShaderIncludeFile>(name).Content;
+					}
+					catch(AssetNotFoundException)
+					{
+						throw new InvalidOperationException("Could not find the specified include file.");
+					}
+				}
+
+				shader.includes.Add(name, content);
+			}
 		}
 
 		private string version = "410 core";
 		private string source;
 		private ShaderCache cache;
 		private List<ShaderPart> parts;
+		private Dictionary<string, string> includes;
 
 		/// <summary>
 		/// Creates a new shader.
 		/// </summary>
 		public Shader()
 		{
+			this.parts = new List<ShaderPart>();
+			this.includes = new Dictionary<string, string>();
 			this.cache = new ShaderCache(this);
 			this.cache.Miss += cache_Miss;
-			this.parts = new List<ShaderPart>();
 			this.Variables = this;
 		}
 
@@ -83,6 +132,7 @@ namespace OpenWorld.Engine
 
 			// Clear the shader cache to force recompilation.
 			this.cache.Clear();
+			this.includes.Clear();
 
 			// Analyze and load shader source
 			var ls = new LuaShader(this);
@@ -166,6 +216,10 @@ namespace OpenWorld.Engine
 			ShaderFragment fragmentShader = e.Fragments.FirstOrDefault((s) => s.Type == ShaderType.FragmentShader);
 
 			string header = "#version " + this.version + "\n";
+			foreach(var include in this.includes)
+			{
+				header += include.Value + "\n";
+			}
 			foreach (var sp in this.parts)
 			{
 				if (sp.type == "global" && (sp.className == null || sp.className == e.ShaderClass))
@@ -196,10 +250,10 @@ namespace OpenWorld.Engine
 			GL.GetProgram(program, GetProgramParameterName.LinkStatus, out result);
 			string infoLog = GL.GetProgramInfoLog(program);
 
-			if(result == 0)
+			if (result == 0)
 			{
 				Log.WriteLine(LocalizedStrings.ShaderLinkerFailed);
-				if(!string.IsNullOrWhiteSpace(infoLog))
+				if (!string.IsNullOrWhiteSpace(infoLog))
 					Log.WriteLine(infoLog);
 				GL.DeleteProgram(program);
 				return;
@@ -233,7 +287,7 @@ namespace OpenWorld.Engine
 				source = sp;
 				break;
 			}
-			if(source == null)
+			if (source == null)
 			{
 				// Search for default shader
 				foreach (var sp in this.parts)
@@ -261,7 +315,7 @@ namespace OpenWorld.Engine
 			switch (input)
 			{
 				case "mesh":
-					return 
+					return
 						"layout(location = 0) in vec3 vertexPosition;\n" +
 						"layout(location = 1) in vec3 vertexNormal;\n" +
 						"layout(location = 2) in vec2 vertexUV;\n" +

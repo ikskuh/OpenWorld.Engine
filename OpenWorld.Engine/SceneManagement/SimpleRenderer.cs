@@ -66,7 +66,7 @@ namespace OpenWorld.Engine.SceneManagement
 
 				var cs = shader.Select();
 				cs.Bind();
-				cs.BindUniforms(material, this.Matrices, this);
+				cs.BindUniforms(Game.Current.Time, this, material, this.Matrices);
 				
 				job.Model.Draw((mesh) => cs.BindUniform(mesh), cs.HasTesselation);
 			}

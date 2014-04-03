@@ -1,0 +1,2 @@
+﻿uniform sampler2D renderDiffuseLightBuffer;
+uniform sampler2D renderSpecularLightBuffer;
